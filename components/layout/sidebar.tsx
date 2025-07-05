@@ -42,7 +42,7 @@ export default function Sidebar({ navItems, userRole }: SidebarProps) {
 	};
 
 	return (
-		<div className={`w-64 ${getRoleColor()} text-white flex flex-col`}>
+		<div className={`w-64 ${getRoleColor()} text-white flex flex-col rounded-3xl m-4`}>
 			{/* Logo */}
 			<div className="p-6 border-b border-white/10">
 				<div className="flex items-center gap-3">
@@ -65,7 +65,7 @@ export default function Sidebar({ navItems, userRole }: SidebarProps) {
 								<Button
 									variant={item.active ? "secondary" : "ghost"}
 									className={`w-full justify-start gap-3 text-white hover:bg-white/10 cursor-pointer ${
-										item.active ? "bg-white/20 text-white" : ""
+										item.active ? "bg-white/20 text-white" : "hover:text-white"
 									}`}
 								>
 									<item.icon className="h-5 w-5" />

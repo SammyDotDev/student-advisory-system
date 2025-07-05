@@ -1,11 +1,8 @@
-import React from 'react'
+import StudentSchedule from "@/components/schedule/student-schedule";
+import React from "react";
 
 const page = () => {
-  return (
-    <div>
-      <p>Schedule</p>
-    </div>
-  )
-}
+	return <StudentSchedule />;
+};
 
-export default page
+export default page;
