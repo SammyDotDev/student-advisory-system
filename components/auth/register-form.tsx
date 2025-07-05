@@ -28,47 +28,64 @@ import Branding from "./components/branding";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 
 export default function RegisterForm() {
-	const [showPassword, setShowPassword] = useState(false);
-	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-	const [role, setRole] = useState("");
-	const [email, setEmail] = useState("");
-	const [password, setPassword] = useState("");
+	const [showStudentPassword, setShowStudentPassword] = useState(false);
+	const [showAdvisoryPassword, setShowAdvisoryPassword] = useState(false);
+	const [showConfirmStudentPassword, setShowConfirmStudentPassword] =
+		useState(false);
+	const [showConfirmAdvisoryPassword, setShowConfirmAdvisoryPassword] =
+		useState(false);
 	const router = useRouter();
 
-	const [userDetails, setUserDetails] = useState({
+	const [studentDetails, setStudentDetails] = useState({
+		matricNumber: "",
 		department: "",
 		email: "",
 		firstname: "",
 		lastname: "",
 		password: "",
 	});
-	const [confirmPassword, setConfirmPassword] = useState("");
 
-	const handleRegister = (e: React.FormEvent) => {
+	const [advisoryDetails, setAdvisoryDetails] = useState({
+		staffId: "",
+		email: "",
+		firstname: "",
+		lastname: "",
+		password: "",
+	});
+	const [confirmStudentPassword, setConfirmStudentPassword] = useState("");
+	const [confirmAdvisoryPassword, setConfirmAdvisoryPassword] = useState("");
+
+	const handleStudentRegister = (e: React.FormEvent) => {
 		e.preventDefault();
 		// Mock authentication - in real app, validate credentials
 		if (
-			userDetails.email &&
-			userDetails.firstname &&
-			userDetails.password &&
-			confirmPassword &&
-			role
+			studentDetails.email &&
+			studentDetails.matricNumber &&
+			studentDetails.firstname &&
+			studentDetails.password &&
+			confirmStudentPassword
 		) {
-			if (userDetails.password === confirmPassword) {
-				// Redirect based on role
-				switch (role) {
-					case "student":
-						router.push("/dashboard/student");
-						break;
-					case "advisor":
-						router.push("/dashboard/advisor");
-						break;
-					case "admin":
-						router.push("/dashboard/admin");
-						break;
-					default:
-						router.push("/dashboard/student");
-				}
+			if (studentDetails.password === confirmStudentPassword) {
+				router.push("/dashboard/student");
+			} else {
+				toast.error("Incorrect password");
+				throw "incorrect password";
+			}
+		}
+	};
+
+	const handleAdvisoryRegister = (e: React.FormEvent) => {
+		e.preventDefault();
+		// Mock authentication - in real app, validate credentials
+		if (
+			advisoryDetails.email &&
+			advisoryDetails.staffId &&
+			advisoryDetails.firstname &&
+			advisoryDetails.password &&
+			confirmAdvisoryPassword
+		) {
+			if (advisoryDetails.password === confirmAdvisoryPassword) {
+				router.push("/dashboard/advisory");
 			} else {
 				toast.error("Incorrect password");
 				throw "incorrect password";
@@ -119,7 +136,7 @@ export default function RegisterForm() {
 									</CardDescription>
 								</CardHeader>
 								<CardContent>
-									<form onSubmit={handleRegister} className="space-y-4">
+									<form onSubmit={handleStudentRegister} className="space-y-4">
 										<div className="space-y-2">
 											<Label htmlFor="matric_number" className="text-white">
 												Matric Number
@@ -127,9 +144,9 @@ export default function RegisterForm() {
 											<Input
 												id="matric_number"
 												placeholder="Enter your matric number"
-												value={userDetails.email}
+												value={studentDetails.email}
 												onChange={(e) =>
-													setUserDetails((prev) => ({
+													setStudentDetails((prev) => ({
 														...prev,
 														email: e.target.value,
 													}))
@@ -139,13 +156,13 @@ export default function RegisterForm() {
 											/>
 										</div>
 										<div className="space-y-2">
-											<Label htmlFor="role" className="text-white">
+											<Label htmlFor="department" className="text-white">
 												Department
 											</Label>
 											<Select
-												value={userDetails.department}
+												value={studentDetails.department}
 												onValueChange={(text) =>
-													setUserDetails((prev) => ({
+													setStudentDetails((prev) => ({
 														...prev,
 														department: text,
 													}))
@@ -185,9 +202,9 @@ export default function RegisterForm() {
 												id="email"
 												type="email"
 												placeholder="Enter your email"
-												value={userDetails.email}
+												value={studentDetails.email}
 												onChange={(e) =>
-													setUserDetails((prev) => ({
+													setStudentDetails((prev) => ({
 														...prev,
 														email: e.target.value,
 													}))
@@ -203,9 +220,9 @@ export default function RegisterForm() {
 											<Input
 												id="firstname"
 												placeholder="Enter your first name"
-												value={userDetails.firstname}
+												value={studentDetails.firstname}
 												onChange={(e) =>
-													setUserDetails((prev) => ({
+													setStudentDetails((prev) => ({
 														...prev,
 														firstname: e.target.value,
 													}))
@@ -221,9 +238,9 @@ export default function RegisterForm() {
 											<Input
 												id="lastname"
 												placeholder="Enter your last name"
-												value={userDetails.lastname}
+												value={studentDetails.lastname}
 												onChange={(e) =>
-													setUserDetails((prev) => ({
+													setStudentDetails((prev) => ({
 														...prev,
 														lastname: e.target.value,
 													}))
@@ -240,11 +257,11 @@ export default function RegisterForm() {
 											<div className="relative">
 												<Input
 													id="password"
-													type={showPassword ? "text" : "password"}
+													type={showStudentPassword ? "text" : "password"}
 													placeholder="Enter your password"
-													value={userDetails.password}
+													value={studentDetails.password}
 													onChange={(e) =>
-														setUserDetails((prev) => ({
+														setStudentDetails((prev) => ({
 															...prev,
 															password: e.target.value,
 														}))
@@ -257,9 +274,11 @@ export default function RegisterForm() {
 													variant="ghost"
 													size="sm"
 													className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-													onClick={() => setShowPassword(!showPassword)}
+													onClick={() =>
+														setShowStudentPassword(!showStudentPassword)
+													}
 												>
-													{showPassword ? (
+													{showStudentPassword ? (
 														<EyeOff className="h-4 w-4 text-slate-400" />
 													) : (
 														<Eye className="h-4 w-4 text-slate-400" />
@@ -275,10 +294,14 @@ export default function RegisterForm() {
 											<div className="relative">
 												<Input
 													id="confirm_password"
-													type={showConfirmPassword ? "text" : "password"}
+													type={
+														showConfirmStudentPassword ? "text" : "password"
+													}
 													placeholder="Enter your password again"
-													value={confirmPassword}
-													onChange={(e) => setConfirmPassword(e.target.value)}
+													value={confirmStudentPassword}
+													onChange={(e) =>
+														setConfirmStudentPassword(e.target.value)
+													}
 													className="bg-slate-700 border-slate-600 text-white placeholder:text-slate-400 pr-10"
 													required
 												/>
@@ -288,10 +311,12 @@ export default function RegisterForm() {
 													size="sm"
 													className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
 													onClick={() =>
-														setShowConfirmPassword(!showConfirmPassword)
+														setShowConfirmStudentPassword(
+															!showConfirmStudentPassword
+														)
 													}
 												>
-													{showConfirmPassword ? (
+													{showConfirmStudentPassword ? (
 														<EyeOff className="h-4 w-4 text-slate-400" />
 													) : (
 														<Eye className="h-4 w-4 text-slate-400" />
@@ -313,7 +338,7 @@ export default function RegisterForm() {
 											Already have an account?{" "}
 											<Link
 												href="/auth/login"
-												className="text-slate-400 hover:text-slate-300"
+												className="text-slate-200 hover:text-slate-100"
 											>
 												Sign In
 											</Link>
@@ -331,7 +356,7 @@ export default function RegisterForm() {
 									</CardDescription>
 								</CardHeader>
 								<CardContent>
-									<form onSubmit={handleRegister} className="space-y-4">
+									<form onSubmit={handleAdvisoryRegister} className="space-y-4">
 										<div className="space-y-2">
 											<Label htmlFor="staff_id" className="text-white">
 												Staff ID
@@ -339,11 +364,11 @@ export default function RegisterForm() {
 											<Input
 												id="staff_id"
 												placeholder="Enter your staff ID"
-												value={userDetails.email}
+												value={advisoryDetails.staffId}
 												onChange={(e) =>
-													setUserDetails((prev) => ({
+													setAdvisoryDetails((prev) => ({
 														...prev,
-														email: e.target.value,
+														staffId: e.target.value,
 													}))
 												}
 												className="bg-slate-700 border-slate-600 text-white placeholder:text-slate-400"
@@ -359,9 +384,9 @@ export default function RegisterForm() {
 												id="email"
 												type="email"
 												placeholder="Enter your email"
-												value={userDetails.email}
+												value={advisoryDetails.email}
 												onChange={(e) =>
-													setUserDetails((prev) => ({
+													setAdvisoryDetails((prev) => ({
 														...prev,
 														email: e.target.value,
 													}))
@@ -377,9 +402,9 @@ export default function RegisterForm() {
 											<Input
 												id="firstname"
 												placeholder="Enter your first name"
-												value={userDetails.firstname}
+												value={advisoryDetails.firstname}
 												onChange={(e) =>
-													setUserDetails((prev) => ({
+													setAdvisoryDetails((prev) => ({
 														...prev,
 														firstname: e.target.value,
 													}))
@@ -395,9 +420,9 @@ export default function RegisterForm() {
 											<Input
 												id="lastname"
 												placeholder="Enter your last name"
-												value={userDetails.lastname}
+												value={advisoryDetails.lastname}
 												onChange={(e) =>
-													setUserDetails((prev) => ({
+													setAdvisoryDetails((prev) => ({
 														...prev,
 														lastname: e.target.value,
 													}))
@@ -414,11 +439,11 @@ export default function RegisterForm() {
 											<div className="relative">
 												<Input
 													id="password"
-													type={showPassword ? "text" : "password"}
+													type={showAdvisoryPassword ? "text" : "password"}
 													placeholder="Enter your password"
-													value={userDetails.password}
+													value={advisoryDetails.password}
 													onChange={(e) =>
-														setUserDetails((prev) => ({
+														setAdvisoryDetails((prev) => ({
 															...prev,
 															password: e.target.value,
 														}))
@@ -431,9 +456,11 @@ export default function RegisterForm() {
 													variant="ghost"
 													size="sm"
 													className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-													onClick={() => setShowPassword(!showPassword)}
+													onClick={() =>
+														setShowAdvisoryPassword(!showAdvisoryPassword)
+													}
 												>
-													{showPassword ? (
+													{showAdvisoryPassword ? (
 														<EyeOff className="h-4 w-4 text-slate-400" />
 													) : (
 														<Eye className="h-4 w-4 text-slate-400" />
@@ -449,10 +476,14 @@ export default function RegisterForm() {
 											<div className="relative">
 												<Input
 													id="confirm_password"
-													type={showConfirmPassword ? "text" : "password"}
+													type={
+														showConfirmAdvisoryPassword ? "text" : "password"
+													}
 													placeholder="Enter your password again"
-													value={confirmPassword}
-													onChange={(e) => setConfirmPassword(e.target.value)}
+													value={confirmAdvisoryPassword}
+													onChange={(e) =>
+														setConfirmAdvisoryPassword(e.target.value)
+													}
 													className="bg-slate-700 border-slate-600 text-white placeholder:text-slate-400 pr-10"
 													required
 												/>
@@ -462,10 +493,12 @@ export default function RegisterForm() {
 													size="sm"
 													className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
 													onClick={() =>
-														setShowConfirmPassword(!showConfirmPassword)
+														setShowConfirmAdvisoryPassword(
+															!showConfirmAdvisoryPassword
+														)
 													}
 												>
-													{showConfirmPassword ? (
+													{showConfirmAdvisoryPassword ? (
 														<EyeOff className="h-4 w-4 text-slate-400" />
 													) : (
 														<Eye className="h-4 w-4 text-slate-400" />
@@ -487,7 +520,7 @@ export default function RegisterForm() {
 											Already have an account?{" "}
 											<Link
 												href="/auth/login"
-												className="text-slate-400 hover:text-slate-300"
+												className="text-slate-200 hover:text-slate-100"
 											>
 												Sign In
 											</Link>

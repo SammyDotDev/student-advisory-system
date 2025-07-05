@@ -27,10 +27,8 @@ import Branding from "./components/branding";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 
 export default function LoginForm() {
-	const [showPassword, setShowPassword] = useState(false);
-	const [role, setRole] = useState("");
-	const [email, setEmail] = useState("");
-	const [password, setPassword] = useState("");
+	const [showStudentPassword, setShowStudentPassword] = useState(false);
+	const [showAdvisoryPassword, setShowAdvisoryPassword] = useState(false);
 	const [studentDetails, setStudentDetails] = useState({
 		matricNumber: "",
 		password: "",
@@ -44,7 +42,7 @@ export default function LoginForm() {
 	const handleStudentLogin = (e: React.FormEvent) => {
 		e.preventDefault();
 		// Mock authentication - in real app, validate credentials
-		if (email && password) {
+		if (studentDetails.matricNumber && studentDetails.password) {
 			// Redirect based on role
 			router.push("/dashboard/student");
 		}
@@ -53,9 +51,9 @@ export default function LoginForm() {
 	const handleAdvisorLogin = (e: React.FormEvent) => {
 		e.preventDefault();
 		// Mock authentication - in real app, validate credentials
-		if (email && password) {
+		if (advisorDetails.staffID && advisorDetails.password) {
 			// Redirect based on role
-			router.push("/dashboard/student");
+			router.push("/dashboard/advisory");
 		}
 	};
 
@@ -124,7 +122,7 @@ export default function LoginForm() {
 											<div className="relative">
 												<Input
 													id="password"
-													type={showPassword ? "text" : "password"}
+													type={showStudentPassword ? "text" : "password"}
 													placeholder="Enter your password"
 													value={studentDetails.password}
 													onChange={(e) =>
@@ -141,24 +139,15 @@ export default function LoginForm() {
 													variant="ghost"
 													size="sm"
 													className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-													onClick={() => setShowPassword(!showPassword)}
+													onClick={() => setShowStudentPassword(!showStudentPassword)}
 												>
-													{showPassword ? (
+													{showStudentPassword ? (
 														<EyeOff className="h-4 w-4 text-slate-400" />
 													) : (
 														<Eye className="h-4 w-4 text-slate-400" />
 													)}
 												</Button>
 											</div>
-										</div>
-
-										<div className="flex items-center justify-between">
-											<Link
-												href="/auth/forgot-password"
-												className="text-sm text-slate-400 hover:text-slate-300"
-											>
-												Forgot Password?
-											</Link>
 										</div>
 
 										<Button
@@ -174,7 +163,7 @@ export default function LoginForm() {
 											Don&apos;t have an account?{" "}
 											<Link
 												href="/auth/register"
-												className="text-slate-400 hover:text-slate-300"
+												className="text-slate-200 hover:text-slate-100"
 											>
 												Sign up
 											</Link>
@@ -193,8 +182,6 @@ export default function LoginForm() {
 								</CardHeader>
 								<CardContent>
 									<form onSubmit={handleAdvisorLogin} className="space-y-4">
-										
-
 										<div className="space-y-2">
 											<Label htmlFor="staff_id" className="text-white">
 												Staff ID
@@ -221,7 +208,7 @@ export default function LoginForm() {
 											<div className="relative">
 												<Input
 													id="password"
-													type={showPassword ? "text" : "password"}
+													type={showAdvisoryPassword ? "text" : "password"}
 													placeholder="Enter your password"
 													value={advisorDetails.password}
 													onChange={(e) =>
@@ -238,9 +225,9 @@ export default function LoginForm() {
 													variant="ghost"
 													size="sm"
 													className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-													onClick={() => setShowPassword(!showPassword)}
+													onClick={() => setShowAdvisoryPassword(!showAdvisoryPassword)}
 												>
-													{showPassword ? (
+													{showAdvisoryPassword ? (
 														<EyeOff className="h-4 w-4 text-slate-400" />
 													) : (
 														<Eye className="h-4 w-4 text-slate-400" />
@@ -248,16 +235,6 @@ export default function LoginForm() {
 												</Button>
 											</div>
 										</div>
-
-										<div className="flex items-center justify-between">
-											<Link
-												href="/auth/forgot-password"
-												className="text-sm text-slate-400 hover:text-slate-300"
-											>
-												Forgot Password?
-											</Link>
-										</div>
-
 										<Button
 											type="submit"
 											className="w-full bg-slate-400 hover:bg-slate-700"
@@ -271,7 +248,7 @@ export default function LoginForm() {
 											Don&apos;t have an account?{" "}
 											<Link
 												href="/auth/register"
-												className="text-slate-400 hover:text-slate-300"
+												className="text-slate-200 hover:text-slate-100"
 											>
 												Sign up
 											</Link>
