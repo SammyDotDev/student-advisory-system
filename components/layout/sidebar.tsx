@@ -31,9 +31,9 @@ export default function Sidebar({ navItems, userRole }: SidebarProps) {
 	const getRoleColor = () => {
 		switch (userRole) {
 			case "student":
-				return "bg-blue-600";
+				return "bg-slate-600";
 			case "advisor":
-				return "bg-green-600";
+				return "bg-slate-900";
 			case "admin":
 				return "bg-purple-600";
 			default:

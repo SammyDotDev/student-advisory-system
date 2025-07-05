@@ -19,8 +19,8 @@ const ScheduleItem = ({ schedule }: { schedule: Schedule }) => {
 		<Accordion
 			collapsible={true}
 			type="single"
-			className={`border rounded-xl p-4 ${
-				openAccordionTrigger ? "border-blue-500" : "border-gray-300"
+			className={`border rounded-xl p-4 bg-slate-100 ${
+				openAccordionTrigger ? "border-slate-500" : "border-transparent"
 			}`}
 			value={openAccordionTrigger ? "item-1" : ""}
 			onValueChange={(value) => setOpenAccordionTrigger(value === "item-1")}

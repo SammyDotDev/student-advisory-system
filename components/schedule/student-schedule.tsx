@@ -140,7 +140,6 @@ const StudentSchedule = () => {
 	];
 
 	const sortedSchedules = groupAndSortSchedules(schedules);
-	console.log(sortedSchedules);
 	return (
 		<div className="flex h-screen bg-gray-50">
 			<Sidebar navItems={studentNavItems} userRole="student" />
@@ -181,11 +180,11 @@ const StudentSchedule = () => {
 									return (
 										<Button
 											key={index}
-											className={`rounded-full ${
+											className={`rounded-full border-2 ${
 												filterSchedule === timeline
-													? "bg-blue-600 text-white hover:bg-blue-700 border-blue-300"
+													? "bg-slate-600 text-white hover:bg-slate-700 border-slate-300"
 													: "bg-gray-200 text-gray-800 hover:bg-gray-300 border-gray-300"
-											} cursor-pointer border flex justify-center items-center px-4 py-2`}
+											} cursor-pointer flex justify-center items-center px-4 py-2`}
 											onClick={() => setFilterSchedule(timeline)}
 										>
 											{timeline}
@@ -197,7 +196,7 @@ const StudentSchedule = () => {
 						<div>
 							<Button
 								className={
-									"bg-blue-600 text-white hover:bg-blue-700 border-blue-300 cursor-pointer border flex justify-center items-center rounded-full px-6 py-5"
+									"bg-slate-600 text-white hover:bg-slate-700 border-2 border-transparent cursor-pointer flex justify-center items-center rounded-full px-6 py-5"
 								}
 							>
 								<Plus size={64} strokeWidth={3} />{" "}
