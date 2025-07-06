@@ -2,24 +2,22 @@
 
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
 	BookOpen,
 	Calendar,
 	Clock,
 	GraduationCap,
-	MessageSquare,
 	TrendingUp,
 	Bell,
-	Settings,
 	FileText,
 	Users,
 	BarChart3,
 } from "lucide-react";
 import Sidebar from "@/components/layout/sidebar";
+import StudentHeader from "../headers/student/student-header";
+import { User } from "@/lib/types";
 
 const studentNavItems = [
 	{
@@ -32,47 +30,51 @@ const studentNavItems = [
 	{ icon: Users, label: "Advisors", href: "/dashboard/student/advisors" },
 ];
 
+export const user: User = {
+	fullname: "John Doe",
+	email: "johndoe@gmail.com",
+};
 export default function StudentDashboard() {
 	const [currentTime] = useState(new Date());
 	console.log(currentTime);
 
-	const todaysClasses = [
+	const upcomingAppointments = [
 		{
 			time: "8:00 AM - 9:30 AM",
-			course: "MAT110",
+			courseTitle: "MAT110",
 			venue: "ROOM 102",
 			lecturer: "Dr. Asiedu",
 		},
 		{
 			time: "10:00 AM - 11:30 AM",
-			course: "CSC101",
+			courseTitle: "CSC101",
 			venue: "ICT LAB",
 			lecturer: "Prof. Mensah",
 		},
 		{
 			time: "2:00 PM - 3:30 PM",
-			course: "ENG112",
+			courseTitle: "ENG112",
 			venue: "ROOM 205",
 			lecturer: "Dr. Osei",
 		},
 	];
 
-	const assignments = [
+	const pendingApproval = [
 		{
-			course: "MAT110",
-			title: "Calculus Assignment",
+			lecturer: "Dr. Osei",
+			courseTitle: "Calculus Assignment",
 			dueDate: "10/10/2024",
 			status: "pending",
 		},
 		{
-			course: "CSC101",
-			title: "Programming Project",
+			lecturer: "Dr. John",
+			courseTitle: "Programming Project",
 			dueDate: "12/10/2024",
 			status: "submitted",
 		},
 		{
-			course: "ENG112",
-			title: "Essay Writing",
+			lecturer: "Prof. Sam",
+			courseTitle: "Essay Writing",
 			dueDate: "15/10/2024",
 			status: "pending",
 		},
@@ -90,65 +92,44 @@ export default function StudentDashboard() {
 
 			<div className="flex-1 flex flex-col overflow-hidden m-4">
 				{/* Header */}
-				<header className="bg-white border px-6 py-4 rounded-2xl">
-					<div className="flex items-center justify-between">
-						<div>
-							<h1 className="text-2xl font-bold text-gray-900">
-								Good morning, Jane Doe
-							</h1>
-							<p className="text-gray-600">2024/2025 First Semester</p>
-						</div>
-						<div className="flex items-center space-x-4">
-							<Button variant="ghost" size="sm">
-								<Bell className="h-5 w-5" />
-							</Button>
-							<Button variant="ghost" size="sm">
-								<Settings className="h-5 w-5" />
-							</Button>
-							<Avatar>
-								<AvatarImage src="/placeholder.svg" />
-								<AvatarFallback>JD</AvatarFallback>
-							</Avatar>
-						</div>
-					</div>
-				</header>
+				<StudentHeader user={user} />
 
 				{/* Main Content */}
 				<main className="flex-1 overflow-y-auto py-6">
 					<div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
 						{/* Academic Stats */}
-						<Card className="bg-gradient-to-r from-blue-600 to-blue-700 text-white">
+						<Card className="bg-gradient-to-r from-gray-900 to-gray-700 text-white rounded-3xl border-0">
 							<CardContent className="p-6">
 								<div className="flex items-center justify-between">
 									<div>
-										<p className="text-blue-100">Level</p>
+										<p className="text-gray-100">Level</p>
 										<p className="text-3xl font-bold">100</p>
 									</div>
-									<GraduationCap className="h-12 w-12 text-blue-200" />
+									<GraduationCap className="h-12 w-12 text-gray-200" />
 								</div>
 							</CardContent>
 						</Card>
 
-						<Card className="bg-gradient-to-r from-green-600 to-green-700 text-white">
+						<Card className="bg-gradient-to-r from-cyan-900 to-cyan-700 text-white rounded-3xl border-0">
 							<CardContent className="p-6">
 								<div className="flex items-center justify-between">
 									<div>
-										<p className="text-green-100">Courses/Units</p>
+										<p className="text-cyan-100">Courses/Units</p>
 										<p className="text-3xl font-bold">10/24</p>
 									</div>
-									<BookOpen className="h-12 w-12 text-green-200" />
+									<BookOpen className="h-12 w-12 text-cyan-200" />
 								</div>
 							</CardContent>
 						</Card>
 
-						<Card className="bg-gradient-to-r from-purple-600 to-purple-700 text-white">
+						<Card className="bg-gradient-to-r from-emerald-900 to-emerald-700 text-white rounded-3xl border-0">
 							<CardContent className="p-6">
 								<div className="flex items-center justify-between">
 									<div>
-										<p className="text-purple-100">CGPA</p>
+										<p className="text-emerald-100">CGPA</p>
 										<p className="text-3xl font-bold">4.5</p>
 									</div>
-									<TrendingUp className="h-12 w-12 text-purple-200" />
+									<TrendingUp className="h-12 w-12 text-emerald-200" />
 								</div>
 							</CardContent>
 						</Card>
@@ -159,19 +140,19 @@ export default function StudentDashboard() {
 						<Card>
 							<CardHeader>
 								<CardTitle className="flex items-center gap-2">
-									<Clock className="h-5 w-5" />
-									Today&apos;s Classes
+									<Calendar className="h-5 w-5" />
+									Upcoming Appointments
 								</CardTitle>
 							</CardHeader>
 							<CardContent>
 								<div className="space-y-4">
-									{todaysClasses.map((class_, index) => (
+									{upcomingAppointments.map((class_, index) => (
 										<div
 											key={index}
 											className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
 										>
 											<div>
-												<p className="font-medium">{class_.course}</p>
+												<p className="font-medium">{class_.courseTitle}</p>
 												<p className="text-sm text-gray-600">{class_.time}</p>
 												<p className="text-sm text-gray-500">
 													{class_.venue} • {class_.lecturer}
@@ -184,28 +165,28 @@ export default function StudentDashboard() {
 							</CardContent>
 						</Card>
 
-						{/* Assignments */}
+						{/* pending approvals */}
 						<Card>
 							<CardHeader>
 								<CardTitle className="flex items-center gap-2">
-									<FileText className="h-5 w-5" />
-									Assignments
+									<Clock className="h-5 w-5" />
+									Pending Approval
 								</CardTitle>
 							</CardHeader>
 							<CardContent>
 								<div className="space-y-4">
-									{assignments.map((assignment, index) => (
+									{pendingApproval.map((assignment, index) => (
 										<div
 											key={index}
 											className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
 										>
 											<div>
-												<p className="font-medium">{assignment.title}</p>
+												<p className="font-medium">{assignment.courseTitle}</p>
 												<p className="text-sm text-gray-600">
-													{assignment.course}
+													{assignment.lecturer}
 												</p>
 												<p className="text-sm text-gray-500">
-													Due: {assignment.dueDate}
+													{assignment.dueDate}
 												</p>
 											</div>
 											<Badge

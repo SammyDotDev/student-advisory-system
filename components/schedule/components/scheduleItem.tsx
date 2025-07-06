@@ -6,10 +6,19 @@ import {
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { CardAction, CardDescription } from "@/components/ui/card";
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogHeader,
+	DialogTitle,
+	DialogTrigger,
+} from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Schedule } from "@/lib/types";
 import Image from "next/image";
 import React, { useState } from "react";
+import CreateAppointmentDialog from "./create-appointment-dialog";
 
 const ScheduleItem = ({ schedule }: { schedule: Schedule }) => {
 	const [openAccordionTrigger, setOpenAccordionTrigger] =
@@ -80,12 +89,31 @@ const ScheduleItem = ({ schedule }: { schedule: Schedule }) => {
 				</div>
 				<AccordionContent className="mt-7">
 					<div className="flex items-end justify-end gap-5">
-						<Button className="bg-white border border-red-500 text-red-500">
-							<Label>Cancel</Label>
-						</Button>
-						<Button className="bg-white border border-blue-500 text-blue-500">
-							<Label>Reschedule</Label>
-						</Button>
+						<Dialog>
+							<DialogTrigger asChild>
+								<Button className="bg-white border border-red-500 text-red-500">
+									<Label>Delete</Label>
+								</Button>
+							</DialogTrigger>
+							<DialogContent>
+								<DialogHeader>
+									<DialogTitle>Are you absolutely sure?</DialogTitle>
+									<DialogDescription>
+										This action cannot be undone. This will permanently delete
+										your schedule.
+									</DialogDescription>
+								</DialogHeader>
+								<div className="ml-auto flex gap-3">
+									<Button className="border border-transparent bg-red-500 text-white hover:bg-red-300">
+										<Label>Delete</Label>
+									</Button>
+								</div>
+							</DialogContent>
+						</Dialog>
+						<CreateAppointmentDialog
+							schedule={schedule}
+							rescheduleAppointment
+						/>
 					</div>
 				</AccordionContent>
 			</AccordionItem>

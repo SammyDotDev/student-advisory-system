@@ -15,7 +15,7 @@ const ScheduleDateSortedItem = ({
 	return (
 		<div className="grid grid-cols-1 lg:grid-cols-1 gap-6">
 			<Label>
-				Today{" "}
+				
 				<span className="text-gray-500">
 					{formatFullDate(new Date(dates.date))}
 				</span>

@@ -13,18 +13,13 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "@/components/ui/select";
+
 import { Eye, EyeOff, GraduationCap } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Branding from "./components/branding";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
+import { toast } from "sonner";
 
 export default function LoginForm() {
 	const [showStudentPassword, setShowStudentPassword] = useState(false);
@@ -43,6 +38,7 @@ export default function LoginForm() {
 		e.preventDefault();
 		// Mock authentication - in real app, validate credentials
 		if (studentDetails.matricNumber && studentDetails.password) {
+            toast.success("Login successful")
 			// Redirect based on role
 			router.push("/dashboard/student");
 		}
@@ -139,7 +135,9 @@ export default function LoginForm() {
 													variant="ghost"
 													size="sm"
 													className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-													onClick={() => setShowStudentPassword(!showStudentPassword)}
+													onClick={() =>
+														setShowStudentPassword(!showStudentPassword)
+													}
 												>
 													{showStudentPassword ? (
 														<EyeOff className="h-4 w-4 text-slate-400" />
@@ -225,7 +223,9 @@ export default function LoginForm() {
 													variant="ghost"
 													size="sm"
 													className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-													onClick={() => setShowAdvisoryPassword(!showAdvisoryPassword)}
+													onClick={() =>
+														setShowAdvisoryPassword(!showAdvisoryPassword)
+													}
 												>
 													{showAdvisoryPassword ? (
 														<EyeOff className="h-4 w-4 text-slate-400" />

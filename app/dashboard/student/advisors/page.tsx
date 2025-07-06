@@ -1,11 +1,8 @@
-import React from 'react'
+import StudentAdvisors from "@/components/advisors-and-advisees/advisors/student-advisors";
+import React from "react";
 
 const page = () => {
-  return (
-    <div>
-        <p>advisors</p>
-    </div>
-  )
-}
+	return <StudentAdvisors />;
+};
 
-export default page
+export default page;

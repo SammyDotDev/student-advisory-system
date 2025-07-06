@@ -4,5 +4,16 @@ export type Schedule = {
 	toTime: string;
 	course: string;
 	advisor: string;
-	profileImage: string;
+	profileImage?: string;
+};
+
+export type User = {
+	fullname: string;
+	email: string;
+	matricNumber?: string;
+	staffId?: string;
+	department?: string;
+	level?: string;
+	honorifics?: string;
+	profileImage?: string;
 };

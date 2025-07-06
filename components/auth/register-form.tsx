@@ -26,6 +26,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import Branding from "./components/branding";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
+import { emailRegex } from "@/lib/utils";
 
 export default function RegisterForm() {
 	const [showStudentPassword, setShowStudentPassword] = useState(false);
@@ -39,6 +40,7 @@ export default function RegisterForm() {
 	const [studentDetails, setStudentDetails] = useState({
 		matricNumber: "",
 		department: "",
+		level: "",
 		email: "",
 		firstname: "",
 		lastname: "",
@@ -51,6 +53,7 @@ export default function RegisterForm() {
 		firstname: "",
 		lastname: "",
 		password: "",
+		honorifics: "",
 	});
 	const [confirmStudentPassword, setConfirmStudentPassword] = useState("");
 	const [confirmAdvisoryPassword, setConfirmAdvisoryPassword] = useState("");
@@ -58,15 +61,28 @@ export default function RegisterForm() {
 	const handleStudentRegister = (e: React.FormEvent) => {
 		e.preventDefault();
 		// Mock authentication - in real app, validate credentials
-		if (
-			studentDetails.email &&
-			studentDetails.matricNumber &&
-			studentDetails.firstname &&
-			studentDetails.password &&
-			confirmStudentPassword
-		) {
+		console.log(studentDetails.email && studentDetails.matricNumber);
+		if (emailRegex.test(studentDetails.email)) {
+			const fullname = `${studentDetails.firstname} ${studentDetails.lastname}`;
+
 			if (studentDetails.password === confirmStudentPassword) {
-				router.push("/dashboard/student");
+				toast.success("Account created successfully");
+				setTimeout(() => {
+					toast(
+						<div>
+							Go to login page{" "}
+							<a
+								href="/auth/login"
+								// target="_blank"
+								rel="noopener noreferrer"
+								className="underline"
+							>
+								Here
+							</a>
+						</div>
+					);
+				}, 2000);
+				// router.push("/dashboard/student");
 			} else {
 				toast.error("Incorrect password");
 				throw "incorrect password";
@@ -84,6 +100,7 @@ export default function RegisterForm() {
 			advisoryDetails.password &&
 			confirmAdvisoryPassword
 		) {
+			const fullname = `${advisoryDetails.honorifics} ${advisoryDetails.firstname} ${advisoryDetails.lastname}`;
 			if (advisoryDetails.password === confirmAdvisoryPassword) {
 				router.push("/dashboard/advisory");
 			} else {
@@ -191,6 +208,31 @@ export default function RegisterForm() {
 													<SelectItem value="communication-art">
 														Communication Art
 													</SelectItem>
+												</SelectContent>
+											</Select>
+										</div>
+										<div className="space-y-2">
+											<Label htmlFor="level" className="text-white">
+												Level
+											</Label>
+											<Select
+												value={studentDetails.level}
+												onValueChange={(text) =>
+													setStudentDetails((prev) => ({
+														...prev,
+														level: text,
+													}))
+												}
+												required
+											>
+												<SelectTrigger className="bg-slate-700 border-slate-600 text-white">
+													<SelectValue placeholder="Select your level" />
+												</SelectTrigger>
+												<SelectContent>
+													<SelectItem value="100">100</SelectItem>
+													<SelectItem value="200">200</SelectItem>
+													<SelectItem value="300">300</SelectItem>
+													<SelectItem value="400">400</SelectItem>
 												</SelectContent>
 											</Select>
 										</div>

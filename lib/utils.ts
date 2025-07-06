@@ -44,3 +44,21 @@ export const formatFullDate = (date: Date): string => {
 	const [month, day] = monthDay.split(" ");
 	return `${month}, ${day} ${year}`;
 };
+
+export function getGreeting(): string {
+	const currentHour = new Date().getHours();
+
+	if (currentHour < 12) {
+		return "Good morning";
+	} else if (currentHour < 17) {
+		return "Good afternoon";
+	} else {
+		return "Good evening";
+	}
+}
+export const emailRegex = RegExp(
+	"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$"
+);
+export const formatDate = (date: Date) => {
+	return date.toISOString().split("T")[0];
+};

@@ -1,40 +1,22 @@
 "use client";
 
-import {
-	BarChart3,
-	BookOpen,
-	Calendar,
-	Clock,
-	FileText,
-	GraduationCap,
-	MessageSquare,
-	Plus,
-	Users,
-} from "lucide-react";
+import { BarChart3, Calendar, Users } from "lucide-react";
 import Sidebar from "@/components/layout/sidebar";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
-import { Bell, Settings } from "lucide-react";
+
 import React, { useState } from "react";
-import { Card, CardAction, CardContent, CardDescription } from "../ui/card";
-import { Label } from "@radix-ui/react-label";
-import Image from "next/image";
-import {
-	Accordion,
-	AccordionChevron,
-	AccordionContent,
-	AccordionItem,
-	AccordionTrigger,
-} from "../ui/accordion";
-import { formatFullDate, groupAndSortSchedules } from "@/lib/utils";
-import { Schedule } from "@/lib/types";
-import ScheduleItem from "./components/scheduleDateSortedItem";
+
+import StudentHeader from "../headers/student/student-header";
+import { user } from "../dashboard/student-dashboard";
+import ScheduleDateSortedItem from "./components/scheduleDateSortedItem";
+import { groupAndSortSchedules } from "@/lib/utils";
+import CreateAppointmentDialog from "./components/create-appointment-dialog";
 
 const StudentSchedule = () => {
 	const [filterSchedule, setFilterSchedule] = useState<
 		"upcoming" | "pending" | "past"
 	>("upcoming");
-	const [openAccordionTrigger, setOpenAccordionTrigger] = useState(false);
+
 	const studentNavItems = [
 		{
 			icon: BarChart3,
@@ -140,34 +122,14 @@ const StudentSchedule = () => {
 	];
 
 	const sortedSchedules = groupAndSortSchedules(schedules);
+
 	return (
 		<div className="flex h-screen bg-gray-50">
 			<Sidebar navItems={studentNavItems} userRole="student" />
 
 			<div className="flex-1 flex flex-col overflow-hidden  m-4">
 				{/* Header */}
-				<header className="bg-white border px-6 py-4  rounded-2xl">
-					<div className="flex items-center justify-between">
-						<div>
-							<h1 className="text-2xl font-bold text-gray-900">
-								Good morning, Jane Doe
-							</h1>
-							<p className="text-gray-600">2024/2025 First Semester</p>
-						</div>
-						<div className="flex items-center space-x-4">
-							<Button variant="ghost" size="sm">
-								<Bell className="h-5 w-5" />
-							</Button>
-							<Button variant="ghost" size="sm">
-								<Settings className="h-5 w-5" />
-							</Button>
-							<Avatar>
-								<AvatarImage src="/placeholder.svg" />
-								<AvatarFallback>JD</AvatarFallback>
-							</Avatar>
-						</div>
-					</div>
-				</header>
+				<StudentHeader user={user} />
 
 				{/* Main Content */}
 				<main className="flex-1 overflow-y-auto py-6">
@@ -194,20 +156,13 @@ const StudentSchedule = () => {
 							</div>
 						</div>
 						<div>
-							<Button
-								className={
-									"bg-slate-600 text-white hover:bg-slate-700 border-2 border-transparent cursor-pointer flex justify-center items-center rounded-full px-6 py-5"
-								}
-							>
-								<Plus size={64} strokeWidth={3} />{" "}
-								<Label>Create appointment</Label>
-							</Button>
+							<CreateAppointmentDialog />
 						</div>
 					</div>
 					<div className="grid grid-cols-1 lg:grid-cols-1 gap-6">
 						{/* Today's Schedule */}
 						{sortedSchedules.map((dates, index) => {
-							return <ScheduleItem key={index} dates={dates} />;
+							return <ScheduleDateSortedItem key={index} dates={dates} />;
 						})}
 
 						{/* Assignments */}
