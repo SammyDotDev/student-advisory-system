@@ -3,13 +3,14 @@ export type Schedule = {
 	fromTime: string;
 	toTime: string;
 	course: string;
-	advisor: string;
+	advisor?: string;
 	profileImage?: string;
+	advisee?: string;
 };
 
 export type User = {
 	fullname: string;
-	email: string;
+	email?: string;
 	matricNumber?: string;
 	staffId?: string;
 	department?: string;

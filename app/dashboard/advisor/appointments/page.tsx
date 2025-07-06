@@ -1,11 +1,8 @@
-import React from 'react'
+import AdvisorAppointments from "@/components/schedule/advisor-appointments";
+import React from "react";
 
 const appointments = () => {
-  return (
-    <div>
-      <p>Appointments</p>
-    </div>
-  )
-}
+	return <AdvisorAppointments />;
+};
 
-export default appointments
+export default appointments;

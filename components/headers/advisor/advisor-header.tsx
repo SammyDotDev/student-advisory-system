@@ -11,7 +11,7 @@ const AdvisorHeader = ({ user }: { user: User }) => {
 	const userNameInitials = `${firstname.charAt(0)}${lastname.charAt(0)}`;
 	return (
 		<header className="bg-white shadow-sm border-b px-6 py-4 rounded-2xl">
-			<div className="flex items-center justify-between">
+			<div className="flex items-center justify-between m-4">
 				<div>
 					<h1 className="text-2xl font-bold text-gray-900">
 						Advisor Dashboard

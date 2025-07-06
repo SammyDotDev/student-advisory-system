@@ -1,11 +1,8 @@
-import React from 'react'
+import AdvisorAdvisees from "@/components/advisors-and-advisees/advisees/advisor-advisees";
+import React from "react";
 
 const advisees = () => {
-  return (
-    <div>
-      <p>Advisees</p>
-    </div>
-  )
-}
+	return <AdvisorAdvisees />;
+};
 
-export default advisees
+export default advisees;

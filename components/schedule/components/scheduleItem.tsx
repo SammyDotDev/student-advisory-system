@@ -20,7 +20,13 @@ import Image from "next/image";
 import React, { useState } from "react";
 import CreateAppointmentDialog from "./create-appointment-dialog";
 
-const ScheduleItem = ({ schedule }: { schedule: Schedule }) => {
+const ScheduleItem = ({
+	schedule,
+	isAdvisor,
+}: {
+	schedule: Schedule;
+	isAdvisor?: boolean;
+}) => {
 	const [openAccordionTrigger, setOpenAccordionTrigger] =
 		useState<boolean>(false);
 
@@ -29,7 +35,11 @@ const ScheduleItem = ({ schedule }: { schedule: Schedule }) => {
 			collapsible={true}
 			type="single"
 			className={`border rounded-xl p-4 bg-slate-100 ${
-				openAccordionTrigger ? "border-slate-500" : "border-transparent"
+				openAccordionTrigger
+					? "border-slate-500"
+					: isAdvisor && openAccordionTrigger
+					? "border-slate-900"
+					: "border-transparent"
 			}`}
 			value={openAccordionTrigger ? "item-1" : ""}
 			onValueChange={(value) => setOpenAccordionTrigger(value === "item-1")}
@@ -65,7 +75,11 @@ const ScheduleItem = ({ schedule }: { schedule: Schedule }) => {
 					<div className="flex items-start justify-between space-x-4">
 						<div className="flex gap-3">
 							<Image
-								src={`/${schedule.profileImage}`}
+								src={`${
+									schedule.profileImage?.includes("profile-image")
+										? "/" + schedule.profileImage
+										: schedule.profileImage
+								}`}
 								width={40}
 								height={40}
 								alt="profile-image-placeholder"
@@ -73,7 +87,7 @@ const ScheduleItem = ({ schedule }: { schedule: Schedule }) => {
 							/>
 							<div>
 								<CardDescription className="text-gray-500">
-									Advisor
+									{isAdvisor ? "Advisee" : "Advisor"}
 								</CardDescription>
 								<CardAction>{schedule.advisor}</CardAction>
 							</div>
@@ -92,28 +106,37 @@ const ScheduleItem = ({ schedule }: { schedule: Schedule }) => {
 						<Dialog>
 							<DialogTrigger asChild>
 								<Button className="bg-white border border-red-500 text-red-500">
-									<Label>Delete</Label>
+									<Label>{isAdvisor ? "Decline" : "Delete"}</Label>
 								</Button>
 							</DialogTrigger>
 							<DialogContent>
 								<DialogHeader>
 									<DialogTitle>Are you absolutely sure?</DialogTitle>
 									<DialogDescription>
-										This action cannot be undone. This will permanently delete
-										your schedule.
+										{isAdvisor
+											? "Are you sure you want to decline this request? This action cannot be undone"
+											: "This action cannot be undone. This will permanently delete your schedule."}
 									</DialogDescription>
 								</DialogHeader>
 								<div className="ml-auto flex gap-3">
 									<Button className="border border-transparent bg-red-500 text-white hover:bg-red-300">
-										<Label>Delete</Label>
+										<Label>{isAdvisor ? "Decline" : "Delete"}</Label>
 									</Button>
 								</div>
 							</DialogContent>
 						</Dialog>
-						<CreateAppointmentDialog
-							schedule={schedule}
-							rescheduleAppointment
-						/>
+						{isAdvisor ? (
+							<Button
+								className={"bg-white border border-blue-500 text-blue-500"}
+							>
+								<Label>{"Approve"}</Label>
+							</Button>
+						) : (
+							<CreateAppointmentDialog
+								schedule={schedule}
+								rescheduleAppointment
+							/>
+						)}
 					</div>
 				</AccordionContent>
 			</AccordionItem>

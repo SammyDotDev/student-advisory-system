@@ -10,20 +10,11 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import {
-	Users,
-	Calendar,
-	//   MessageSquare,
-	TrendingUp,
-	//   BookOpen,
-	Clock,
-	AlertCircle,
-	BarChart3,
-	//   FileText,
-} from "lucide-react";
+import { Users, Calendar, Clock, BarChart3 } from "lucide-react";
 import Sidebar from "@/components/layout/sidebar";
 import { User } from "@/lib/types";
 import AdvisorHeader from "../headers/advisor/advisor-header";
+import { useRouter } from "next/navigation";
 
 export const userAdvisor: User = {
 	fullname: "Dr.John Doe",
@@ -43,12 +34,10 @@ const advisorNavItems = [
 		label: "Appointments",
 		href: "/dashboard/advisor/appointments",
 	},
-	//   { icon: MessageSquare, label: "Messages", href: "/dashboard/advisor/messages" },
-	//   { icon: FileText, label: "Reports", href: "/dashboard/advisor/reports" },
-	//   { icon: BookOpen, label: "Resources", href: "/dashboard/advisor/resources" },
 ];
 
 export default function AdvisorDashboard() {
+	const router = useRouter();
 	const advisees = [
 		{
 			name: "John Smith",
@@ -137,51 +126,27 @@ export default function AdvisorDashboard() {
 				{/* Main Content */}
 				<main className="flex-1 overflow-y-auto p-6">
 					{/* Stats Cards */}
-					<div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-						<Card className="bg-gradient-to-r from-green-600 to-green-700 text-white">
+					<div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+						<Card className="bg-gradient-to-r from-gray-600 to-gray-700 text-white border-0 rounded-3xl">
 							<CardContent className="p-6">
 								<div className="flex items-center justify-between">
 									<div>
-										<p className="text-green-100">Total Advisees</p>
+										<p className="text-gray-100">Total Advisees</p>
 										<p className="text-3xl font-bold">24</p>
 									</div>
-									<Users className="h-12 w-12 text-green-200" />
+									<Users className="h-12 w-12 text-gray-200" />
 								</div>
 							</CardContent>
 						</Card>
 
-						<Card className="bg-gradient-to-r from-blue-600 to-blue-700 text-white">
+						<Card className="bg-gradient-to-r from-cyan-600 to-cyan-700 text-white border-0 rounded-3xl">
 							<CardContent className="p-6">
 								<div className="flex items-center justify-between">
 									<div>
-										<p className="text-blue-100">This Week&apos;s Meetings</p>
+										<p className="text-cyan-100">This Week&apos;s Meetings</p>
 										<p className="text-3xl font-bold">8</p>
 									</div>
-									<Calendar className="h-12 w-12 text-blue-200" />
-								</div>
-							</CardContent>
-						</Card>
-
-						<Card className="bg-gradient-to-r from-yellow-600 to-yellow-700 text-white">
-							<CardContent className="p-6">
-								<div className="flex items-center justify-between">
-									<div>
-										<p className="text-yellow-100">At-Risk Students</p>
-										<p className="text-3xl font-bold">3</p>
-									</div>
-									<AlertCircle className="h-12 w-12 text-yellow-200" />
-								</div>
-							</CardContent>
-						</Card>
-
-						<Card className="bg-gradient-to-r from-purple-600 to-purple-700 text-white">
-							<CardContent className="p-6">
-								<div className="flex items-center justify-between">
-									<div>
-										<p className="text-purple-100">Avg. Advisee GPA</p>
-										<p className="text-3xl font-bold">3.2</p>
-									</div>
-									<TrendingUp className="h-12 w-12 text-purple-200" />
+									<Calendar className="h-12 w-12 text-cyan-200" />
 								</div>
 							</CardContent>
 						</Card>
@@ -247,6 +212,7 @@ export default function AdvisorDashboard() {
 								<Button
 									className="w-full mt-4 bg-transparent"
 									variant="outline"
+									onClick={() => router.push("/dashboard/advisor/advisees")}
 								>
 									View All Advisees
 								</Button>
@@ -289,9 +255,9 @@ export default function AdvisorDashboard() {
 								<Button
 									className="w-full mt-4 bg-transparent"
 									variant="outline"
+									onClick={() => router.push("/dashboard/advisor/appointments")}
 								>
-									<Calendar className="h-4 w-4 mr-2" />
-									Schedule New Meeting
+									View All Appointments
 								</Button>
 							</CardContent>
 						</Card>
