@@ -7,6 +7,78 @@ import { BarChart3, Calendar, Users } from "lucide-react";
 import React from "react";
 import AdvisorAdviseeItem from "../components/advisor-advisee-item";
 
+export const advisorAdvisees = [
+	{
+		fullname: "Joyce Obinna",
+		matricNumber: "SENG/2020/014",
+		department: "Software Engineering",
+		level: "400",
+		profileImage: "https://randomuser.me/api/portraits/women/11.jpg",
+	},
+	{
+		fullname: "Michael Yusuf",
+		matricNumber: "CSC/2021/033",
+		department: "Computer Science",
+		level: "300",
+		profileImage: "https://randomuser.me/api/portraits/men/41.jpg",
+	},
+	{
+		fullname: "Amarachi Okafor",
+		matricNumber: "CYB/2022/017",
+		department: "Cyber Security",
+		level: "200",
+		profileImage: "https://randomuser.me/api/portraits/women/26.jpg",
+	},
+	{
+		fullname: "David Suleiman",
+		matricNumber: "IT/2019/006",
+		department: "Information Technology",
+		level: "500",
+		profileImage: "https://randomuser.me/api/portraits/men/12.jpg",
+	},
+	{
+		fullname: "Nneka Aliyu",
+		matricNumber: "MASS/2021/021",
+		department: "Mass Communication",
+		level: "300",
+		profileImage: "https://randomuser.me/api/portraits/women/52.jpg",
+	},
+	{
+		fullname: "Chinedu Eze",
+		matricNumber: "COMART/2020/019",
+		department: "Communication Art",
+		level: "400",
+		profileImage: "https://randomuser.me/api/portraits/men/59.jpg",
+	},
+	{
+		fullname: "Fatima Bello",
+		matricNumber: "IT/2023/003",
+		department: "Information Technology",
+		level: "100",
+		profileImage: "https://randomuser.me/api/portraits/women/19.jpg",
+	},
+	{
+		fullname: "Emeka Nwosu",
+		matricNumber: "CYB/2020/024",
+		department: "Cyber Security",
+		level: "400",
+		profileImage: "https://randomuser.me/api/portraits/men/20.jpg",
+	},
+	{
+		fullname: "Grace Udom",
+		matricNumber: "SENG/2022/018",
+		department: "Software Engineering",
+		level: "200",
+		profileImage: "https://randomuser.me/api/portraits/women/37.jpg",
+	},
+	{
+		fullname: "Tunde Iroko",
+		matricNumber: "CSC/2021/047",
+		department: "Computer Science",
+		level: "300",
+		profileImage: "https://randomuser.me/api/portraits/men/36.jpg",
+	},
+];
 const AdvisorAdvisees = () => {
 	const advisorNavItems = [
 		{
@@ -24,79 +96,6 @@ const AdvisorAdvisees = () => {
 			icon: Calendar,
 			label: "Appointments",
 			href: "/dashboard/advisor/appointments",
-		},
-	];
-
-	const advisorAdvisees = [
-		{
-			fullname: "Joyce Obinna",
-			matricNumber: "SENG/2020/014",
-			department: "Software Engineering",
-			level: "400",
-			profileImage: "https://randomuser.me/api/portraits/women/11.jpg",
-		},
-		{
-			fullname: "Michael Yusuf",
-			matricNumber: "CSC/2021/033",
-			department: "Computer Science",
-			level: "300",
-			profileImage: "https://randomuser.me/api/portraits/men/41.jpg",
-		},
-		{
-			fullname: "Amarachi Okafor",
-			matricNumber: "CYB/2022/017",
-			department: "Cyber Security",
-			level: "200",
-			profileImage: "https://randomuser.me/api/portraits/women/26.jpg",
-		},
-		{
-			fullname: "David Suleiman",
-			matricNumber: "IT/2019/006",
-			department: "Information Technology",
-			level: "500",
-			profileImage: "https://randomuser.me/api/portraits/men/12.jpg",
-		},
-		{
-			fullname: "Nneka Aliyu",
-			matricNumber: "MASS/2021/021",
-			department: "Mass Communication",
-			level: "300",
-			profileImage: "https://randomuser.me/api/portraits/women/52.jpg",
-		},
-		{
-			fullname: "Chinedu Eze",
-			matricNumber: "COMART/2020/019",
-			department: "Communication Art",
-			level: "400",
-			profileImage: "https://randomuser.me/api/portraits/men/59.jpg",
-		},
-		{
-			fullname: "Fatima Bello",
-			matricNumber: "IT/2023/003",
-			department: "Information Technology",
-			level: "100",
-			profileImage: "https://randomuser.me/api/portraits/women/19.jpg",
-		},
-		{
-			fullname: "Emeka Nwosu",
-			matricNumber: "CYB/2020/024",
-			department: "Cyber Security",
-			level: "400",
-			profileImage: "https://randomuser.me/api/portraits/men/20.jpg",
-		},
-		{
-			fullname: "Grace Udom",
-			matricNumber: "SENG/2022/018",
-			department: "Software Engineering",
-			level: "200",
-			profileImage: "https://randomuser.me/api/portraits/women/37.jpg",
-		},
-		{
-			fullname: "Tunde Iroko",
-			matricNumber: "CSC/2021/047",
-			department: "Computer Science",
-			level: "300",
-			profileImage: "https://randomuser.me/api/portraits/men/36.jpg",
 		},
 	];
 

@@ -15,6 +15,18 @@ import Sidebar from "@/components/layout/sidebar";
 import { User } from "@/lib/types";
 import AdvisorHeader from "../headers/advisor/advisor-header";
 import { useRouter } from "next/navigation";
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogHeader,
+	DialogTitle,
+	DialogTrigger,
+} from "../ui/dialog";
+import { Label } from "../ui/label";
+import { advisorAdvisees } from "../advisors-and-advisees/advisees/advisor-advisees";
+import appointments from "@/app/dashboard/advisor/appointments/page";
+import { getDateRelativeToThisWeek } from "@/lib/utils";
 
 export const userAdvisor: User = {
 	fullname: "Dr.John Doe",
@@ -77,13 +89,13 @@ export default function AdvisorDashboard() {
 		{
 			student: "John Smith",
 			time: "10:00 AM",
-			date: "2024-10-15",
+			date: "2025-07-07",
 			type: "Academic Review",
 		},
 		{
 			student: "Sarah Johnson",
 			time: "2:00 PM",
-			date: "2024-10-15",
+			date: "2025-07-09",
 			type: "Course Planning",
 		},
 		{
@@ -132,7 +144,9 @@ export default function AdvisorDashboard() {
 								<div className="flex items-center justify-between">
 									<div>
 										<p className="text-gray-100">Total Advisees</p>
-										<p className="text-3xl font-bold">24</p>
+										<p className="text-3xl font-bold">
+											{advisorAdvisees.length}
+										</p>
 									</div>
 									<Users className="h-12 w-12 text-gray-200" />
 								</div>
@@ -144,7 +158,16 @@ export default function AdvisorDashboard() {
 								<div className="flex items-center justify-between">
 									<div>
 										<p className="text-cyan-100">This Week&apos;s Meetings</p>
-										<p className="text-3xl font-bold">8</p>
+										<p className="text-3xl font-bold">
+											{
+												upcomingAppointments.filter((item) => {
+													console.log(item.date, getDateRelativeToThisWeek(item.date));
+													return (
+														getDateRelativeToThisWeek(item.date) === "this week"
+													);
+												}).length
+											}
+										</p>
 									</div>
 									<Calendar className="h-12 w-12 text-cyan-200" />
 								</div>
@@ -166,7 +189,7 @@ export default function AdvisorDashboard() {
 							</CardHeader>
 							<CardContent>
 								<div className="space-y-4">
-									{advisees.map((advisee, index) => (
+									{advisorAdvisees.slice(6).map((advisee, index) => (
 										<div
 											key={index}
 											className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
@@ -174,23 +197,23 @@ export default function AdvisorDashboard() {
 											<div className="flex items-center gap-3">
 												<Avatar>
 													<AvatarFallback>
-														{advisee.name
+														{advisee.fullname
 															.split(" ")
 															.map((n) => n[0])
 															.join("")}
 													</AvatarFallback>
 												</Avatar>
 												<div>
-													<p className="font-medium">{advisee.name}</p>
+													<p className="font-medium">{advisee.fullname}</p>
 													<p className="text-sm text-gray-600">
-														{advisee.id} • Level {advisee.level}
+														{advisee.department} • Level {advisee.level}
 													</p>
-													<p className="text-sm text-gray-500">
+													{/* <p className="text-sm text-gray-500">
 														GPA: {advisee.gpa}
-													</p>
+													</p> */}
 												</div>
 											</div>
-											<div className="text-right">
+											{/* <div className="text-right">
 												<Badge
 													variant={
 														advisee.status === "good"
@@ -205,7 +228,7 @@ export default function AdvisorDashboard() {
 												<p className="text-xs text-gray-500 mt-1">
 													Last: {advisee.lastMeeting}
 												</p>
-											</div>
+											</div> */}
 										</div>
 									))}
 								</div>
@@ -243,11 +266,38 @@ export default function AdvisorDashboard() {
 													{appointment.date} at {appointment.time}
 												</p>
 											</div>
-											<div className="flex gap-2">
-												<Button size="sm" variant="outline">
-													Reschedule
+											<div className="flex items-end justify-end gap-5">
+												<Dialog>
+													<DialogTrigger asChild>
+														<Button className=" bg-red-500 text-white hover:bg-red-400">
+															<Label>Decline </Label>
+														</Button>
+													</DialogTrigger>
+													<DialogContent>
+														<DialogHeader>
+															<DialogTitle>
+																Are you absolutely sure?
+															</DialogTitle>
+															<DialogDescription>
+																Are you sure you want to decline this request?
+																This action cannot be undone
+															</DialogDescription>
+														</DialogHeader>
+														<div className="ml-auto flex gap-3">
+															<Button className="border border-transparent bg-red-500 text-white hover:bg-red-400">
+																<Label>Decline</Label>
+															</Button>
+														</div>
+													</DialogContent>
+												</Dialog>
+
+												<Button
+													className={
+														"bg-slate-800 text-white hover:bg-slate-600"
+													}
+												>
+													<Label>Approve</Label>
 												</Button>
-												<Button size="sm">Join</Button>
 											</div>
 										</div>
 									))}

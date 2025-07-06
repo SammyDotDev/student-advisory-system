@@ -92,7 +92,7 @@ const ScheduleItem = ({
 								<CardAction>{schedule.advisor}</CardAction>
 							</div>
 						</div>
-						<AccordionTrigger className="flex items-start justify-start p-0 text-blue-500 ml-auto">
+						<AccordionTrigger className="flex items-start justify-start p-0 text-slate-900 ml-auto">
 							<Label>
 								Show
 								{openAccordionTrigger ? "  Less" : " More"}

@@ -2,7 +2,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { User } from "@/lib/types";
 import { getGreeting } from "@/lib/utils";
-import { Bell, Settings } from "lucide-react";
+import { Settings } from "lucide-react";
 import React from "react";
 
 const AdvisorHeader = ({ user }: { user: User }) => {
@@ -19,9 +19,6 @@ const AdvisorHeader = ({ user }: { user: User }) => {
 					<p className="text-gray-600">{`${getGreeting()}, ${firstname}`}</p>
 				</div>
 				<div className="flex items-center space-x-4">
-					<Button variant="ghost" size="sm">
-						<Bell className="h-5 w-5" />
-					</Button>
 					<Button variant="ghost" size="sm">
 						<Settings className="h-5 w-5" />
 					</Button>

@@ -62,3 +62,40 @@ export const emailRegex = RegExp(
 export const formatDate = (date: Date) => {
 	return date.toISOString().split("T")[0];
 };
+export function getDateRelativeToThisWeek(
+	inputDateStr: string
+): "past" | "this week" | "next week" | "not upcoming soon" {
+	const inputDate = new Date(inputDateStr);
+	const today = new Date();
+
+	// Strip time for consistent comparison
+	inputDate.setHours(0, 0, 0, 0);
+	today.setHours(0, 0, 0, 0);
+
+	// Past check
+	if (inputDate < today) return "past";
+
+	// Get Sunday of current week
+	const dayOfWeek = today.getDay(); // 0 = Sunday, 6 = Saturday
+	const sundayThisWeek = new Date(today);
+	sundayThisWeek.setDate(today.getDate() - dayOfWeek);
+
+	const saturdayThisWeek = new Date(sundayThisWeek);
+	saturdayThisWeek.setDate(sundayThisWeek.getDate() + 6);
+
+	// Next week range
+	const sundayNextWeek = new Date(sundayThisWeek);
+	sundayNextWeek.setDate(sundayThisWeek.getDate() + 7);
+	const saturdayNextWeek = new Date(saturdayThisWeek);
+	saturdayNextWeek.setDate(saturdayThisWeek.getDate() + 7);
+
+	if (inputDate >= sundayThisWeek && inputDate <= saturdayThisWeek) {
+		return "this week";
+	}
+
+	if (inputDate >= sundayNextWeek && inputDate <= saturdayNextWeek) {
+		return "next week";
+	}
+
+	return "not upcoming soon";
+}

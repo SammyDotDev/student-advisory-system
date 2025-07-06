@@ -49,7 +49,8 @@ export default function LoginForm() {
 		// Mock authentication - in real app, validate credentials
 		if (advisorDetails.staffID && advisorDetails.password) {
 			// Redirect based on role
-			router.push("/dashboard/advisory");
+			// router.push("/dashboard/advisory");
+            router.push("/onboarding")
 		}
 	};
 

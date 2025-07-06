@@ -6,7 +6,6 @@ import { Bell, Settings } from "lucide-react";
 import React from "react";
 
 const StudentHeader = ({ user }: { user: User }) => {
-    console.log(user)
 	const firstname = user?.fullname.split(" ")[0];
 	const lastname = user?.fullname.split(" ")[1];
 	const userNameInitials = `${firstname.charAt(0)}${lastname.charAt(0)}`;
@@ -21,14 +20,11 @@ const StudentHeader = ({ user }: { user: User }) => {
 				</div>
 				<div className="flex items-center space-x-4">
 					<Button variant="ghost" size="sm">
-						<Bell className="h-5 w-5" />
-					</Button>
-					<Button variant="ghost" size="sm">
 						<Settings className="h-5 w-5" />
 					</Button>
 					<Avatar>
 						<AvatarImage src="/placeholder.svg" />
-						{/* <AvatarFallback>{userNameInitials}</AvatarFallback> */}
+						<AvatarFallback>{userNameInitials}</AvatarFallback>
 					</Avatar>
 				</div>
 			</div>
