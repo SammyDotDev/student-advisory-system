@@ -2,8 +2,13 @@ import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { Schedule } from "./types";
 
+export const PASSWORD_MISMATCH = "Passwords do not match";
+export const INCORRECT_PASSWORD = "Incorrect Password";
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
+}
+export function isEmptyString(text: string) {
+	return text === "";
 }
 export function sortSchedulesByDateDescending(schedules: Schedule[]) {
 	// console.log(schedules)
@@ -13,7 +18,9 @@ export function sortSchedulesByDateDescending(schedules: Schedule[]) {
 	});
 }
 export function groupAndSortSchedules(schedules: Schedule[]) {
-	const grouped = {};
+	const grouped: {
+		[date: string]: Schedule[];
+	} = {};
 
 	schedules.forEach((schedule) => {
 		if (!grouped[schedule.date]) {

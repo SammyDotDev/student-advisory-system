@@ -6,8 +6,8 @@ export type Schedule = {
 	advisor?: string;
 	profileImage?: string;
 	advisee?: string;
-    status?:""|""|"";
-    venue?:""
+	status?: "" | "" | "";
+	venue?: "";
 };
 
 export type User = {
@@ -19,4 +19,17 @@ export type User = {
 	level?: string;
 	honorifics?: string;
 	profileImage?: string;
+};
+
+export type RegisterResponse = {
+	message: string;
+};
+
+export type LoginResponse = {
+	userId: string;
+	fullname: string;
+	email: string;
+	department?: string;
+	level?: string;
+	onboarded: boolean;
 };

@@ -148,7 +148,7 @@ const StudentSchedule = () => {
 													? "bg-slate-600 text-white hover:bg-slate-700 border-slate-600"
 													: filterSchedule === "declined" &&
 													  timeline === "declined"
-													? "bg-red-500 text-white border-red-500"
+													? "bg-red-500 text-white border-red-500 hover:bg-red-400"
 													: timeline === "declined"
 													? "border-red-500 text-red-500 bg-white hover:bg-red-300 hover:text-red-500"
 													: "bg-gray-200 text-gray-800 hover:bg-gray-300 border-gray-300"

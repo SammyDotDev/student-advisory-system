@@ -2,7 +2,7 @@
 
 import type React from "react";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -22,21 +22,29 @@ import {
 } from "@/components/ui/select";
 import { Eye, EyeOff, GraduationCap } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import Branding from "./components/branding";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
-import { emailRegex } from "@/lib/utils";
+import { emailRegex, isEmptyString, PASSWORD_MISMATCH } from "@/lib/utils";
+import { ApiClient } from "@/api/api";
+import { RegisterResponse } from "@/lib/types";
 
 export default function RegisterForm() {
+	const AuthApi = ApiClient();
+
+	// show passowrd states for eye button
 	const [showStudentPassword, setShowStudentPassword] = useState(false);
 	const [showAdvisoryPassword, setShowAdvisoryPassword] = useState(false);
 	const [showConfirmStudentPassword, setShowConfirmStudentPassword] =
 		useState(false);
 	const [showConfirmAdvisoryPassword, setShowConfirmAdvisoryPassword] =
 		useState(false);
-	const router = useRouter();
 
+	// validation for input fields
+	const [studentFieldsInValid, setStudentFieldsInValid] = useState(false);
+	const [advisorFieldsInValid, setAdvisorFieldsInValid] = useState(false);
+
+	// user details
 	const [studentDetails, setStudentDetails] = useState({
 		matricNumber: "",
 		department: "",
@@ -47,7 +55,7 @@ export default function RegisterForm() {
 		password: "",
 	});
 
-	const [advisoryDetails, setAdvisoryDetails] = useState({
+	const [advisorDetails, setAdvisorDetails] = useState({
 		staffId: "",
 		email: "",
 		firstname: "",
@@ -55,57 +63,131 @@ export default function RegisterForm() {
 		password: "",
 		honorifics: "",
 	});
+	// confirm password details for users
 	const [confirmStudentPassword, setConfirmStudentPassword] = useState("");
 	const [confirmAdvisoryPassword, setConfirmAdvisoryPassword] = useState("");
 
-	const handleStudentRegister = (e: React.FormEvent) => {
-		e.preventDefault();
-		// Mock authentication - in real app, validate credentials
-		console.log(studentDetails.email && studentDetails.matricNumber);
-		if (emailRegex.test(studentDetails.email)) {
-			const fullname = `${studentDetails.firstname} ${studentDetails.lastname}`;
+	// input field validation
+	useEffect(() => {
+		setStudentFieldsInValid(
+			isEmptyString(studentDetails.matricNumber) &&
+				isEmptyString(studentDetails.password)
+		);
+		setAdvisorFieldsInValid(
+			isEmptyString(advisorDetails.staffId) &&
+				isEmptyString(advisorDetails.password)
+		);
+	}, [studentDetails, advisorDetails]);
 
+	// register student
+	const handleStudentRegister = async (e: React.FormEvent) => {
+		e.preventDefault();
+		if (emailRegex.test(studentDetails.email)) {
+			// defining fullname of the user
+			const fullname = `${studentDetails.firstname} ${studentDetails.lastname}`;
+			// validate password and confirm password
 			if (studentDetails.password === confirmStudentPassword) {
-				toast.success("Account created successfully");
-				setTimeout(() => {
-					toast(
-						<div>
-							Go to login page{" "}
-							<a
-								href="/auth/login"
-								// target="_blank"
-								rel="noopener noreferrer"
-								className="underline"
-							>
-								Here
-							</a>
-						</div>
+				try {
+					// api call
+					const res = await AuthApi.post<unknown, RegisterResponse>(
+						"/auth/register",
+						{
+							email: studentDetails.email,
+							fullName: fullname,
+							userId: studentDetails.matricNumber,
+							password: studentDetails.password,
+							department: studentDetails.department,
+							level: studentDetails.level,
+						},
+						{
+							params: {
+								role: "STUDENT",
+							},
+						}
 					);
-				}, 2000);
-				// router.push("/dashboard/student");
+					if (res.status === 201) {
+						// toast success
+						toast.success(res.data.message);
+						// toast to navigate to login
+						setTimeout(() => {
+							toast(
+								<div>
+									Go to login page{" "}
+									<a
+										href="/auth/login"
+										// target="_blank"
+										rel="noopener noreferrer"
+										className="underline"
+									>
+										Here
+									</a>
+								</div>
+							);
+						}, 2000);
+					}
+				} catch (error) {
+					toast.error(`${error}`);
+				}
+				// password mismatch
 			} else {
-				toast.error("Incorrect password");
-				throw "incorrect password";
+				toast.error(PASSWORD_MISMATCH);
+				throw PASSWORD_MISMATCH;
 			}
 		}
 	};
 
-	const handleAdvisoryRegister = (e: React.FormEvent) => {
+	// register advisor
+	const handleAdvisoryRegister = async (e: React.FormEvent) => {
 		e.preventDefault();
-		// Mock authentication - in real app, validate credentials
 		if (
-			advisoryDetails.email &&
-			advisoryDetails.staffId &&
-			advisoryDetails.firstname &&
-			advisoryDetails.password &&
+			advisorDetails.email &&
+			advisorDetails.staffId &&
+			advisorDetails.firstname &&
+			advisorDetails.password &&
 			confirmAdvisoryPassword
 		) {
-			const fullname = `${advisoryDetails.honorifics} ${advisoryDetails.firstname} ${advisoryDetails.lastname}`;
-			if (advisoryDetails.password === confirmAdvisoryPassword) {
-				router.push("/dashboard/advisory");
+			// defining fullname of the advisor
+			const fullname = `${advisorDetails.honorifics} ${advisorDetails.firstname} ${advisorDetails.lastname}`;
+			// validate password and confirm password
+			if (advisorDetails.password === confirmAdvisoryPassword) {
+				try {
+					// api call
+					const res = await AuthApi.post<unknown, RegisterResponse>(
+						"/auth/register",
+						{
+							email: advisorDetails.email,
+							fullName: fullname,
+							userId: advisorDetails.staffId,
+							password: advisorDetails.password,
+						}
+					);
+					if (res.status === 201) {
+						// success toast
+						toast.success(res.data.message);
+						// toast to navigate to login
+						setTimeout(() => {
+							toast(
+								<div>
+									Go to login page{" "}
+									<a
+										href="/auth/login"
+										// target="_blank"
+										rel="noopener noreferrer"
+										className="underline"
+									>
+										Here
+									</a>
+								</div>
+							);
+						}, 2000);
+					}
+				} catch (error) {
+					toast.error(`${error}`);
+				}
+				// password mismatch
 			} else {
-				toast.error("Incorrect password");
-				throw "incorrect password";
+				toast.error(PASSWORD_MISMATCH);
+				throw PASSWORD_MISMATCH;
 			}
 		}
 	};
@@ -406,9 +488,9 @@ export default function RegisterForm() {
 											<Input
 												id="staff_id"
 												placeholder="Enter your staff ID"
-												value={advisoryDetails.staffId}
+												value={advisorDetails.staffId}
 												onChange={(e) =>
-													setAdvisoryDetails((prev) => ({
+													setAdvisorDetails((prev) => ({
 														...prev,
 														staffId: e.target.value,
 													}))
@@ -426,9 +508,9 @@ export default function RegisterForm() {
 												id="email"
 												type="email"
 												placeholder="Enter your email"
-												value={advisoryDetails.email}
+												value={advisorDetails.email}
 												onChange={(e) =>
-													setAdvisoryDetails((prev) => ({
+													setAdvisorDetails((prev) => ({
 														...prev,
 														email: e.target.value,
 													}))
@@ -444,9 +526,9 @@ export default function RegisterForm() {
 											<Input
 												id="firstname"
 												placeholder="Enter your first name"
-												value={advisoryDetails.firstname}
+												value={advisorDetails.firstname}
 												onChange={(e) =>
-													setAdvisoryDetails((prev) => ({
+													setAdvisorDetails((prev) => ({
 														...prev,
 														firstname: e.target.value,
 													}))
@@ -462,9 +544,9 @@ export default function RegisterForm() {
 											<Input
 												id="lastname"
 												placeholder="Enter your last name"
-												value={advisoryDetails.lastname}
+												value={advisorDetails.lastname}
 												onChange={(e) =>
-													setAdvisoryDetails((prev) => ({
+													setAdvisorDetails((prev) => ({
 														...prev,
 														lastname: e.target.value,
 													}))
@@ -483,9 +565,9 @@ export default function RegisterForm() {
 													id="password"
 													type={showAdvisoryPassword ? "text" : "password"}
 													placeholder="Enter your password"
-													value={advisoryDetails.password}
+													value={advisorDetails.password}
 													onChange={(e) =>
-														setAdvisoryDetails((prev) => ({
+														setAdvisorDetails((prev) => ({
 															...prev,
 															password: e.target.value,
 														}))

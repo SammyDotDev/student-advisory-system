@@ -13,24 +13,42 @@ import {
 import { Label } from "@radix-ui/react-label";
 import { MultiSelect } from "../ui/multi-select";
 import { useRouter } from "next/navigation";
+import { useForm, useFieldArray, Controller } from "react-hook-form";
+import { CourseCodeChips } from "./components/course-code-chips";
+import { Input } from "../ui/input";
+
+type CourseForm = {
+	courses: {
+		courseTitle: string;
+		courseCodes: string[];
+	}[];
+};
 
 const Onboarding = () => {
-	const router = useRouter();
-	const departmentsList = [
-		{ value: "software-engineering", label: "Software Engineering" },
-		{ value: "computer-science", label: "Computer Science" },
-		{ value: "cyber-security", label: "Cyber Security" },
-		{ value: "information-technology", label: "Information Technology" },
-		{ value: "mass-communication", label: "Mass Communication" },
-		{ value: "communication-art", label: "Communication Art" },
-	];
+	const { register, control, handleSubmit, reset } = useForm<CourseForm>({
+		defaultValues: {
+			courses: [
+				{
+					courseTitle: "",
+					courseCodes: [""], // initial empty course code
+				},
+			],
+		},
+	});
 
-	const [departments, setDepartments] = useState<string[]>([]);
-	const [advisorCourses, setAdvisorCourses] = useState<string[]>([]);
-	const handleCompleteOnboarding = async (e) => {
-		e.preventDefault();
-        router.push("/dashboard/advisor")
+	const { fields, append, remove } = useFieldArray({
+		control,
+		name: "courses",
+	});
+
+    // const router = useRouter();
+	const onSubmit = (data: CourseForm) => {
+        // returning unique course code
+		console.log("Final data:", data.courses);
+		// router.push("/dashboard/advisor");
 	};
+
+
 	return (
 		<div className="min-h-screen flex">
 			{/* Left side - Login Form */}
@@ -54,7 +72,68 @@ const Onboarding = () => {
 							</CardDescription>
 						</CardHeader>
 						<CardContent>
-							<form onSubmit={handleCompleteOnboarding} className="space-y-4">
+							<form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+								{fields.map((field, index) => (
+									<Card
+										key={field.id}
+										className="bg-slate-800 border-slate-700 p-3"
+									>
+										<div className="flex flex-col gap-3">
+											<Label className="text-white">Course Title</Label>
+											<Input
+												{...register(`courses.${index}.courseTitle` as const)}
+												placeholder="e.g. Human Computer Interaction"
+												className="bg-slate-700 border-slate-600 text-white placeholder:text-slate-400"
+												required
+											/>
+										</div>
+
+										<div className="flex flex-col gap-3">
+											<Label className="text-white">Course Codes</Label>
+											<Controller
+												control={control}
+												name={`courses.${index}.courseCodes`}
+												render={({ field }) => (
+													<CourseCodeChips
+														value={field.value}
+														onChange={field.onChange}
+													/>
+												)}
+											/>
+										</div>
+
+										<Button
+											type="button"
+											onClick={() => remove(index)}
+											className="w-full bg-red-500 hover:bg-red-700"
+										>
+											Remove Course
+										</Button>
+									</Card>
+								))}
+
+								<Button
+									onClick={() =>
+										append({
+											courseTitle: "",
+											courseCodes: [""],
+										})
+									}
+									className="w-full bg-slate-900 hover:bg-slate-700"
+								>
+									+ Add Course
+								</Button>
+
+								<div>
+									<Button
+										type="submit"
+										className="w-full bg-gray-400 hover:bg-slate-600"
+									>
+										Submit
+									</Button>
+								</div>
+							</form>
+							{/* <form onSubmit={handleCompleteOnboarding} className="space-y-4">
 								<div className="space-y-2">
 									<Label htmlFor="matric_number" className="text-white">
 										Departments lecturing
@@ -81,7 +160,7 @@ const Onboarding = () => {
 										}
 										className="bg-slate-700 border-slate-600 text-white placeholder:text-slate-400"
 										required
-									/> */}
+									/>
 								</div>
 
 								<Button
@@ -90,7 +169,7 @@ const Onboarding = () => {
 								>
 									Continue to Dashboard
 								</Button>
-							</form>
+							</form> */}
 						</CardContent>
 					</Card>
 				</div>

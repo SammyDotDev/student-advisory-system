@@ -2,7 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="43c4d7a9-a581-4077-91ac-ee4bc697914c" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/student-advise-system" beforeDir="false" afterPath="$PROJECT_DIR$/student-advise-system" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/student-advise-system/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/student-advise-system/src/main/resources/application.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../components/onboarding/onboarding.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../components/onboarding/onboarding.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../components/schedule/student-schedule.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../components/schedule/student-schedule.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/../package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../package.json" beforeDir="false" afterPath="$PROJECT_DIR$/../package.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -12,22 +17,22 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 2
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 2
+}</component>
   <component name="ProjectId" id="2zXcUFtgeMJVYdudXiGU6tOQ9Zx" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "main",
-    "settings.editor.selected.configurable": "preferences.lookFeel"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;
   }
-}]]></component>
+}</component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="43c4d7a9-a581-4077-91ac-ee4bc697914c" name="Changes" comment="" />

@@ -2,7 +2,7 @@
 
 import type React from "react";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -20,37 +20,81 @@ import { useRouter } from "next/navigation";
 import Branding from "./components/branding";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import { toast } from "sonner";
+import { ApiClient } from "@/api/api";
+import { isEmptyString } from "@/lib/utils";
+import { LoginResponse } from "@/lib/types";
 
 export default function LoginForm() {
+	const AuthApi = ApiClient();
+	const router = useRouter();
+
+	// show passowrd states for eye button
 	const [showStudentPassword, setShowStudentPassword] = useState(false);
 	const [showAdvisoryPassword, setShowAdvisoryPassword] = useState(false);
+
+	// validation for input fields
+	const [studentFieldsInValid, setStudentFieldsInValid] = useState(false);
+	const [advisorFieldsInValid, setAdvisorFieldsInValid] = useState(false);
+
+	// user details
 	const [studentDetails, setStudentDetails] = useState({
 		matricNumber: "",
 		password: "",
 	});
 	const [advisorDetails, setAdvisorDetails] = useState({
-		staffID: "",
+		staffId: "",
 		password: "",
 	});
-	const router = useRouter();
 
-	const handleStudentLogin = (e: React.FormEvent) => {
+	// input field validation
+	useEffect(() => {
+		setStudentFieldsInValid(
+			isEmptyString(studentDetails.matricNumber) &&
+				isEmptyString(studentDetails.password)
+		);
+		setAdvisorFieldsInValid(
+			isEmptyString(advisorDetails.staffID) &&
+				isEmptyString(advisorDetails.password)
+		);
+	}, [studentDetails, advisorDetails]);
+
+	const handleStudentLogin = async (e: React.FormEvent) => {
 		e.preventDefault();
-		// Mock authentication - in real app, validate credentials
-		if (studentDetails.matricNumber && studentDetails.password) {
-            toast.success("Login successful")
-			// Redirect based on role
-			router.push("/dashboard/student");
+		try {
+			const res = await AuthApi.post<unknown, LoginResponse>("/auth/login", {
+				userId: studentDetails.matricNumber,
+				password: studentDetails.password,
+			});
+			if (res.status === 200) {
+				// toast success
+				toast.success("Login successful");
+				// Redirect to student dashboard
+				router.push("/dashboard/student");
+			}
+		} catch (error) {
+			toast.error(error as string);
 		}
 	};
 
-	const handleAdvisorLogin = (e: React.FormEvent) => {
+	const handleAdvisorLogin = async (e: React.FormEvent) => {
 		e.preventDefault();
-		// Mock authentication - in real app, validate credentials
-		if (advisorDetails.staffID && advisorDetails.password) {
-			// Redirect based on role
-			// router.push("/dashboard/advisory");
-            router.push("/onboarding")
+		try {
+			const res = await AuthApi.post<unknown, LoginResponse>("/auth/login", {
+				userId: advisorDetails.staffId,
+				password: advisorDetails.password,
+			});
+			if (res.status === 200) {
+				// toast success
+				toast.success("Login successful");
+				if (!res.data.onboarded) {
+					router.replace("/onboarding");
+					// Redirect to student dashboard
+				} else {
+					router.push("/dashboard/advisor");
+				}
+			}
+		} catch (error) {
+			toast.error(error as string);
 		}
 	};
 
