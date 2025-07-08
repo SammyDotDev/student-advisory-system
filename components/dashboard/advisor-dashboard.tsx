@@ -46,6 +46,11 @@ const advisorNavItems = [
 		label: "Appointments",
 		href: "/dashboard/advisor/appointments",
 	},
+	{
+		icon: Clock,
+		label: "Requests",
+		href: "/dashboard/advisor/requests",
+	},
 ];
 
 export default function AdvisorDashboard() {
@@ -161,7 +166,10 @@ export default function AdvisorDashboard() {
 										<p className="text-3xl font-bold">
 											{
 												upcomingAppointments.filter((item) => {
-													console.log(item.date, getDateRelativeToThisWeek(item.date));
+													console.log(
+														item.date,
+														getDateRelativeToThisWeek(item.date)
+													);
 													return (
 														getDateRelativeToThisWeek(item.date) === "this week"
 													);
@@ -247,7 +255,7 @@ export default function AdvisorDashboard() {
 							<CardHeader>
 								<CardTitle className="flex items-center gap-2">
 									<Calendar className="h-5 w-5" />
-									Upcoming Appointments
+									Requests
 								</CardTitle>
 							</CardHeader>
 							<CardContent>
@@ -307,52 +315,8 @@ export default function AdvisorDashboard() {
 									variant="outline"
 									onClick={() => router.push("/dashboard/advisor/appointments")}
 								>
-									View All Appointments
+									View All Requests
 								</Button>
-							</CardContent>
-						</Card>
-
-						{/* Recent Activities */}
-						<Card className="lg:col-span-2">
-							<CardHeader>
-								<CardTitle className="flex items-center gap-2">
-									<Clock className="h-5 w-5" />
-									Recent Activities
-								</CardTitle>
-							</CardHeader>
-							<CardContent>
-								<div className="space-y-4">
-									{recentActivities.map((activity, index) => (
-										<div
-											key={index}
-											className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg"
-										>
-											<div
-												className={`w-2 h-2 rounded-full mt-2 ${
-													activity.type === "meeting"
-														? "bg-green-500"
-														: activity.type === "alert"
-														? "bg-red-500"
-														: "bg-blue-500"
-												}`}
-											></div>
-											<div className="flex-1">
-												<p className="font-medium text-sm">
-													{activity.student}
-												</p>
-												<p className="text-sm text-gray-600">
-													{activity.action}
-												</p>
-												<p className="text-xs text-gray-500">{activity.time}</p>
-											</div>
-											{activity.type === "alert" && (
-												<Button size="sm" variant="outline">
-													Review
-												</Button>
-											)}
-										</div>
-									))}
-								</div>
 							</CardContent>
 						</Card>
 					</div>

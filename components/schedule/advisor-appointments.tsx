@@ -4,7 +4,7 @@ import React from "react";
 import Sidebar from "../layout/sidebar";
 import AdvisorHeader from "../headers/advisor/advisor-header";
 import { userAdvisor } from "../dashboard/advisor-dashboard";
-import { BarChart3, Calendar, Users } from "lucide-react";
+import { BarChart3, Calendar, Clock, Users } from "lucide-react";
 import ScheduleItem from "./components/scheduleItem";
 
 const AdvisorAppointments = () => {
@@ -20,6 +20,11 @@ const AdvisorAppointments = () => {
 			label: "Appointments",
 			href: "/dashboard/advisor/appointments",
 			active: true,
+		},
+		{
+			icon: Clock,
+			label: "Requests",
+			href: "/dashboard/advisor/requests",
 		},
 	];
 	const appointments = [

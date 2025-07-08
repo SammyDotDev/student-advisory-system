@@ -12,8 +12,10 @@ import {
 } from "../ui/card";
 import { Label } from "@radix-ui/react-label";
 import { MultiSelect } from "../ui/multi-select";
+import { useRouter } from "next/navigation";
 
 const Onboarding = () => {
+	const router = useRouter();
 	const departmentsList = [
 		{ value: "software-engineering", label: "Software Engineering" },
 		{ value: "computer-science", label: "Computer Science" },
@@ -25,7 +27,10 @@ const Onboarding = () => {
 
 	const [departments, setDepartments] = useState<string[]>([]);
 	const [advisorCourses, setAdvisorCourses] = useState<string[]>([]);
-	const handleCompleteOnboarding = async () => {};
+	const handleCompleteOnboarding = async (e) => {
+		e.preventDefault();
+        router.push("/dashboard/advisor")
+	};
 	return (
 		<div className="min-h-screen flex">
 			{/* Left side - Login Form */}
@@ -61,8 +66,8 @@ const Onboarding = () => {
 										defaultValue={departments}
 										placeholder="Select departments"
 										variant="inverted"
-										animation={2}
-										maxCount={3}
+										animation={0}
+										maxCount={8}
 									/>
 									{/* <Input
 										id="matric_number"

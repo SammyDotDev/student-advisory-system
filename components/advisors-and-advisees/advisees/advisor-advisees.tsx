@@ -3,7 +3,7 @@
 import { userAdvisor } from "@/components/dashboard/advisor-dashboard";
 import AdvisorHeader from "@/components/headers/advisor/advisor-header";
 import Sidebar from "@/components/layout/sidebar";
-import { BarChart3, Calendar, Users } from "lucide-react";
+import { BarChart3, Calendar, Clock, Users } from "lucide-react";
 import React from "react";
 import AdvisorAdviseeItem from "../components/advisor-advisee-item";
 
@@ -96,6 +96,11 @@ const AdvisorAdvisees = () => {
 			icon: Calendar,
 			label: "Appointments",
 			href: "/dashboard/advisor/appointments",
+		},
+		{
+			icon: Clock,
+			label: "Requests",
+			href: "/dashboard/advisor/requests",
 		},
 	];
 

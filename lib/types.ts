@@ -6,6 +6,8 @@ export type Schedule = {
 	advisor?: string;
 	profileImage?: string;
 	advisee?: string;
+    status?:""|""|"";
+    venue?:""
 };
 
 export type User = {

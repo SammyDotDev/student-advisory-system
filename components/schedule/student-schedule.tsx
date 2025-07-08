@@ -14,7 +14,7 @@ import CreateAppointmentDialog from "./components/create-appointment-dialog";
 
 const StudentSchedule = () => {
 	const [filterSchedule, setFilterSchedule] = useState<
-		"upcoming" | "pending" | "past"
+		"upcoming" | "pending" | "past" | "declined"
 	>("upcoming");
 
 	const studentNavItems = [
@@ -32,10 +32,11 @@ const StudentSchedule = () => {
 		{ icon: Users, label: "Advisors", href: "/dashboard/student/advisors" },
 	];
 
-	const scheduleTimelines: ("upcoming" | "pending" | "past")[] = [
+	const scheduleTimelines: ("upcoming" | "pending" | "past" | "declined")[] = [
 		"upcoming",
 		"pending",
 		"past",
+		"declined",
 	];
 
 	const schedules = [
@@ -143,8 +144,13 @@ const StudentSchedule = () => {
 										<Button
 											key={index}
 											className={`rounded-full border-2 ${
-												filterSchedule === timeline
-													? "bg-slate-600 text-white hover:bg-slate-700 border-slate-300"
+												filterSchedule === timeline && timeline !== "declined"
+													? "bg-slate-600 text-white hover:bg-slate-700 border-slate-600"
+													: filterSchedule === "declined" &&
+													  timeline === "declined"
+													? "bg-red-500 text-white border-red-500"
+													: timeline === "declined"
+													? "border-red-500 text-red-500 bg-white hover:bg-red-300 hover:text-red-500"
 													: "bg-gray-200 text-gray-800 hover:bg-gray-300 border-gray-300"
 											} cursor-pointer flex justify-center items-center px-4 py-2`}
 											onClick={() => setFilterSchedule(timeline)}

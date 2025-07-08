@@ -96,7 +96,7 @@ export default function StudentDashboard() {
 
 				{/* Main Content */}
 				<main className="flex-1 overflow-y-auto py-6">
-					<div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+					<div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
 						{/* Academic Stats */}
 						<Card className="bg-gradient-to-r from-gray-900 to-gray-700 text-white rounded-3xl border-0">
 							<CardContent className="p-6">
@@ -118,18 +118,6 @@ export default function StudentDashboard() {
 										<p className="text-3xl font-bold">10/24</p>
 									</div>
 									<BookOpen className="h-12 w-12 text-cyan-200" />
-								</div>
-							</CardContent>
-						</Card>
-
-						<Card className="bg-gradient-to-r from-emerald-900 to-emerald-700 text-white rounded-3xl border-0">
-							<CardContent className="p-6">
-								<div className="flex items-center justify-between">
-									<div>
-										<p className="text-emerald-100">CGPA</p>
-										<p className="text-3xl font-bold">4.5</p>
-									</div>
-									<TrendingUp className="h-12 w-12 text-emerald-200" />
 								</div>
 							</CardContent>
 						</Card>
@@ -197,73 +185,6 @@ export default function StudentDashboard() {
 												}
 											>
 												{assignment.status}
-											</Badge>
-										</div>
-									))}
-								</div>
-							</CardContent>
-						</Card>
-
-						{/* Course Progress */}
-						<Card>
-							<CardHeader>
-								<CardTitle>Course Progress</CardTitle>
-							</CardHeader>
-							<CardContent>
-								<div className="space-y-4">
-									<div>
-										<div className="flex justify-between mb-2">
-											<span className="text-sm font-medium">Mathematics</span>
-											<span className="text-sm text-gray-600">75%</span>
-										</div>
-										<Progress value={75} className="h-2" />
-									</div>
-									<div>
-										<div className="flex justify-between mb-2">
-											<span className="text-sm font-medium">
-												Computer Science
-											</span>
-											<span className="text-sm text-gray-600">85%</span>
-										</div>
-										<Progress value={85} className="h-2" />
-									</div>
-									<div>
-										<div className="flex justify-between mb-2">
-											<span className="text-sm font-medium">English</span>
-											<span className="text-sm text-gray-600">60%</span>
-										</div>
-										<Progress value={60} className="h-2" />
-									</div>
-								</div>
-							</CardContent>
-						</Card>
-
-						{/* Announcements */}
-						<Card>
-							<CardHeader>
-								<CardTitle className="flex items-center gap-2">
-									<Bell className="h-5 w-5" />
-									Announcements
-								</CardTitle>
-							</CardHeader>
-							<CardContent>
-								<div className="space-y-4">
-									{announcements.map((announcement, index) => (
-										<div
-											key={index}
-											className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg"
-										>
-											<div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
-											<div className="flex-1">
-												<p className="font-medium text-sm">
-													{announcement.title}
-												</p>
-												<p className="text-xs text-gray-500">
-													{announcement.date}
-												</p>
-											</div>
-											<Badge variant="outline" className="text-xs">
-												{announcement.type}
 											</Badge>
 										</div>
 									))}
