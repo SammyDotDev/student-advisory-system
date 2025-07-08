@@ -103,11 +103,7 @@ const StudentAdvisors = () => {
 							return <StudentAdvisorItem key={index} advisor={advisor} />;
 						})}
 
-						{/* Assignments */}
-
-						{/* Course Progress */}
-
-						{/* Announcements */}
+			
 					</div>
 				</main>
 			</div>

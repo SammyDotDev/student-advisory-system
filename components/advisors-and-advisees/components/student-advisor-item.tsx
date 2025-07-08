@@ -6,7 +6,7 @@ import React from "react";
 
 const StudentAdvisorItem = ({ advisor }: { advisor: User }) => {
 	return (
-		<Card className="border-0">
+		<Card className="border-0 shadow-none rounded-xl p-4 bg-slate-100">
 			<div className="flex items-start justify-between space-x-4 px-4">
 				<div className="flex gap-3">
 					<Image

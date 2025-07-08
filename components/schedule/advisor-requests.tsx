@@ -1,7 +1,11 @@
+"use client";
+
 import React from "react";
 import AdvisorHeader from "../headers/advisor/advisor-header";
 import Sidebar from "../layout/sidebar";
 import { BarChart3, Calendar, Clock, Users } from "lucide-react";
+import { userAdvisor } from "../dashboard/advisor-dashboard";
+import AdvisorRequestItem from "./components/advisor-request-item";
 
 const AdvisorRequests = () => {
 	const advisorNavItems = [
@@ -14,7 +18,6 @@ const AdvisorRequests = () => {
 			icon: Users,
 			label: "My Advisees",
 			href: "/dashboard/advisor/advisees",
-			active: true,
 		},
 		{
 			icon: Calendar,
@@ -25,6 +28,65 @@ const AdvisorRequests = () => {
 			icon: Clock,
 			label: "Requests",
 			href: "/dashboard/advisor/requests",
+			active: true,
+		},
+	];
+
+	const advisorRequests = [
+		{
+			advisee: "John Smith",
+			schedule: {
+				date: "2025-03-12",
+				fromTime: "09:00AM",
+				toTime: "11:00AM",
+				course: "Introduction to Special Topics",
+				advisor: "John Doe",
+				profileImage: "profile-image.png",
+			},
+		},
+		{
+			advisee: "David Osei",
+			schedule: {
+				date: "2025-04-15",
+				fromTime: "10:00AM",
+				toTime: "11:00AM",
+				course: "Human Computer Interaction",
+				advisor: "JDr. Susan Blake",
+				profileImage: "profile-image.png",
+			},
+		},
+		{
+			advisee: "John Smith",
+			schedule: {
+				date: "2025-03-14",
+				fromTime: "10:00AM",
+				toTime: "12:00PM",
+				course: "Software Design Patterns",
+				advisor: "Mr. Kelvin Ross",
+				profileImage: "profile-image.png",
+			},
+		},
+		{
+			advisee: "Samson Phillips",
+			schedule: {
+				date: "2025-03-12",
+				fromTime: "04:30PM",
+				toTime: "06:00PM",
+				course: "Digital Storytelling",
+				advisor: "Mrs. Carol Finn",
+				profileImage: "profile-image.png",
+			},
+		},
+		{
+			advisee: "Frank Joel",
+			schedule: {
+				date: "2025-03-13",
+				fromTime: "08:00AM",
+				toTime: "09:30AM",
+				course: "Journalism Ethics",
+				advisor: "Ms. Daniella Okoro",
+				profileImage: "profile-image.png",
+			},
 		},
 	];
 
@@ -47,8 +109,10 @@ const AdvisorRequests = () => {
 					</div>
 					<div className="grid grid-cols-1 lg:grid-cols-1 gap-6">
 						{/* Today's Schedule */}
-						{advisorAdvisees.map((advisee, index) => {
-							return <AdvisorAdviseeItem key={index} advisee={advisee} />;
+						{advisorRequests.map((appointment, index) => {
+							return (
+								<AdvisorRequestItem key={index} appointment={appointment} />
+							);
 						})}
 
 						{/* Assignments */}
