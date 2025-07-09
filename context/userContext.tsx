@@ -7,16 +7,28 @@ import { useRouter } from "next/navigation";
 import { createContext, useContext, useEffect, useState } from "react";
 import { toast } from "sonner";
 
-export const UserContext = createContext({
+export const UserContext = createContext<{
+	user: LoginResponse | null;
+	accessToken: string | null;
+	isLoading: boolean;
+	login: (credentials: { userId: string; password: string }) => {
+		success: boolean;
+		user?: LoginResponse | null;
+		message?: string;
+	};
+	isAuthenticated: boolean;
+	logout: () => void;
+	updateUser: (userData: LoginResponse) => void;
+}>({
 	user: null,
 	accessToken: null,
 	isLoading: true,
-	login: (credentials: { userId: string; password: string }) => {
+	login: () => {
 		return { success: true, user: null, message: "" };
 	},
 	isAuthenticated: false,
 	logout: () => {},
-	updateUser: (userData) => {},
+	updateUser: () => {},
 	// refreshToken: () => {},
 });
 
@@ -201,7 +213,7 @@ export function UserProvider({ children }) {
 
 	const updateUser = (userData) => {
 		const storedUserData = getStoredUserData();
-		setUser((prev) => ({ ...prev,...storedUserData, ...userData }));
+		setUser((prev) => ({ ...prev, ...storedUserData, ...userData }));
 		setIsLoading(false);
 	};
 

@@ -28,7 +28,7 @@ export type RegisterResponse = {
 export type LoginResponse = {
 	code: string;
 	userId: string;
-	fullname: string;
+	fullName: string;
 	email: string;
 	department?: string;
 	level?: string;

@@ -2,7 +2,7 @@
 
 import type React from "react";
 
-import { useContext, useEffect, useState } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -20,12 +20,12 @@ import { useRouter } from "next/navigation";
 import Branding from "./components/branding";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import { toast } from "sonner";
-import { ApiClient } from "@/api/api";
 import { useUser } from "@/context/userContext";
+import MobiusLoader from "../loader/mobius-loader";
 
 export default function LoginForm() {
 	const router = useRouter();
-	const { login } = useUser();
+	const { login, isLoading } = useUser();
 
 	// show passowrd states for eye button
 	const [showStudentPassword, setShowStudentPassword] = useState(false);
@@ -49,7 +49,9 @@ export default function LoginForm() {
 		});
 		console.log(result, "USER RESULT");
 		if (result.success) {
-			document.cookie = `token=${result.user.token}; path=/; secure; samesite=strict`;
+			if (result.user) {
+				document.cookie = `token=${result.user.token}; path=/; secure; samesite=strict`;
+			}
 			// console.log(document.cookie);
 			// const cookieString = document.cookie;
 			// const params = new URLSearchParams(cookieString.replace(/; /g, "&"));
@@ -70,7 +72,9 @@ export default function LoginForm() {
 		});
 		console.log(result, "ADVISER RESULT");
 		if (result.success) {
-			document.cookie = `token=${result.user.token}; path=/; secure; samesite=strict`;
+			if (result.user) {
+				document.cookie = `token=${result.user.token}; path=/; secure; samesite=strict`;
+			}
 			toast.success("Login successful");
 			if (result.user && !result.user.onboarded) {
 				router.replace("/onboarding");
@@ -85,6 +89,11 @@ export default function LoginForm() {
 
 	return (
 		<div className="min-h-screen flex">
+			{isLoading && (
+				<div className="absolute w-full h-full bg-[#00000078]">
+					<MobiusLoader />
+				</div>
+			)}
 			{/* Left side - Login Form */}
 			<div className="flex-1 flex items-center justify-center bg-slate-900 p-8">
 				<div className="w-full max-w-md space-y-8">
@@ -133,7 +142,7 @@ export default function LoginForm() {
 												onChange={(e) =>
 													setStudentDetails((prev) => ({
 														...prev,
-														matricNumber: e.target.value,
+														matricNumber: e.target.value.trim(),
 													}))
 												}
 												className="bg-slate-700 border-slate-600 text-white placeholder:text-slate-400"
@@ -154,7 +163,7 @@ export default function LoginForm() {
 													onChange={(e) =>
 														setStudentDetails((prev) => ({
 															...prev,
-															password: e.target.value,
+															password: e.target.value.trim(),
 														}))
 													}
 													className="bg-slate-700 border-slate-600 text-white placeholder:text-slate-400 pr-10"
@@ -221,7 +230,7 @@ export default function LoginForm() {
 												onChange={(e) =>
 													setAdviserDetails((prev) => ({
 														...prev,
-														staffId: e.target.value,
+														staffId: e.target.value.trim(),
 													}))
 												}
 												className="bg-slate-700 border-slate-600 text-white placeholder:text-slate-400"
@@ -242,7 +251,7 @@ export default function LoginForm() {
 													onChange={(e) =>
 														setAdviserDetails((prev) => ({
 															...prev,
-															password: e.target.value,
+															password: e.target.value.trim(),
 														}))
 													}
 													className="bg-slate-700 border-slate-600 text-white placeholder:text-slate-400 pr-10"

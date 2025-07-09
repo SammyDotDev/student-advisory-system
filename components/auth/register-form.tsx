@@ -2,7 +2,7 @@
 
 import type React from "react";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -25,7 +25,7 @@ import Link from "next/link";
 import { toast } from "sonner";
 import Branding from "./components/branding";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
-import { emailRegex, isEmptyString, PASSWORD_MISMATCH } from "@/lib/utils";
+import { emailRegex, PASSWORD_MISMATCH } from "@/lib/utils";
 import { ApiClient } from "@/api/api";
 import { RegisterResponse } from "@/lib/types";
 import axios from "axios";
@@ -40,10 +40,6 @@ export default function RegisterForm() {
 		useState(false);
 	const [showConfirmAdviseryPassword, setShowConfirmAdviseryPassword] =
 		useState(false);
-
-	// validation for input fields
-	const [studentFieldsInValid, setStudentFieldsInValid] = useState(false);
-	const [adviserFieldsInValid, setAdviserFieldsInValid] = useState(false);
 
 	// user details
 	const [studentDetails, setStudentDetails] = useState({
@@ -68,24 +64,12 @@ export default function RegisterForm() {
 	const [confirmStudentPassword, setConfirmStudentPassword] = useState("");
 	const [confirmAdviseryPassword, setConfirmAdviseryPassword] = useState("");
 
-	// input field validation
-	useEffect(() => {
-		setStudentFieldsInValid(
-			isEmptyString(studentDetails.matricNumber) &&
-				isEmptyString(studentDetails.password)
-		);
-		setAdviserFieldsInValid(
-			isEmptyString(adviserDetails.staffId) &&
-				isEmptyString(adviserDetails.password)
-		);
-	}, [studentDetails, adviserDetails]);
-
 	// register student
 	const handleStudentRegister = async (e: React.FormEvent) => {
 		e.preventDefault();
 		if (emailRegex.test(studentDetails.email)) {
 			// defining fullname of the user
-			const fullname = `${studentDetails.firstname} ${studentDetails.lastname}`;
+			const fullName = `${studentDetails.firstname} ${studentDetails.lastname}`;
 			// validate password and confirm password
 			if (studentDetails.password === confirmStudentPassword) {
 				try {
@@ -94,7 +78,7 @@ export default function RegisterForm() {
 						"/auth/register",
 						{
 							email: studentDetails.email,
-							fullName: fullname,
+							fullName: fullName,
 							userId: studentDetails.matricNumber,
 							password: studentDetails.password,
 							department: studentDetails.department,
@@ -153,7 +137,7 @@ export default function RegisterForm() {
 			confirmAdviseryPassword
 		) {
 			// defining fullname of the adviser
-			const fullname = `${adviserDetails.honorifics} ${adviserDetails.firstname} ${adviserDetails.lastname}`;
+			const fullName = `${adviserDetails.honorifics}${adviserDetails.firstname} ${adviserDetails.lastname}`;
 			// validate password and confirm password
 			if (adviserDetails.password === confirmAdviseryPassword) {
 				try {
@@ -162,7 +146,7 @@ export default function RegisterForm() {
 						"/auth/register",
 						{
 							email: adviserDetails.email,
-							fullName: fullname,
+							fullName: fullName,
 							userId: adviserDetails.staffId,
 							password: adviserDetails.password,
 						},
@@ -193,7 +177,11 @@ export default function RegisterForm() {
 						}, 2000);
 					}
 				} catch (error) {
-					toast.error(`${error.response.data.result.message}`);
+					if (axios.isAxiosError(error) && error.response) {
+						toast.error(error.response.data.result.message);
+					} else {
+						toast.error("An unexpected error occurred");
+					}
 				}
 				// password mismatch
 			} else {
@@ -258,7 +246,7 @@ export default function RegisterForm() {
 												onChange={(e) =>
 													setStudentDetails((prev) => ({
 														...prev,
-														matricNumber: e.target.value,
+														matricNumber: e.target.value.trim(),
 													}))
 												}
 												className="bg-slate-700 border-slate-600 text-white placeholder:text-slate-400"
@@ -341,7 +329,7 @@ export default function RegisterForm() {
 												onChange={(e) =>
 													setStudentDetails((prev) => ({
 														...prev,
-														email: e.target.value,
+														email: e.target.value.trim(),
 													}))
 												}
 												className="bg-slate-700 border-slate-600 text-white placeholder:text-slate-400"
@@ -359,7 +347,7 @@ export default function RegisterForm() {
 												onChange={(e) =>
 													setStudentDetails((prev) => ({
 														...prev,
-														firstname: e.target.value,
+														firstname: e.target.value.trim(),
 													}))
 												}
 												className="bg-slate-700 border-slate-600 text-white placeholder:text-slate-400"
@@ -377,7 +365,7 @@ export default function RegisterForm() {
 												onChange={(e) =>
 													setStudentDetails((prev) => ({
 														...prev,
-														lastname: e.target.value,
+														lastname: e.target.value.trim(),
 													}))
 												}
 												className="bg-slate-700 border-slate-600 text-white placeholder:text-slate-400"
@@ -398,7 +386,7 @@ export default function RegisterForm() {
 													onChange={(e) =>
 														setStudentDetails((prev) => ({
 															...prev,
-															password: e.target.value,
+															password: e.target.value.trim(),
 														}))
 													}
 													className="bg-slate-700 border-slate-600 text-white placeholder:text-slate-400 pr-10"
@@ -435,7 +423,7 @@ export default function RegisterForm() {
 													placeholder="Enter your password again"
 													value={confirmStudentPassword}
 													onChange={(e) =>
-														setConfirmStudentPassword(e.target.value)
+														setConfirmStudentPassword(e.target.value.trim())
 													}
 													className="bg-slate-700 border-slate-600 text-white placeholder:text-slate-400 pr-10"
 													required
@@ -503,14 +491,38 @@ export default function RegisterForm() {
 												onChange={(e) =>
 													setAdviserDetails((prev) => ({
 														...prev,
-														staffId: e.target.value,
+														staffId: e.target.value.trim(),
 													}))
 												}
 												className="bg-slate-700 border-slate-600 text-white placeholder:text-slate-400"
 												required
 											/>
 										</div>
-
+										<div className="space-y-2">
+											<Label htmlFor="honorifics" className="text-white">
+												Honorifics
+											</Label>
+											<Select
+												value={adviserDetails.honorifics}
+												onValueChange={(text) =>
+													setAdviserDetails((prev) => ({
+														...prev,
+														honorifics: text,
+													}))
+												}
+												required
+											>
+												<SelectTrigger className="bg-slate-700 border-slate-600 text-white">
+													<SelectValue placeholder="Select your title" />
+												</SelectTrigger>
+												<SelectContent>
+													<SelectItem value="Mr.">Mr.</SelectItem>
+													<SelectItem value="Mrs.">Mrs.</SelectItem>
+													<SelectItem value="Dr.">Dr.</SelectItem>
+													<SelectItem value="Prof">Prof.</SelectItem>
+												</SelectContent>
+											</Select>
+										</div>
 										<div className="space-y-2">
 											<Label htmlFor="email" className="text-white">
 												Email
@@ -523,7 +535,7 @@ export default function RegisterForm() {
 												onChange={(e) =>
 													setAdviserDetails((prev) => ({
 														...prev,
-														email: e.target.value,
+														email: e.target.value.trim(),
 													}))
 												}
 												className="bg-slate-700 border-slate-600 text-white placeholder:text-slate-400"
@@ -541,7 +553,7 @@ export default function RegisterForm() {
 												onChange={(e) =>
 													setAdviserDetails((prev) => ({
 														...prev,
-														firstname: e.target.value,
+														firstname: e.target.value.trim(),
 													}))
 												}
 												className="bg-slate-700 border-slate-600 text-white placeholder:text-slate-400"
@@ -559,7 +571,7 @@ export default function RegisterForm() {
 												onChange={(e) =>
 													setAdviserDetails((prev) => ({
 														...prev,
-														lastname: e.target.value,
+														lastname: e.target.value.trim(),
 													}))
 												}
 												className="bg-slate-700 border-slate-600 text-white placeholder:text-slate-400"
@@ -580,7 +592,7 @@ export default function RegisterForm() {
 													onChange={(e) =>
 														setAdviserDetails((prev) => ({
 															...prev,
-															password: e.target.value,
+															password: e.target.value.trim(),
 														}))
 													}
 													className="bg-slate-700 border-slate-600 text-white placeholder:text-slate-400 pr-10"
@@ -617,7 +629,7 @@ export default function RegisterForm() {
 													placeholder="Enter your password again"
 													value={confirmAdviseryPassword}
 													onChange={(e) =>
-														setConfirmAdviseryPassword(e.target.value)
+														setConfirmAdviseryPassword(e.target.value.trim())
 													}
 													className="bg-slate-700 border-slate-600 text-white placeholder:text-slate-400 pr-10"
 													required

@@ -1,5 +1,6 @@
 "use client";
 import LoginForm from "@/components/auth/login-form";
+import MobiusLoader from "@/components/loader/mobius-loader";
 import { useUser } from "@/context/userContext";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -27,8 +28,8 @@ export default function HomePage() {
 
 	if (isLoading || isRedirecting) {
 		return (
-			<div>
-				<p>Loading...</p>
+			<div className="absolute">
+				<MobiusLoader />
 			</div>
 		);
 	}

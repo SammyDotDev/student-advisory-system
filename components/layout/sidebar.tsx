@@ -95,7 +95,7 @@ export default function Sidebar({ navItems, userRole }: SidebarProps) {
 				</div>
 				<Button
 					variant="ghost"
-					className="w-full justify-start gap-3 text-white hover:bg-white/10"
+					className="w-full justify-start gap-3 text-white hover:bg-white/10 hover:text-white"
 					onClick={handleLogout}
 				>
 					<LogOut className="h-5 w-5" />
