@@ -7,6 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { LogOut, GraduationCap } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useUser } from "@/context/userContext";
 
 interface NavItem {
 	icon: React.ComponentType<{ className?: string }>;
@@ -22,10 +23,11 @@ interface SidebarProps {
 
 export default function Sidebar({ navItems, userRole }: SidebarProps) {
 	const router = useRouter();
+	const { logout } = useUser();
 
 	const handleLogout = () => {
-		// In a real app, clear authentication tokens
-		router.push("/");
+		logout();
+		// router.push("/");
 	};
 
 	const getRoleColor = () => {
@@ -42,7 +44,9 @@ export default function Sidebar({ navItems, userRole }: SidebarProps) {
 	};
 
 	return (
-		<div className={`w-64 ${getRoleColor()} text-white flex flex-col rounded-3xl m-4`}>
+		<div
+			className={`w-64 ${getRoleColor()} text-white flex flex-col rounded-3xl m-4`}
+		>
 			{/* Logo */}
 			<div className="p-6 border-b border-white/10">
 				<div className="flex items-center gap-3">

@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 export const config = {
-	matcher: ["/dashboard/:path*", "/unauthorized"],
+	matcher: ["/dashboard/:path*", "/unauthorized", "/auth/:path*"],
 };
 
 export function middleware(request: NextRequest) {
@@ -14,7 +14,7 @@ export function middleware(request: NextRequest) {
 	console.log("🔑 Token exists:", !!token);
 
 	// Allow access to auth pages
-	if (pathname.startsWith("/auth")) {
+	if (pathname.startsWith("/auth") && !token) {
 		console.log("✅ Auth page, allowing access");
 		return NextResponse.next();
 	}
@@ -27,11 +27,37 @@ export function middleware(request: NextRequest) {
 	try {
 		const payload = JSON.parse(atob(token.split(".")[1]));
 		const roles = payload.roles || [];
+		const isAuthenticated = roles.length > 0;
 
 		console.log("👤 Decoded payload:", payload);
 		console.log("🎭 User roles:", roles, roles.includes("STUDENT"));
 		console.log("📍 Current path:", pathname);
 
+		// Redirect authenticated users away from auth pages
+		if (pathname.startsWith("/auth/") && isAuthenticated) {
+			console.log(
+				"🔒 Authenticated user trying to access auth page, redirecting..."
+			);
+
+			if (roles.includes("ADVISOR")) {
+				console.log(
+					"✅ ADVISOR on auth page, redirecting to advisor dashboard"
+				);
+				return NextResponse.redirect(
+					new URL("/dashboard/advisor", request.url)
+				);
+			}
+
+			if (roles.includes("STUDENT")) {
+				console.log(
+					"✅ STUDENT on auth page, redirecting to student dashboard"
+				);
+				return NextResponse.redirect(
+					new URL("/dashboard/student", request.url)
+				);
+			}
+		}
+		// unauthorized page
 		if (pathname === "/unauthorized") {
 			if (roles.includes("ADVISOR")) {
 				console.log(

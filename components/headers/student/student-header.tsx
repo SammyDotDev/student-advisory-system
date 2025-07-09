@@ -6,6 +6,7 @@ import { Bell, Settings } from "lucide-react";
 import React from "react";
 
 const StudentHeader = ({ user }: { user: User }) => {
+    console.log(user)
 	const firstname = user?.fullname.split(" ")[0];
 	const lastname = user?.fullname.split(" ")[1];
 	const userNameInitials = `${firstname.charAt(0)}${lastname.charAt(0)}`;

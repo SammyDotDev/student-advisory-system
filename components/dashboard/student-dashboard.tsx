@@ -16,6 +16,7 @@ import StudentHeader from "../headers/student/student-header";
 import { User } from "@/lib/types";
 import { getRoleFromToken } from "@/lib/utils";
 import { useRouter } from "next/navigation";
+import { useUser } from "@/context/userContext";
 
 const studentNavItems = [
 	{
@@ -33,7 +34,8 @@ export const user: User = {
 	email: "johndoe@gmail.com",
 };
 export default function StudentDashboard() {
-	
+	const { user: currentUser } = useUser();
+    console.log(currentUser)
 
 	const upcomingAppointments = [
 		{

@@ -47,17 +47,17 @@ export default function LoginForm() {
 			userId: studentDetails.matricNumber,
 			password: studentDetails.password,
 		});
-		console.log(result.success, "USER RESULT");
+		console.log(result, "USER RESULT");
 		if (result.success) {
 			document.cookie = `token=${result.user.token}; path=/; secure; samesite=strict`;
-			console.log(document.cookie);
-			const cookieString = document.cookie;
-			const params = new URLSearchParams(cookieString.replace(/; /g, "&"));
-			const token = params.get("token");
-			console.log(token);
-			const payload = JSON.parse(atob(token.split(".")[1])); // Decode JWT
-            const role = payload.roles[0]
-            console.log(role)
+			// console.log(document.cookie);
+			// const cookieString = document.cookie;
+			// const params = new URLSearchParams(cookieString.replace(/; /g, "&"));
+			// const token = params.get("token");
+			// console.log(token);
+			// const payload = JSON.parse(atob(token.split(".")[1])); // Decode JWT
+            // const role = payload.roles[0]
+            // console.log(role)
 			router.push("/dashboard/student");
 		}
 	};
