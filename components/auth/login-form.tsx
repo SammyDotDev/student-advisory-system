@@ -2,7 +2,7 @@
 
 import type React from "react";
 
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -21,20 +21,15 @@ import Branding from "./components/branding";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import { toast } from "sonner";
 import { ApiClient } from "@/api/api";
-import { isEmptyString } from "@/lib/utils";
-import { LoginResponse } from "@/lib/types";
+import { useUser } from "@/context/userContext";
 
 export default function LoginForm() {
-	const AuthApi = ApiClient();
 	const router = useRouter();
+	const { login } = useUser();
 
 	// show passowrd states for eye button
 	const [showStudentPassword, setShowStudentPassword] = useState(false);
 	const [showAdvisoryPassword, setShowAdvisoryPassword] = useState(false);
-
-	// validation for input fields
-	const [studentFieldsInValid, setStudentFieldsInValid] = useState(false);
-	const [advisorFieldsInValid, setAdvisorFieldsInValid] = useState(false);
 
 	// user details
 	const [studentDetails, setStudentDetails] = useState({
@@ -46,55 +41,40 @@ export default function LoginForm() {
 		password: "",
 	});
 
-	// input field validation
-	useEffect(() => {
-		setStudentFieldsInValid(
-			isEmptyString(studentDetails.matricNumber) &&
-				isEmptyString(studentDetails.password)
-		);
-		setAdvisorFieldsInValid(
-			isEmptyString(advisorDetails.staffID) &&
-				isEmptyString(advisorDetails.password)
-		);
-	}, [studentDetails, advisorDetails]);
-
 	const handleStudentLogin = async (e: React.FormEvent) => {
 		e.preventDefault();
-		try {
-			const res = await AuthApi.post<unknown, LoginResponse>("/auth/login", {
-				userId: studentDetails.matricNumber,
-				password: studentDetails.password,
-			});
-			if (res.status === 200) {
-				// toast success
-				toast.success("Login successful");
-				// Redirect to student dashboard
-				router.push("/dashboard/student");
-			}
-		} catch (error) {
-			toast.error(error as string);
+		const result = await login({
+			userId: studentDetails.matricNumber,
+			password: studentDetails.password,
+		});
+		console.log(result.success, "USER RESULT");
+		if (result.success) {
+			document.cookie = `token=${result.user.token}; path=/; secure; samesite=strict`;
+			console.log(document.cookie);
+			const cookieString = document.cookie;
+			const params = new URLSearchParams(cookieString.replace(/; /g, "&"));
+			const token = params.get("token");
+			console.log(token);
+			const payload = JSON.parse(atob(token.split(".")[1])); // Decode JWT
+            const role = payload.roles[0]
+            console.log(role)
+			router.push("/dashboard/student");
 		}
 	};
 
 	const handleAdvisorLogin = async (e: React.FormEvent) => {
 		e.preventDefault();
-		try {
-			const res = await AuthApi.post<unknown, LoginResponse>("/auth/login", {
-				userId: advisorDetails.staffId,
-				password: advisorDetails.password,
-			});
-			if (res.status === 200) {
-				// toast success
-				toast.success("Login successful");
-				if (!res.data.onboarded) {
-					router.replace("/onboarding");
-					// Redirect to student dashboard
-				} else {
-					router.push("/dashboard/advisor");
-				}
-			}
-		} catch (error) {
-			toast.error(error as string);
+		const result = await login({
+			userId: advisorDetails.staffId,
+			password: advisorDetails.password,
+		});
+		console.log(result, "ADVISOR RESULT");
+		toast.success("Login successful");
+		if (result.user && !result.user.onboarded) {
+			router.replace("/onboarding");
+			// Redirect to student dashboard
+		} else {
+			router.push("/dashboard/advisor");
 		}
 	};
 

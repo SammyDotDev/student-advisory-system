@@ -28,6 +28,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import { emailRegex, isEmptyString, PASSWORD_MISMATCH } from "@/lib/utils";
 import { ApiClient } from "@/api/api";
 import { RegisterResponse } from "@/lib/types";
+import axios from "axios";
 
 export default function RegisterForm() {
 	const AuthApi = ApiClient();
@@ -106,8 +107,9 @@ export default function RegisterForm() {
 						}
 					);
 					if (res.status === 201) {
+						console.log(res.data.result.message);
 						// toast success
-						toast.success(res.data.message);
+						toast.success(res.data.result.message);
 						// toast to navigate to login
 						setTimeout(() => {
 							toast(
@@ -126,7 +128,11 @@ export default function RegisterForm() {
 						}, 2000);
 					}
 				} catch (error) {
-					toast.error(`${error}`);
+					if (axios.isAxiosError(error) && error.response) {
+						toast.error(error.response.data.result.message);
+					} else {
+						toast.error("An unexpected error occurred");
+					}
 				}
 				// password mismatch
 			} else {
@@ -182,7 +188,7 @@ export default function RegisterForm() {
 						}, 2000);
 					}
 				} catch (error) {
-					toast.error(`${error}`);
+					toast.error(`${error.message}`);
 				}
 				// password mismatch
 			} else {
@@ -243,11 +249,11 @@ export default function RegisterForm() {
 											<Input
 												id="matric_number"
 												placeholder="Enter your matric number"
-												value={studentDetails.email}
+												value={studentDetails.matricNumber}
 												onChange={(e) =>
 													setStudentDetails((prev) => ({
 														...prev,
-														email: e.target.value,
+														matricNumber: e.target.value,
 													}))
 												}
 												className="bg-slate-700 border-slate-600 text-white placeholder:text-slate-400"

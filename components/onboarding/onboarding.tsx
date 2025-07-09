@@ -16,6 +16,7 @@ import { useRouter } from "next/navigation";
 import { useForm, useFieldArray, Controller } from "react-hook-form";
 import { CourseCodeChips } from "./components/course-code-chips";
 import { Input } from "../ui/input";
+import { ApiClient } from "@/api/api";
 
 type CourseForm = {
 	courses: {
@@ -25,6 +26,7 @@ type CourseForm = {
 };
 
 const Onboarding = () => {
+	const ApiService = ApiClient();
 	const { register, control, handleSubmit, reset } = useForm<CourseForm>({
 		defaultValues: {
 			courses: [
@@ -41,13 +43,15 @@ const Onboarding = () => {
 		name: "courses",
 	});
 
-    // const router = useRouter();
-	const onSubmit = (data: CourseForm) => {
-        // returning unique course code
+	// const router = useRouter();
+	const onSubmit = async (data: CourseForm) => {
+		try {
+			const res = await ApiService.put(`/user/onboard/`);
+		} catch (error) {}
+		// returning unique course code
 		console.log("Final data:", data.courses);
 		// router.push("/dashboard/advisor");
 	};
-
 
 	return (
 		<div className="min-h-screen flex">
@@ -133,43 +137,6 @@ const Onboarding = () => {
 									</Button>
 								</div>
 							</form>
-							{/* <form onSubmit={handleCompleteOnboarding} className="space-y-4">
-								<div className="space-y-2">
-									<Label htmlFor="matric_number" className="text-white">
-										Departments lecturing
-									</Label>
-									<MultiSelect
-										className="border border-slate-500 bg-slate-600 my-4"
-										options={departmentsList}
-										onValueChange={setDepartments}
-										defaultValue={departments}
-										placeholder="Select departments"
-										variant="inverted"
-										animation={0}
-										maxCount={8}
-									/>
-									{/* <Input
-										id="matric_number"
-										placeholder="Enter your matric number"
-										value={studentDetails.matricNumber}
-										onChange={(e) =>
-											setStudentDetails((prev) => ({
-												...prev,
-												matricNumber: e.target.value,
-											}))
-										}
-										className="bg-slate-700 border-slate-600 text-white placeholder:text-slate-400"
-										required
-									/>
-								</div>
-
-								<Button
-									type="submit"
-									className="w-full bg-slate-400 hover:bg-slate-700"
-								>
-									Continue to Dashboard
-								</Button>
-							</form> */}
 						</CardContent>
 					</Card>
 				</div>

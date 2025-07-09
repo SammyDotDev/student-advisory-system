@@ -1,23 +1,21 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
 import {
 	BookOpen,
 	Calendar,
 	Clock,
 	GraduationCap,
-	TrendingUp,
-	Bell,
-	FileText,
 	Users,
 	BarChart3,
 } from "lucide-react";
 import Sidebar from "@/components/layout/sidebar";
 import StudentHeader from "../headers/student/student-header";
 import { User } from "@/lib/types";
+import { getRoleFromToken } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 
 const studentNavItems = [
 	{
@@ -35,8 +33,7 @@ export const user: User = {
 	email: "johndoe@gmail.com",
 };
 export default function StudentDashboard() {
-	const [currentTime] = useState(new Date());
-	console.log(currentTime);
+	
 
 	const upcomingAppointments = [
 		{
@@ -78,12 +75,6 @@ export default function StudentDashboard() {
 			dueDate: "15/10/2024",
 			status: "pending",
 		},
-	];
-
-	const announcements = [
-		{ title: "Welcome Back to School", type: "general", date: "2024-10-01" },
-		{ title: "Registration Deadline", type: "important", date: "2024-10-05" },
-		{ title: "Mid-term Exams Schedule", type: "academic", date: "2024-10-08" },
 	];
 
 	return (

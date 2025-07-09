@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "sonner";
+import { UserProvider } from "@/context/userContext";
 
 const geistSans = Geist({
 	variable: "--font-geist-sans",
@@ -15,7 +16,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
 	title: "EduPortal",
-	description: "student advisory system for bowen university students in the College of Computing and Communication Studies",
+	description:
+		"student advisory system for bowen university students in the College of Computing and Communication Studies",
 };
 
 export default function RootLayout({
@@ -29,7 +31,7 @@ export default function RootLayout({
 				className={`${geistSans.variable} ${geistMono.variable} antialiased`}
 			>
 				<Toaster />
-				{children}
+				<UserProvider>{children}</UserProvider>
 			</body>
 		</html>
 	);

@@ -1,7 +1,7 @@
 import axios, { AxiosRequestConfig } from "axios";
 import { useRouter } from "next/navigation";
 
-const API_URL = "http://localhost:8080/api/v1/";
+export const API_URL = "http://localhost:8080/api/v1/";
 export const api = axios.create({
 	baseURL: API_URL,
 	headers: {
@@ -15,6 +15,7 @@ export const ApiClient = () => {
 		headers: {
 			"Content-Type": "application/json",
 		},
+		withCredentials: true,
 	});
 	api.interceptors.request.use(
 		async (config) => {
@@ -37,15 +38,13 @@ export const ApiClient = () => {
 			async (error) => {
 				console.log(error.response.status);
 				console.log(error.response.data);
+				console.log(localStorage.getItem("refreshToken"));
 
 				if (error.response.status !== 401) {
-					console.log("EROOR");
+					console.log("ERRoR");
 					return Promise.reject(error);
 				}
-				if (
-					error.response.status === 401 &&
-					localStorage.getItem("refreshToken")
-				) {
+				if (error.response.status === 401) {
 					try {
 						api.interceptors.response.eject(interceptor);
 						const refreshToken = localStorage.getItem("refreshToken");
@@ -54,34 +53,63 @@ export const ApiClient = () => {
 							error.response.status,
 							refreshToken
 						);
+						console.log("Attempting token refresh...");
 
-						const url = `${API_URL}/api/v1/auth/refresh`;
+						const url = "auth/refresh";
 						const body = {
-							refreshToken: refreshToken,
+							// refreshToken: refreshToken,
 						};
 
 						const headers = {
 							"Content-Type": "application/x-www-form-urlencoded",
 						};
 
-						const response = api.post(url, body, { headers });
+						const refreshApi = axios.create({
+							baseURL: API_URL,
+							headers: {
+								"Content-Type": "application/json",
+							},
+							withCredentials: true, // This will send the refresh token cookie
+						});
+
+						const response = refreshApi.get(url);
+                        console.log(response, "RESPONSE")
+						if (response.data && response.data.result) {
+							const newAccessToken = `Bearer ${response.data.result.token}`;
+
+							// Update localStorage
+							localStorage.setItem("accessToken", newAccessToken);
+
+							// Update the failed request with new token
+							error.config.headers["Authorization"] = newAccessToken;
+
+							// Recreate the interceptor for future requests
+							createAxiosResponseInterceptor();
+
+							// Retry the original request
+							return api(error.config);
+						}
 
 						localStorage.setItem(
-							"token",
-							"Bearer " + (await response).data.accessToken
+							"accessToken",
+							"Bearer " + (await response).data.result.token
 						);
-						localStorage.setItem("refreshToken", response.data.refreshToken);
-
-						error.response.config.headers[
-							"Authorization"
-						] = `Bearer + ${response.data.access_token}`;
+						// localStorage.setItem(
+						// 	"refreshToken",
+						// 	response.data.result.refreshToken
+						// );
+						console.log(response, "AXIOS RESPONSE");
+						// error.response.config.headers[
+						// 	"Authorization"
+						// ] = `Bearer + ${response.data.result.token}`;
 						return axios(error.response.config);
 
 						// const response = api.get(API_URL)
 					} catch (error) {
+						console.log(error, "AERROR");
 						//If refresh token is invalid, you will receive this error status and log user out
 						if (error.response.status === 400) {
-							router.replace("/(auth)/auth/sign-in");
+							router.replace("/auth/login");
 							await localStorage.multiRemove(["accessToken", "refreshToken"]);
 							throw { response: { status: 401 } };
 						}
@@ -101,13 +129,26 @@ export const ApiClient = () => {
 		return res;
 	};
 
-	const get = async<R = unknown> (path: string, config?: AxiosRequestConfig) => {
+	const get = async <R = unknown>(
+		path: string,
+		config?: AxiosRequestConfig
+	) => {
 		const res = await api.get<R>(path, config);
+		return res;
+	};
+
+	const put = async <T = unknown, R = unknown>(
+		path: string,
+		body?: T,
+		params?: AxiosRequestConfig<T>
+	) => {
+		const res = await api.put<R>(path, body, params);
 		return res;
 	};
 
 	return {
 		post,
 		get,
+		put,
 	};
 };

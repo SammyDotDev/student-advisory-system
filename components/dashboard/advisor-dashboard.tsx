@@ -26,7 +26,8 @@ import {
 import { Label } from "../ui/label";
 import { advisorAdvisees } from "../advisors-and-advisees/advisees/advisor-advisees";
 import appointments from "@/app/dashboard/advisor/appointments/page";
-import { getDateRelativeToThisWeek } from "@/lib/utils";
+import { getDateRelativeToThisWeek, getRoleFromToken } from "@/lib/utils";
+import { useEffect } from "react";
 
 export const userAdvisor: User = {
 	fullname: "Dr.John Doe",

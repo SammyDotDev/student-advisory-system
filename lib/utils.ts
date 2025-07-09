@@ -106,3 +106,19 @@ export function getDateRelativeToThisWeek(
 
 	return "not upcoming soon";
 }
+
+export function getRoleFromToken(): string | null {
+	const token = document.cookie
+		.split("; ")
+		.find((row) => row.startsWith("token="))
+		?.split("=")[1];
+
+	if (!token) return null;
+
+	try {
+		const payload = JSON.parse(atob(token.split(".")[1]));
+		return payload.role;
+	} catch {
+		return null;
+	}
+}
