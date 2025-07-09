@@ -35,15 +35,15 @@ export default function RegisterForm() {
 
 	// show passowrd states for eye button
 	const [showStudentPassword, setShowStudentPassword] = useState(false);
-	const [showAdvisoryPassword, setShowAdvisoryPassword] = useState(false);
+	const [showAdviseryPassword, setShowAdviseryPassword] = useState(false);
 	const [showConfirmStudentPassword, setShowConfirmStudentPassword] =
 		useState(false);
-	const [showConfirmAdvisoryPassword, setShowConfirmAdvisoryPassword] =
+	const [showConfirmAdviseryPassword, setShowConfirmAdviseryPassword] =
 		useState(false);
 
 	// validation for input fields
 	const [studentFieldsInValid, setStudentFieldsInValid] = useState(false);
-	const [advisorFieldsInValid, setAdvisorFieldsInValid] = useState(false);
+	const [adviserFieldsInValid, setAdviserFieldsInValid] = useState(false);
 
 	// user details
 	const [studentDetails, setStudentDetails] = useState({
@@ -56,7 +56,7 @@ export default function RegisterForm() {
 		password: "",
 	});
 
-	const [advisorDetails, setAdvisorDetails] = useState({
+	const [adviserDetails, setAdviserDetails] = useState({
 		staffId: "",
 		email: "",
 		firstname: "",
@@ -66,7 +66,7 @@ export default function RegisterForm() {
 	});
 	// confirm password details for users
 	const [confirmStudentPassword, setConfirmStudentPassword] = useState("");
-	const [confirmAdvisoryPassword, setConfirmAdvisoryPassword] = useState("");
+	const [confirmAdviseryPassword, setConfirmAdviseryPassword] = useState("");
 
 	// input field validation
 	useEffect(() => {
@@ -74,11 +74,11 @@ export default function RegisterForm() {
 			isEmptyString(studentDetails.matricNumber) &&
 				isEmptyString(studentDetails.password)
 		);
-		setAdvisorFieldsInValid(
-			isEmptyString(advisorDetails.staffId) &&
-				isEmptyString(advisorDetails.password)
+		setAdviserFieldsInValid(
+			isEmptyString(adviserDetails.staffId) &&
+				isEmptyString(adviserDetails.password)
 		);
-	}, [studentDetails, advisorDetails]);
+	}, [studentDetails, adviserDetails]);
 
 	// register student
 	const handleStudentRegister = async (e: React.FormEvent) => {
@@ -143,28 +143,28 @@ export default function RegisterForm() {
 	};
 
 	// register adviser
-	const handleAdvisoryRegister = async (e: React.FormEvent) => {
+	const handleAdviseryRegister = async (e: React.FormEvent) => {
 		e.preventDefault();
 		if (
-			advisorDetails.email &&
-			advisorDetails.staffId &&
-			advisorDetails.firstname &&
-			advisorDetails.password &&
-			confirmAdvisoryPassword
+			adviserDetails.email &&
+			adviserDetails.staffId &&
+			adviserDetails.firstname &&
+			adviserDetails.password &&
+			confirmAdviseryPassword
 		) {
 			// defining fullname of the adviser
-			const fullname = `${advisorDetails.honorifics} ${advisorDetails.firstname} ${advisorDetails.lastname}`;
+			const fullname = `${adviserDetails.honorifics} ${adviserDetails.firstname} ${adviserDetails.lastname}`;
 			// validate password and confirm password
-			if (advisorDetails.password === confirmAdvisoryPassword) {
+			if (adviserDetails.password === confirmAdviseryPassword) {
 				try {
 					// api call
 					const res = await AuthApi.post<unknown, RegisterResponse>(
 						"/auth/register",
 						{
-							email: advisorDetails.email,
+							email: adviserDetails.email,
 							fullName: fullname,
-							userId: advisorDetails.staffId,
-							password: advisorDetails.password,
+							userId: adviserDetails.staffId,
+							password: adviserDetails.password,
 						},
 						{
 							params: {
@@ -234,7 +234,7 @@ export default function RegisterForm() {
 								value="adviser"
 								className="text-slate-300 bg-transparent p-4"
 							>
-								Advisor
+								Adviser
 							</TabsTrigger>
 						</TabsList>
 						<TabsContent value="student">
@@ -491,7 +491,7 @@ export default function RegisterForm() {
 									</CardDescription>
 								</CardHeader>
 								<CardContent>
-									<form onSubmit={handleAdvisoryRegister} className="space-y-4">
+									<form onSubmit={handleAdviseryRegister} className="space-y-4">
 										<div className="space-y-2">
 											<Label htmlFor="staff_id" className="text-white">
 												Staff ID
@@ -499,9 +499,9 @@ export default function RegisterForm() {
 											<Input
 												id="staff_id"
 												placeholder="Enter your staff ID"
-												value={advisorDetails.staffId}
+												value={adviserDetails.staffId}
 												onChange={(e) =>
-													setAdvisorDetails((prev) => ({
+													setAdviserDetails((prev) => ({
 														...prev,
 														staffId: e.target.value,
 													}))
@@ -519,9 +519,9 @@ export default function RegisterForm() {
 												id="email"
 												type="email"
 												placeholder="Enter your email"
-												value={advisorDetails.email}
+												value={adviserDetails.email}
 												onChange={(e) =>
-													setAdvisorDetails((prev) => ({
+													setAdviserDetails((prev) => ({
 														...prev,
 														email: e.target.value,
 													}))
@@ -537,9 +537,9 @@ export default function RegisterForm() {
 											<Input
 												id="firstname"
 												placeholder="Enter your first name"
-												value={advisorDetails.firstname}
+												value={adviserDetails.firstname}
 												onChange={(e) =>
-													setAdvisorDetails((prev) => ({
+													setAdviserDetails((prev) => ({
 														...prev,
 														firstname: e.target.value,
 													}))
@@ -555,9 +555,9 @@ export default function RegisterForm() {
 											<Input
 												id="lastname"
 												placeholder="Enter your last name"
-												value={advisorDetails.lastname}
+												value={adviserDetails.lastname}
 												onChange={(e) =>
-													setAdvisorDetails((prev) => ({
+													setAdviserDetails((prev) => ({
 														...prev,
 														lastname: e.target.value,
 													}))
@@ -574,11 +574,11 @@ export default function RegisterForm() {
 											<div className="relative">
 												<Input
 													id="password"
-													type={showAdvisoryPassword ? "text" : "password"}
+													type={showAdviseryPassword ? "text" : "password"}
 													placeholder="Enter your password"
-													value={advisorDetails.password}
+													value={adviserDetails.password}
 													onChange={(e) =>
-														setAdvisorDetails((prev) => ({
+														setAdviserDetails((prev) => ({
 															...prev,
 															password: e.target.value,
 														}))
@@ -592,10 +592,10 @@ export default function RegisterForm() {
 													size="sm"
 													className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
 													onClick={() =>
-														setShowAdvisoryPassword(!showAdvisoryPassword)
+														setShowAdviseryPassword(!showAdviseryPassword)
 													}
 												>
-													{showAdvisoryPassword ? (
+													{showAdviseryPassword ? (
 														<EyeOff className="h-4 w-4 text-slate-400" />
 													) : (
 														<Eye className="h-4 w-4 text-slate-400" />
@@ -612,12 +612,12 @@ export default function RegisterForm() {
 												<Input
 													id="confirm_password"
 													type={
-														showConfirmAdvisoryPassword ? "text" : "password"
+														showConfirmAdviseryPassword ? "text" : "password"
 													}
 													placeholder="Enter your password again"
-													value={confirmAdvisoryPassword}
+													value={confirmAdviseryPassword}
 													onChange={(e) =>
-														setConfirmAdvisoryPassword(e.target.value)
+														setConfirmAdviseryPassword(e.target.value)
 													}
 													className="bg-slate-700 border-slate-600 text-white placeholder:text-slate-400 pr-10"
 													required
@@ -628,12 +628,12 @@ export default function RegisterForm() {
 													size="sm"
 													className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
 													onClick={() =>
-														setShowConfirmAdvisoryPassword(
-															!showConfirmAdvisoryPassword
+														setShowConfirmAdviseryPassword(
+															!showConfirmAdviseryPassword
 														)
 													}
 												>
-													{showConfirmAdvisoryPassword ? (
+													{showConfirmAdviseryPassword ? (
 														<EyeOff className="h-4 w-4 text-slate-400" />
 													) : (
 														<Eye className="h-4 w-4 text-slate-400" />

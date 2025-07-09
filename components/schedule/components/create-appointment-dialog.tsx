@@ -22,11 +22,11 @@ import { formatDate } from "@/lib/utils";
 import { Schedule } from "@/lib/types";
 
 const CreateAppointmentDialog = ({
-	advisorFullname,
+	adviserFullname,
 	rescheduleAppointment,
 	schedule,
 }: {
-	advisorFullname?: string;
+	adviserFullname?: string;
 	rescheduleAppointment?: boolean;
 	schedule?: Schedule;
 }) => {
@@ -36,7 +36,7 @@ const CreateAppointmentDialog = ({
 		fromTime: rescheduleAppointment && schedule ? schedule.fromTime : "02:00PM",
 		toTime: rescheduleAppointment && schedule ? schedule.toTime : "04:00PM",
 		course: "",
-		adviser: advisorFullname ? advisorFullname : "",
+		adviser: adviserFullname ? adviserFullname : "",
 	});
 	useEffect(() => {}, []);
 	const [openPopover, setOpenPopover] = React.useState(false);
@@ -55,7 +55,7 @@ const CreateAppointmentDialog = ({
 							? "bg-white border border-blue-500 text-blue-500"
 							: "bg-slate-600 text-white hover:bg-slate-700 border-2 border-transparent cursor-pointer flex justify-center items-center"
 					} ${
-						advisorFullname
+						adviserFullname
 							? "rounded-xl"
 							: rescheduleAppointment
 							? ""
@@ -64,7 +64,7 @@ const CreateAppointmentDialog = ({
 				>
 					{!rescheduleAppointment && <Plus size={64} strokeWidth={3} />}
 					<Label>
-						{advisorFullname
+						{adviserFullname
 							? "Schedule appointment"
 							: rescheduleAppointment
 							? "Reschedule"
@@ -104,7 +104,7 @@ const CreateAppointmentDialog = ({
 							</div>
 							<div className="space-y-2">
 								<Label htmlFor="adviser" className="text-white">
-									Advisor
+									Adviser
 								</Label>
 								<Input
 									id="adviser"
@@ -114,7 +114,7 @@ const CreateAppointmentDialog = ({
 										setNewSchedule((prev) => ({
 											...prev,
 											adviser: e.target.value,
-											advisorFullname,
+											adviserFullname,
 										}))
 									}
 									className="placeholder:text-slate-400"

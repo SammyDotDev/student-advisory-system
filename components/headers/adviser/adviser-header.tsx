@@ -5,7 +5,7 @@ import { getGreeting } from "@/lib/utils";
 import { Settings } from "lucide-react";
 import React from "react";
 
-const AdvisorHeader = ({ user }: { user: User }) => {
+const AdviserHeader = ({ user }: { user: User }) => {
 	const firstname = user.fullname.split(" ")[0];
 	const lastname = user.fullname.split(" ")[1];
 	const userNameInitials = `${firstname.charAt(0)}${lastname.charAt(0)}`;
@@ -14,7 +14,7 @@ const AdvisorHeader = ({ user }: { user: User }) => {
 			<div className="flex items-center justify-between m-4">
 				<div>
 					<h1 className="text-2xl font-bold text-gray-900">
-						Advisor Dashboard
+						Adviser Dashboard
 					</h1>
 					<p className="text-gray-600">{`${getGreeting()}, ${firstname}`}</p>
 				</div>
@@ -32,4 +32,4 @@ const AdvisorHeader = ({ user }: { user: User }) => {
 	);
 };
 
-export default AdvisorHeader;
+export default AdviserHeader;

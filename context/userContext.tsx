@@ -200,7 +200,8 @@ export function UserProvider({ children }) {
 	};
 
 	const updateUser = (userData) => {
-		setUser((prev) => ({ ...prev, ...userData }));
+		const storedUserData = getStoredUserData();
+		setUser((prev) => ({ ...prev,...storedUserData, ...userData }));
 		setIsLoading(false);
 	};
 

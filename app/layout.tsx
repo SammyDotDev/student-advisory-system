@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
 	title: "EduPortal",
 	description:
-		"student advisory system for bowen university students in the College of Computing and Communication Studies",
+		"student advisery system for bowen university students in the College of Computing and Communication Studies",
 };
 
 export default function RootLayout({

@@ -29,7 +29,7 @@ const StudentSchedule = () => {
 			href: "/dashboard/student/schedule",
 			active: true,
 		},
-		{ icon: Users, label: "Advisors", href: "/dashboard/student/advisors" },
+		{ icon: Users, label: "Advisers", href: "/dashboard/student/advisers" },
 	];
 
 	const scheduleTimelines: ("upcoming" | "pending" | "past" | "declined")[] = [

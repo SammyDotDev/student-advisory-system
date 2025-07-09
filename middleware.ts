@@ -19,7 +19,7 @@ export function middleware(request: NextRequest) {
 	console.log("🔑 Token exists:", !!token);
 
 	// Allow access to auth pages
-	if (pathname.startsWith("/auth") && !token) {
+	if (pathname.startsWith("/auth")) {
 		console.log("✅ Auth page, allowing access");
 		return NextResponse.next();
 	}

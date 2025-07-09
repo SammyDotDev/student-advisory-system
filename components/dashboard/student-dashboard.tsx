@@ -26,7 +26,7 @@ const studentNavItems = [
 		active: true,
 	},
 	{ icon: Calendar, label: "Schedule", href: "/dashboard/student/schedule" },
-	{ icon: Users, label: "Advisors", href: "/dashboard/student/advisors" },
+	{ icon: Users, label: "Advisers", href: "/dashboard/student/advisers" },
 ];
 
 export const user: User = {
@@ -35,7 +35,7 @@ export const user: User = {
 };
 export default function StudentDashboard() {
 	const { user: currentUser } = useUser();
-    console.log(currentUser)
+	console.log(currentUser);
 
 	const upcomingAppointments = [
 		{

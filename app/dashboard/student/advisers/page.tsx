@@ -1,8 +1,8 @@
-import StudentAdvisors from "@/components/advisers-and-advisees/advisers/student-advisors";
+import StudentAdvisers from "@/components/advisers-and-advisees/advisers/student-advisers";
 import React from "react";
 
 const page = () => {
-	return <StudentAdvisors />;
+	return <StudentAdvisers />;
 };
 
 export default page;

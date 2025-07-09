@@ -22,10 +22,10 @@ import CreateAppointmentDialog from "./create-appointment-dialog";
 
 const ScheduleItem = ({
 	schedule,
-	isAdvisor,
+	isAdviser,
 }: {
 	schedule: Schedule;
-	isAdvisor?: boolean;
+	isAdviser?: boolean;
 }) => {
 	const [openAccordionTrigger, setOpenAccordionTrigger] =
 		useState<boolean>(false);
@@ -37,7 +37,7 @@ const ScheduleItem = ({
 			className={`border rounded-xl p-4 bg-slate-100 ${
 				openAccordionTrigger
 					? "border-slate-500"
-					: isAdvisor && openAccordionTrigger
+					: isAdviser && openAccordionTrigger
 					? "border-slate-900"
 					: "border-transparent"
 			}`}
@@ -87,7 +87,7 @@ const ScheduleItem = ({
 							/>
 							<div>
 								<CardDescription className="text-gray-500">
-									{isAdvisor ? "Advisee" : "Advisor"}
+									{isAdviser ? "Advisee" : "Adviser"}
 								</CardDescription>
 								<CardAction>{schedule.adviser}</CardAction>
 							</div>
@@ -106,26 +106,26 @@ const ScheduleItem = ({
 						<Dialog>
 							<DialogTrigger asChild>
 								<Button className="bg-white border border-red-500 text-red-500">
-									<Label>{isAdvisor ? "Decline" : "Delete"}</Label>
+									<Label>{isAdviser ? "Decline" : "Delete"}</Label>
 								</Button>
 							</DialogTrigger>
 							<DialogContent>
 								<DialogHeader>
 									<DialogTitle>Are you absolutely sure?</DialogTitle>
 									<DialogDescription>
-										{isAdvisor
+										{isAdviser
 											? "Are you sure you want to decline this request? This action cannot be undone"
 											: "This action cannot be undone. This will permanently delete your schedule."}
 									</DialogDescription>
 								</DialogHeader>
 								<div className="ml-auto flex gap-3">
 									<Button className="border border-transparent bg-red-500 text-white hover:bg-red-300">
-										<Label>{isAdvisor ? "Decline" : "Delete"}</Label>
+										<Label>{isAdviser ? "Decline" : "Delete"}</Label>
 									</Button>
 								</div>
 							</DialogContent>
 						</Dialog>
-						{isAdvisor ? (
+						{isAdviser ? (
 							<Button
 								className={"bg-white border border-blue-500 text-blue-500"}
 							>

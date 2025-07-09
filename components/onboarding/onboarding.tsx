@@ -29,7 +29,8 @@ type CourseForm = {
 
 const Onboarding = () => {
 	const ApiService = ApiClient();
-	const { user } = useUser();
+	const { user, updateUser } = useUser();
+	const router = useRouter();
 	const [adviserOffice, setAdviserOffice] = useState<string>("");
 	const { register, control, handleSubmit, reset } = useForm<CourseForm>({
 		defaultValues: {
@@ -52,15 +53,31 @@ const Onboarding = () => {
 
 	// const router = useRouter();
 	const onSubmit = async (data: CourseForm) => {
-		console.log(data, "COURSE FORM");
-		try {
-			const res = await ApiService.put(`/user/onboard/${user.code}`, {
-				adviserOffice,
-				adviserCourses: data,
-			});
-			console.log(res.data);
-		} catch (error) {
-			console.log(error);
+		if (user) {
+			try {
+				const res = await ApiService.put<
+					unknown,
+					{
+						success: boolean;
+						result: {
+							adviserOffice: string;
+							adviserCourses: string[];
+							onboarded: boolean;
+						};
+					}
+				>(`/user/onboard/${user.code}`, {
+					adviserOffice,
+					adviserCourses: data.courses,
+				});
+				if (res.data.success && res.data.result.onboarded) {
+					// document.cookie = `token=${user.token}; path=/; secure; samesite=strict`;
+					updateUser(res.data.result);
+					router.replace("/dashboard/adviser");
+					console.log(res.data.result);
+				}
+			} catch (error) {
+				console.log(error);
+			}
 		}
 		// returning unique course code
 		console.log("Final data:", data.courses);

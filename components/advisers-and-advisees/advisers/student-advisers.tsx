@@ -4,10 +4,10 @@ import StudentHeader from "@/components/headers/student/student-header";
 import Sidebar from "@/components/layout/sidebar";
 import { BarChart3, Calendar, Users } from "lucide-react";
 import React from "react";
-import StudentAdvisorItem from "../components/student-adviser-item";
+import StudentAdviserItem from "../components/student-adviser-item";
 import { user } from "@/components/dashboard/student-dashboard";
 
-const StudentAdvisors = () => {
+const StudentAdvisers = () => {
 	const studentNavItems = [
 		{
 			icon: BarChart3,
@@ -21,13 +21,13 @@ const StudentAdvisors = () => {
 		},
 		{
 			icon: Users,
-			label: "Advisors",
-			href: "/dashboard/student/advisors",
+			label: "Advisers",
+			href: "/dashboard/student/advisers",
 			active: true,
 		},
 	];
 
-	const studentAdvisors = [
+	const studentAdvisers = [
 		{
 			fullname: "Dr. Angela Martins",
 			profileImage: "https://randomuser.me/api/portraits/women/21.jpg",
@@ -93,14 +93,14 @@ const StudentAdvisors = () => {
 					{/* adviser page header */}
 					<div className="flex items-center justify-between mb-6">
 						<div className="flex flex-col gap-4">
-							<h1 className="text-2xl font-bold text-gray-900">All Advisors</h1>
+							<h1 className="text-2xl font-bold text-gray-900">All Advisers</h1>
 						</div>
 						<div></div>
 					</div>
 					<div className="grid grid-cols-1 lg:grid-cols-1 gap-6">
 						{/* Today's Schedule */}
-						{studentAdvisors.map((adviser, index) => {
-							return <StudentAdvisorItem key={index} adviser={adviser} />;
+						{studentAdvisers.map((adviser, index) => {
+							return <StudentAdviserItem key={index} adviser={adviser} />;
 						})}
 					</div>
 				</main>
@@ -109,4 +109,4 @@ const StudentAdvisors = () => {
 	);
 };
 
-export default StudentAdvisors;
+export default StudentAdvisers;

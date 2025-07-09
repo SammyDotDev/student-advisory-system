@@ -29,14 +29,14 @@ export default function LoginForm() {
 
 	// show passowrd states for eye button
 	const [showStudentPassword, setShowStudentPassword] = useState(false);
-	const [showAdvisoryPassword, setShowAdvisoryPassword] = useState(false);
+	const [showAdviseryPassword, setShowAdviseryPassword] = useState(false);
 
 	// user details
 	const [studentDetails, setStudentDetails] = useState({
 		matricNumber: "",
 		password: "",
 	});
-	const [advisorDetails, setAdvisorDetails] = useState({
+	const [adviserDetails, setAdviserDetails] = useState({
 		staffId: "",
 		password: "",
 	});
@@ -62,11 +62,11 @@ export default function LoginForm() {
 		}
 	};
 
-	const handleAdvisorLogin = async (e: React.FormEvent) => {
+	const handleAdviserLogin = async (e: React.FormEvent) => {
 		e.preventDefault();
 		const result = await login({
-			userId: advisorDetails.staffId,
-			password: advisorDetails.password,
+			userId: adviserDetails.staffId,
+			password: adviserDetails.password,
 		});
 		console.log(result, "ADVISER RESULT");
 		if (result.success) {
@@ -109,7 +109,7 @@ export default function LoginForm() {
 								value="adviser"
 								className="text-slate-300 bg-transparent p-4"
 							>
-								Advisor
+								Adviser
 							</TabsTrigger>
 						</TabsList>
 						<TabsContent value="student">
@@ -205,11 +205,11 @@ export default function LoginForm() {
 								<CardHeader>
 									<CardTitle className="text-white">Sign In</CardTitle>
 									<CardDescription className="text-slate-400">
-										Access your advisory portal
+										Access your advisery portal
 									</CardDescription>
 								</CardHeader>
 								<CardContent>
-									<form onSubmit={handleAdvisorLogin} className="space-y-4">
+									<form onSubmit={handleAdviserLogin} className="space-y-4">
 										<div className="space-y-2">
 											<Label htmlFor="staff_id" className="text-white">
 												Staff ID
@@ -217,9 +217,9 @@ export default function LoginForm() {
 											<Input
 												id="staff_id"
 												placeholder="Enter your staff ID"
-												value={advisorDetails.staffId}
+												value={adviserDetails.staffId}
 												onChange={(e) =>
-													setAdvisorDetails((prev) => ({
+													setAdviserDetails((prev) => ({
 														...prev,
 														staffId: e.target.value,
 													}))
@@ -236,11 +236,11 @@ export default function LoginForm() {
 											<div className="relative">
 												<Input
 													id="password"
-													type={showAdvisoryPassword ? "text" : "password"}
+													type={showAdviseryPassword ? "text" : "password"}
 													placeholder="Enter your password"
-													value={advisorDetails.password}
+													value={adviserDetails.password}
 													onChange={(e) =>
-														setAdvisorDetails((prev) => ({
+														setAdviserDetails((prev) => ({
 															...prev,
 															password: e.target.value,
 														}))
@@ -254,10 +254,10 @@ export default function LoginForm() {
 													size="sm"
 													className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
 													onClick={() =>
-														setShowAdvisoryPassword(!showAdvisoryPassword)
+														setShowAdviseryPassword(!showAdviseryPassword)
 													}
 												>
-													{showAdvisoryPassword ? (
+													{showAdviseryPassword ? (
 														<EyeOff className="h-4 w-4 text-slate-400" />
 													) : (
 														<Eye className="h-4 w-4 text-slate-400" />

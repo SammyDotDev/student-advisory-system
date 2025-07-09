@@ -1,13 +1,13 @@
 "use client";
 
-import { userAdvisor } from "@/components/dashboard/adviser-dashboard";
-import AdvisorHeader from "@/components/headers/adviser/adviser-header";
+import { userAdviser } from "@/components/dashboard/adviser-dashboard";
+import AdviserHeader from "@/components/headers/adviser/adviser-header";
 import Sidebar from "@/components/layout/sidebar";
 import { BarChart3, Calendar, Clock, Users } from "lucide-react";
 import React from "react";
-import AdvisorAdviseeItem from "../components/adviser-advisee-item";
+import AdviserAdviseeItem from "../components/adviser-advisee-item";
 
-export const advisorAdvisees = [
+export const adviserAdvisees = [
 	{
 		fullname: "Joyce Obinna",
 		matricNumber: "SENG/2020/014",
@@ -79,8 +79,8 @@ export const advisorAdvisees = [
 		profileImage: "https://randomuser.me/api/portraits/men/36.jpg",
 	},
 ];
-const AdvisorAdvisees = () => {
-	const advisorNavItems = [
+const AdviserAdvisees = () => {
+	const adviserNavItems = [
 		{
 			icon: BarChart3,
 			label: "Dashboard",
@@ -106,25 +106,25 @@ const AdvisorAdvisees = () => {
 
 	return (
 		<div className="flex h-screen bg-gray-50">
-			<Sidebar navItems={advisorNavItems} userRole="adviser" />
+			<Sidebar navItems={adviserNavItems} userRole="adviser" />
 
 			<div className="flex-1 flex flex-col overflow-hidden">
 				{/* Header */}
-				<AdvisorHeader user={userAdvisor} />
+				<AdviserHeader user={userAdviser} />
 
 				{/* Main Content */}
 				<main className="flex-1 overflow-y-auto py-6">
 					{/* adviser page header */}
 					<div className="flex items-center justify-between mb-6">
 						<div className="flex flex-col gap-4">
-							<h1 className="text-2xl font-bold text-gray-900">All Advisors</h1>
+							<h1 className="text-2xl font-bold text-gray-900">All Advisers</h1>
 						</div>
 						<div></div>
 					</div>
 					<div className="grid grid-cols-1 lg:grid-cols-1 gap-6">
 						{/* Today's Schedule */}
-						{advisorAdvisees.map((advisee, index) => {
-							return <AdvisorAdviseeItem key={index} advisee={advisee} />;
+						{adviserAdvisees.map((advisee, index) => {
+							return <AdviserAdviseeItem key={index} advisee={advisee} />;
 						})}
 
 						{/* Assignments */}
@@ -139,4 +139,4 @@ const AdvisorAdvisees = () => {
 	);
 };
 
-export default AdvisorAdvisees;
+export default AdviserAdvisees;

@@ -1,8 +1,8 @@
-import AdvisorAppointments from "@/components/schedule/adviser-appointments";
+import AdviserAppointments from "@/components/schedule/adviser-appointments";
 import React from "react";
 
 const appointments = () => {
-	return <AdvisorAppointments />;
+	return <AdviserAppointments />;
 };
 
 export default appointments;

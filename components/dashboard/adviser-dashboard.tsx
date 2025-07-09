@@ -12,7 +12,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Users, Calendar, Clock, BarChart3 } from "lucide-react";
 import Sidebar from "@/components/layout/sidebar";
 import { User } from "@/lib/types";
-import AdvisorHeader from "../headers/adviser/adviser-header";
+import AdviserHeader from "../headers/adviser/adviser-header";
 import { useRouter } from "next/navigation";
 import {
 	Dialog,
@@ -23,17 +23,18 @@ import {
 	DialogTrigger,
 } from "../ui/dialog";
 import { Label } from "../ui/label";
-import { advisorAdvisees } from "../advisers-and-advisees/advisees/adviser-advisees";
+import { adviserAdvisees } from "../advisers-and-advisees/advisees/adviser-advisees";
 import appointments from "@/app/dashboard/adviser/appointments/page";
 import { getDateRelativeToThisWeek, getRoleFromToken } from "@/lib/utils";
 import { useEffect } from "react";
+import { useUser } from "@/context/userContext";
 
-export const userAdvisor: User = {
+export const userAdviser: User = {
 	fullname: "Dr.John Doe",
 	email: "johndoe@gmail.com",
 };
 
-const advisorNavItems = [
+const adviserNavItems = [
 	{
 		icon: BarChart3,
 		label: "Dashboard",
@@ -55,6 +56,10 @@ const advisorNavItems = [
 
 export default function AdviserDashboard() {
 	const router = useRouter();
+	const { loading, user: currentUser } = useUser();
+    useEffect(()=>{
+        console.log(currentUser, "CURRENT USER")
+    },[])
 	const advisees = [
 		{
 			name: "John Smith",
@@ -134,11 +139,11 @@ export default function AdviserDashboard() {
 
 	return (
 		<div className="flex h-screen bg-gray-50">
-			<Sidebar navItems={advisorNavItems} userRole="adviser" />
+			<Sidebar navItems={adviserNavItems} userRole="adviser" />
 
 			<div className="flex-1 flex flex-col overflow-hidden">
 				{/* Header */}
-				<AdvisorHeader user={userAdvisor} />
+				<AdviserHeader user={userAdviser} />
 
 				{/* Main Content */}
 				<main className="flex-1 overflow-y-auto p-6">
@@ -150,7 +155,7 @@ export default function AdviserDashboard() {
 									<div>
 										<p className="text-gray-100">Total Advisees</p>
 										<p className="text-3xl font-bold">
-											{advisorAdvisees.length}
+											{adviserAdvisees.length}
 										</p>
 									</div>
 									<Users className="h-12 w-12 text-gray-200" />
@@ -197,7 +202,7 @@ export default function AdviserDashboard() {
 							</CardHeader>
 							<CardContent>
 								<div className="space-y-4">
-									{advisorAdvisees.slice(6).map((advisee, index) => (
+									{adviserAdvisees.slice(6).map((advisee, index) => (
 										<div
 											key={index}
 											className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"

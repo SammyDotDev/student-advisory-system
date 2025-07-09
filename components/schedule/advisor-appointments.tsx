@@ -2,13 +2,13 @@
 
 import React from "react";
 import Sidebar from "../layout/sidebar";
-import AdvisorHeader from "../headers/adviser/adviser-header";
-import { userAdvisor } from "../dashboard/adviser-dashboard";
+import AdviserHeader from "../headers/adviser/adviser-header";
+import { userAdviser } from "../dashboard/adviser-dashboard";
 import { BarChart3, Calendar, Clock, Users } from "lucide-react";
 import ScheduleItem from "./components/scheduleItem";
 
-const AdvisorAppointments = () => {
-	const advisorNavItems = [
+const AdviserAppointments = () => {
+	const adviserNavItems = [
 		{
 			icon: BarChart3,
 			label: "Dashboard",
@@ -112,18 +112,18 @@ const AdvisorAppointments = () => {
 
 	return (
 		<div className="flex h-screen bg-gray-50">
-			<Sidebar navItems={advisorNavItems} userRole="adviser" />
+			<Sidebar navItems={adviserNavItems} userRole="adviser" />
 
 			<div className="flex-1 flex flex-col overflow-hidden">
 				{/* Header */}
-				<AdvisorHeader user={userAdvisor} />
+				<AdviserHeader user={userAdviser} />
 
 				{/* Main Content */}
 				<main className="flex-1 overflow-y-auto py-6">
 					{/* adviser page header */}
 					<div className="flex items-center justify-between mb-6">
 						<div className="flex flex-col gap-4">
-							<h1 className="text-2xl font-bold text-gray-900">All Advisors</h1>
+							<h1 className="text-2xl font-bold text-gray-900">All Advisers</h1>
 						</div>
 						<div></div>
 					</div>
@@ -134,7 +134,7 @@ const AdvisorAppointments = () => {
 								<ScheduleItem
 									key={index}
 									schedule={appointmentItem}
-									isAdvisor
+									isAdviser
 								/>
 							);
 						})}
@@ -151,4 +151,4 @@ const AdvisorAppointments = () => {
 	);
 };
 
-export default AdvisorAppointments;
+export default AdviserAppointments;
