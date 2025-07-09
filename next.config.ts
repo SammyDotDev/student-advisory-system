@@ -5,7 +5,7 @@ const nextConfig: NextConfig = {
 	images: {
 		domains: ["randomuser.me"],
 	},
-	// matchers: ["/dashboard/advisor/:path*", "/dashboard/student/:path*"],
+	// matchers: ["/dashboard/adviser/:path*", "/dashboard/student/:path*"],
 };
 
 export default nextConfig;

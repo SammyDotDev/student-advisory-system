@@ -4,16 +4,16 @@ import { User } from "@/lib/types";
 import Image from "next/image";
 import React from "react";
 
-const StudentAdvisorItem = ({ advisor }: { advisor: User }) => {
+const StudentAdvisorItem = ({ adviser }: { adviser: User }) => {
 	return (
 		<Card className="border-0 shadow-none rounded-xl p-4 bg-slate-100">
 			<div className="flex items-start justify-between space-x-4 px-4">
 				<div className="flex gap-3">
 					<Image
 						src={`${
-							advisor.profileImage?.includes("profile-image")
-								? "/" + advisor.profileImage
-								: advisor.profileImage
+							adviser.profileImage?.includes("profile-image")
+								? "/" + adviser.profileImage
+								: adviser.profileImage
 						}`}
 						width={40}
 						height={40}
@@ -22,10 +22,10 @@ const StudentAdvisorItem = ({ advisor }: { advisor: User }) => {
 					/>
 					<div>
 						<CardDescription className="text-gray-500">Advisor</CardDescription>
-						<CardAction>{advisor.fullname}</CardAction>
+						<CardAction>{adviser.fullname}</CardAction>
 					</div>
 				</div>
-				<CreateAppointmentDialog advisorFullname={advisor.fullname} />
+				<CreateAppointmentDialog advisorFullname={adviser.fullname} />
 
 				{/* <AccordionChevron /> */}
 			</div>

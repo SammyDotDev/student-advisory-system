@@ -1,11 +1,11 @@
 "use client";
 
-import { userAdvisor } from "@/components/dashboard/advisor-dashboard";
-import AdvisorHeader from "@/components/headers/advisor/advisor-header";
+import { userAdvisor } from "@/components/dashboard/adviser-dashboard";
+import AdvisorHeader from "@/components/headers/adviser/adviser-header";
 import Sidebar from "@/components/layout/sidebar";
 import { BarChart3, Calendar, Clock, Users } from "lucide-react";
 import React from "react";
-import AdvisorAdviseeItem from "../components/advisor-advisee-item";
+import AdvisorAdviseeItem from "../components/adviser-advisee-item";
 
 export const advisorAdvisees = [
 	{
@@ -84,29 +84,29 @@ const AdvisorAdvisees = () => {
 		{
 			icon: BarChart3,
 			label: "Dashboard",
-			href: "/dashboard/advisor",
+			href: "/dashboard/adviser",
 		},
 		{
 			icon: Users,
 			label: "My Advisees",
-			href: "/dashboard/advisor/advisees",
+			href: "/dashboard/adviser/advisees",
 			active: true,
 		},
 		{
 			icon: Calendar,
 			label: "Appointments",
-			href: "/dashboard/advisor/appointments",
+			href: "/dashboard/adviser/appointments",
 		},
 		{
 			icon: Clock,
 			label: "Requests",
-			href: "/dashboard/advisor/requests",
+			href: "/dashboard/adviser/requests",
 		},
 	];
 
 	return (
 		<div className="flex h-screen bg-gray-50">
-			<Sidebar navItems={advisorNavItems} userRole="advisor" />
+			<Sidebar navItems={advisorNavItems} userRole="adviser" />
 
 			<div className="flex-1 flex flex-col overflow-hidden">
 				{/* Header */}
@@ -114,7 +114,7 @@ const AdvisorAdvisees = () => {
 
 				{/* Main Content */}
 				<main className="flex-1 overflow-y-auto py-6">
-					{/* advisor page header */}
+					{/* adviser page header */}
 					<div className="flex items-center justify-between mb-6">
 						<div className="flex flex-col gap-4">
 							<h1 className="text-2xl font-bold text-gray-900">All Advisors</h1>

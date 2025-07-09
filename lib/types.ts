@@ -3,7 +3,7 @@ export type Schedule = {
 	fromTime: string;
 	toTime: string;
 	course: string;
-	advisor?: string;
+	adviser?: string;
 	profileImage?: string;
 	advisee?: string;
 	status?: "" | "" | "";
@@ -34,5 +34,5 @@ export type LoginResponse = {
 	level?: string;
 	onboarded: boolean;
 	token: string;
-	role: "STUDENT" | "ADVISOR";
+	role: "STUDENT" | "ADVISER";
 };

@@ -3,7 +3,12 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 export const config = {
-	matcher: ["/dashboard/:path*", "/unauthorized", "/auth/:path*"],
+	matcher: [
+		"/dashboard/:path*",
+		"/unauthorized",
+		"/auth/:path*",
+		"/onboarding",
+	],
 };
 
 export function middleware(request: NextRequest) {
@@ -39,12 +44,12 @@ export function middleware(request: NextRequest) {
 				"🔒 Authenticated user trying to access auth page, redirecting..."
 			);
 
-			if (roles.includes("ADVISOR")) {
+			if (roles.includes("ADVISER")) {
 				console.log(
-					"✅ ADVISOR on auth page, redirecting to advisor dashboard"
+					"✅ ADVISER on auth page, redirecting to adviser dashboard"
 				);
 				return NextResponse.redirect(
-					new URL("/dashboard/advisor", request.url)
+					new URL("/dashboard/adviser", request.url)
 				);
 			}
 
@@ -59,12 +64,12 @@ export function middleware(request: NextRequest) {
 		}
 		// unauthorized page
 		if (pathname === "/unauthorized") {
-			if (roles.includes("ADVISOR")) {
+			if (roles.includes("ADVISER")) {
 				console.log(
-					"✅ ADVISOR on unauthorized page, redirecting to advisor dashboard"
+					"✅ ADVISER on unauthorized page, redirecting to adviser dashboard"
 				);
 				return NextResponse.redirect(
-					new URL("/dashboard/advisor", request.url)
+					new URL("/dashboard/adviser", request.url)
 				);
 			}
 			if (roles.includes("STUDENT")) {
@@ -79,10 +84,10 @@ export function middleware(request: NextRequest) {
 
 		// Check role-based access
 		if (
-			pathname.startsWith("/dashboard/advisor") &&
-			!roles.includes("ADVISOR")
+			pathname.startsWith("/dashboard/adviser") &&
+			!roles.includes("ADVISER")
 		) {
-			console.log("❌ ADVISOR role required but not found");
+			console.log("❌ ADVISER role required but not found");
 			return NextResponse.redirect(new URL("/unauthorized", request.url));
 		}
 

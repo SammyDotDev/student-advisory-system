@@ -45,7 +45,7 @@ const StudentSchedule = () => {
 			fromTime: "09:00AM",
 			toTime: "11:00AM",
 			course: "Introduction to Special Topics",
-			advisor: "John Doe",
+			adviser: "John Doe",
 			profileImage: "profile-image.png",
 		},
 		{
@@ -53,7 +53,7 @@ const StudentSchedule = () => {
 			fromTime: "01:00PM",
 			toTime: "03:00PM",
 			course: "Cybersecurity Principles",
-			advisor: "Jane Smith",
+			adviser: "Jane Smith",
 			profileImage: "profile-image.png",
 		},
 		{
@@ -61,7 +61,7 @@ const StudentSchedule = () => {
 			fromTime: "02:00PM",
 			toTime: "04:00PM",
 			course: "Mass Media Communication",
-			advisor: "Dr. Susan Blake",
+			adviser: "Dr. Susan Blake",
 			profileImage: "profile-image.png",
 		},
 		{
@@ -69,7 +69,7 @@ const StudentSchedule = () => {
 			fromTime: "10:00AM",
 			toTime: "12:00PM",
 			course: "Software Design Patterns",
-			advisor: "Mr. Kelvin Ross",
+			adviser: "Mr. Kelvin Ross",
 			profileImage: "profile-image.png",
 		},
 		{
@@ -77,7 +77,7 @@ const StudentSchedule = () => {
 			fromTime: "11:30AM",
 			toTime: "01:00PM",
 			course: "Human-Computer Interaction",
-			advisor: "Prof. Linda George",
+			adviser: "Prof. Linda George",
 			profileImage: "profile-image.png",
 		},
 		{
@@ -85,7 +85,7 @@ const StudentSchedule = () => {
 			fromTime: "04:30PM",
 			toTime: "06:00PM",
 			course: "Digital Storytelling",
-			advisor: "Mrs. Carol Finn",
+			adviser: "Mrs. Carol Finn",
 			profileImage: "profile-image.png",
 		},
 		{
@@ -93,7 +93,7 @@ const StudentSchedule = () => {
 			fromTime: "08:00AM",
 			toTime: "10:00AM",
 			course: "IT Project Management",
-			advisor: "Dr. Isaac Newton",
+			adviser: "Dr. Isaac Newton",
 			profileImage: "profile-image.png",
 		},
 		{
@@ -101,7 +101,7 @@ const StudentSchedule = () => {
 			fromTime: "03:00PM",
 			toTime: "05:00PM",
 			course: "Network Security",
-			advisor: "Mr. Alfred Mensah",
+			adviser: "Mr. Alfred Mensah",
 			profileImage: "profile-image.png",
 		},
 		{
@@ -109,7 +109,7 @@ const StudentSchedule = () => {
 			fromTime: "08:00AM",
 			toTime: "09:30AM",
 			course: "Journalism Ethics",
-			advisor: "Ms. Daniella Okoro",
+			adviser: "Ms. Daniella Okoro",
 			profileImage: "profile-image.png",
 		},
 		{
@@ -117,7 +117,7 @@ const StudentSchedule = () => {
 			fromTime: "02:00PM",
 			toTime: "03:30PM",
 			course: "Artificial Intelligence Fundamentals",
-			advisor: "Dr. Philip Iroegbu",
+			adviser: "Dr. Philip Iroegbu",
 			profileImage: "profile-image.png",
 		},
 	];

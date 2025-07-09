@@ -56,8 +56,8 @@ export default function LoginForm() {
 			// const token = params.get("token");
 			// console.log(token);
 			// const payload = JSON.parse(atob(token.split(".")[1])); // Decode JWT
-            // const role = payload.roles[0]
-            // console.log(role)
+			// const role = payload.roles[0]
+			// console.log(role)
 			router.push("/dashboard/student");
 		}
 	};
@@ -68,13 +68,18 @@ export default function LoginForm() {
 			userId: advisorDetails.staffId,
 			password: advisorDetails.password,
 		});
-		console.log(result, "ADVISOR RESULT");
-		toast.success("Login successful");
-		if (result.user && !result.user.onboarded) {
-			router.replace("/onboarding");
-			// Redirect to student dashboard
+		console.log(result, "ADVISER RESULT");
+		if (result.success) {
+			document.cookie = `token=${result.user.token}; path=/; secure; samesite=strict`;
+			toast.success("Login successful");
+			if (result.user && !result.user.onboarded) {
+				router.replace("/onboarding");
+				// Redirect to student dashboard
+			} else {
+				router.push("/dashboard/adviser");
+			}
 		} else {
-			router.push("/dashboard/advisor");
+			toast.error(result.message);
 		}
 	};
 
@@ -101,7 +106,7 @@ export default function LoginForm() {
 								Student
 							</TabsTrigger>
 							<TabsTrigger
-								value="advisor"
+								value="adviser"
 								className="text-slate-300 bg-transparent p-4"
 							>
 								Advisor
@@ -195,7 +200,7 @@ export default function LoginForm() {
 								</CardContent>
 							</Card>
 						</TabsContent>
-						<TabsContent value="advisor">
+						<TabsContent value="adviser">
 							<Card className="bg-slate-800 border-slate-700">
 								<CardHeader>
 									<CardTitle className="text-white">Sign In</CardTitle>
@@ -212,11 +217,11 @@ export default function LoginForm() {
 											<Input
 												id="staff_id"
 												placeholder="Enter your staff ID"
-												value={advisorDetails.staffID}
+												value={advisorDetails.staffId}
 												onChange={(e) =>
 													setAdvisorDetails((prev) => ({
 														...prev,
-														staffID: e.target.value,
+														staffId: e.target.value,
 													}))
 												}
 												className="bg-slate-700 border-slate-600 text-white placeholder:text-slate-400"

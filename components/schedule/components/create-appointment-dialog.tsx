@@ -36,7 +36,7 @@ const CreateAppointmentDialog = ({
 		fromTime: rescheduleAppointment && schedule ? schedule.fromTime : "02:00PM",
 		toTime: rescheduleAppointment && schedule ? schedule.toTime : "04:00PM",
 		course: "",
-		advisor: advisorFullname ? advisorFullname : "",
+		adviser: advisorFullname ? advisorFullname : "",
 	});
 	useEffect(() => {}, []);
 	const [openPopover, setOpenPopover] = React.useState(false);
@@ -76,7 +76,7 @@ const CreateAppointmentDialog = ({
 				<DialogHeader>
 					<DialogTitle>
 						{rescheduleAppointment
-							? `Reschedule Appointment with ${schedule && schedule.advisor}`
+							? `Reschedule Appointment with ${schedule && schedule.adviser}`
 							: "Create a new appointment"}
 					</DialogTitle>
 					<DialogDescription>Fill in all details</DialogDescription>
@@ -103,17 +103,17 @@ const CreateAppointmentDialog = ({
 								/>
 							</div>
 							<div className="space-y-2">
-								<Label htmlFor="advisor" className="text-white">
+								<Label htmlFor="adviser" className="text-white">
 									Advisor
 								</Label>
 								<Input
-									id="advisor"
-									placeholder="Enter the name of the advisor"
-									value={newSchedule.advisor}
+									id="adviser"
+									placeholder="Enter the name of the adviser"
+									value={newSchedule.adviser}
 									onChange={(e) =>
 										setNewSchedule((prev) => ({
 											...prev,
-											advisor: e.target.value,
+											adviser: e.target.value,
 											advisorFullname,
 										}))
 									}

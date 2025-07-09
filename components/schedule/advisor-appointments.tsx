@@ -2,8 +2,8 @@
 
 import React from "react";
 import Sidebar from "../layout/sidebar";
-import AdvisorHeader from "../headers/advisor/advisor-header";
-import { userAdvisor } from "../dashboard/advisor-dashboard";
+import AdvisorHeader from "../headers/adviser/adviser-header";
+import { userAdvisor } from "../dashboard/adviser-dashboard";
 import { BarChart3, Calendar, Clock, Users } from "lucide-react";
 import ScheduleItem from "./components/scheduleItem";
 
@@ -12,19 +12,19 @@ const AdvisorAppointments = () => {
 		{
 			icon: BarChart3,
 			label: "Dashboard",
-			href: "/dashboard/advisor",
+			href: "/dashboard/adviser",
 		},
-		{ icon: Users, label: "My Advisees", href: "/dashboard/advisor/advisees" },
+		{ icon: Users, label: "My Advisees", href: "/dashboard/adviser/advisees" },
 		{
 			icon: Calendar,
 			label: "Appointments",
-			href: "/dashboard/advisor/appointments",
+			href: "/dashboard/adviser/appointments",
 			active: true,
 		},
 		{
 			icon: Clock,
 			label: "Requests",
-			href: "/dashboard/advisor/requests",
+			href: "/dashboard/adviser/requests",
 		},
 	];
 	const appointments = [
@@ -112,7 +112,7 @@ const AdvisorAppointments = () => {
 
 	return (
 		<div className="flex h-screen bg-gray-50">
-			<Sidebar navItems={advisorNavItems} userRole="advisor" />
+			<Sidebar navItems={advisorNavItems} userRole="adviser" />
 
 			<div className="flex-1 flex flex-col overflow-hidden">
 				{/* Header */}
@@ -120,7 +120,7 @@ const AdvisorAppointments = () => {
 
 				{/* Main Content */}
 				<main className="flex-1 overflow-y-auto py-6">
-					{/* advisor page header */}
+					{/* adviser page header */}
 					<div className="flex items-center justify-between mb-6">
 						<div className="flex flex-col gap-4">
 							<h1 className="text-2xl font-bold text-gray-900">All Advisors</h1>

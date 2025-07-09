@@ -12,7 +12,7 @@ export const UserContext = createContext({
 	accessToken: null,
 	isLoading: true,
 	login: (credentials: { userId: string; password: string }) => {
-		return { success: true, user: null };
+		return { success: true, user: null, message: "" };
 	},
 	isAuthenticated: false,
 	logout: () => {},
@@ -207,7 +207,7 @@ export function UserProvider({ children }) {
 	const login = async (credentials: {
 		userId: string;
 		password: string;
-		role: "STUDENT" | "ADVISOR";
+		role: "STUDENT" | "ADVISER";
 	}) => {
 		try {
 			const res = await axios.post(
@@ -237,11 +237,11 @@ export function UserProvider({ children }) {
 				setUser(userData);
 				setIsAuthenticated(true);
 				setAccessToken(accessTokenWithBearer);
+				return {
+					success: true,
+					user: res.data.result,
+				};
 			}
-			return {
-				success: true,
-				user: res.data.result,
-			};
 		} catch (error) {
 			if (axios.isAxiosError(error) && error.response) {
 				toast.error(error.response.data.result.message);

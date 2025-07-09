@@ -46,7 +46,7 @@ export const CourseCodeChips = ({ value, onChange }: CourseCodeChipsProps) => {
 							onClick={() => removeCode(code)}
 							className="text-white bg-transparent rounded-full hover:bg-slate-600"
 						>
-							<X strokeWidth={2}/>
+							<X strokeWidth={2} />
 						</Button>
 					</span>
 				))}
@@ -59,7 +59,10 @@ export const CourseCodeChips = ({ value, onChange }: CourseCodeChipsProps) => {
 					placeholder="e.g. SEN 404"
 					className="bg-slate-700 border-slate-600 text-white placeholder:text-slate-400"
 				/>
-				<Button className="bg-white hover:bg-gray-200">
+				<Button
+					className="bg-white hover:bg-gray-200"
+					onClick={() => addCode()}
+				>
 					<Label className="text-black">Add</Label>
 				</Button>
 			</div>

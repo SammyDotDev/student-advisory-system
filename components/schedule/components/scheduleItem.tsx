@@ -71,7 +71,7 @@ const ScheduleItem = ({
 							<CardAction>{schedule.course}</CardAction>
 						</div>
 					</div>
-					{/* advisor */}
+					{/* adviser */}
 					<div className="flex items-start justify-between space-x-4">
 						<div className="flex gap-3">
 							<Image
@@ -89,7 +89,7 @@ const ScheduleItem = ({
 								<CardDescription className="text-gray-500">
 									{isAdvisor ? "Advisee" : "Advisor"}
 								</CardDescription>
-								<CardAction>{schedule.advisor}</CardAction>
+								<CardAction>{schedule.adviser}</CardAction>
 							</div>
 						</div>
 						<AccordionTrigger className="flex items-start justify-start p-0 text-slate-900 ml-auto">

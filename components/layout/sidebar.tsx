@@ -18,7 +18,7 @@ interface NavItem {
 
 interface SidebarProps {
 	navItems: NavItem[];
-	userRole: "student" | "advisor" | "admin";
+	userRole: "student" | "adviser" | "admin";
 }
 
 export default function Sidebar({ navItems, userRole }: SidebarProps) {
@@ -34,7 +34,7 @@ export default function Sidebar({ navItems, userRole }: SidebarProps) {
 		switch (userRole) {
 			case "student":
 				return "bg-slate-600";
-			case "advisor":
+			case "adviser":
 				return "bg-slate-900";
 			case "admin":
 				return "bg-purple-600";

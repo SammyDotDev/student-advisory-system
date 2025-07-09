@@ -142,7 +142,7 @@ export default function RegisterForm() {
 		}
 	};
 
-	// register advisor
+	// register adviser
 	const handleAdvisoryRegister = async (e: React.FormEvent) => {
 		e.preventDefault();
 		if (
@@ -152,7 +152,7 @@ export default function RegisterForm() {
 			advisorDetails.password &&
 			confirmAdvisoryPassword
 		) {
-			// defining fullname of the advisor
+			// defining fullname of the adviser
 			const fullname = `${advisorDetails.honorifics} ${advisorDetails.firstname} ${advisorDetails.lastname}`;
 			// validate password and confirm password
 			if (advisorDetails.password === confirmAdvisoryPassword) {
@@ -165,11 +165,16 @@ export default function RegisterForm() {
 							fullName: fullname,
 							userId: advisorDetails.staffId,
 							password: advisorDetails.password,
+						},
+						{
+							params: {
+								role: "ADVISER",
+							},
 						}
 					);
 					if (res.status === 201) {
 						// success toast
-						toast.success(res.data.message);
+						toast.success(res.data.result.message);
 						// toast to navigate to login
 						setTimeout(() => {
 							toast(
@@ -188,7 +193,7 @@ export default function RegisterForm() {
 						}, 2000);
 					}
 				} catch (error) {
-					toast.error(`${error.message}`);
+					toast.error(`${error.response.data.result.message}`);
 				}
 				// password mismatch
 			} else {
@@ -226,7 +231,7 @@ export default function RegisterForm() {
 								Student
 							</TabsTrigger>
 							<TabsTrigger
-								value="advisor"
+								value="adviser"
 								className="text-slate-300 bg-transparent p-4"
 							>
 								Advisor
@@ -477,12 +482,12 @@ export default function RegisterForm() {
 								</CardContent>
 							</Card>
 						</TabsContent>
-						<TabsContent value="advisor">
+						<TabsContent value="adviser">
 							<Card className="bg-slate-800 border-slate-700">
 								<CardHeader>
 									<CardTitle className="text-white">Register</CardTitle>
 									<CardDescription className="text-slate-400">
-										Create your advisor account
+										Create your adviser account
 									</CardDescription>
 								</CardHeader>
 								<CardContent>

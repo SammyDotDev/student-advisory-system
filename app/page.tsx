@@ -15,8 +15,8 @@ export default function HomePage() {
 
 			if (user.role === "STUDENT") {
 				router.replace("/dashboard/student");
-			} else if (user.role === "ADVISOR") {
-				router.replace("/dashboard/advisor");
+			} else if (user.role === "ADVISER") {
+				router.replace("/dashboard/adviser");
 			} else {
 				// Handle unexpected roles
 				console.warn("Unknown user role:", user.role);

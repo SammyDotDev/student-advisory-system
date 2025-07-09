@@ -8,12 +8,11 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Users, Calendar, Clock, BarChart3 } from "lucide-react";
 import Sidebar from "@/components/layout/sidebar";
 import { User } from "@/lib/types";
-import AdvisorHeader from "../headers/advisor/advisor-header";
+import AdvisorHeader from "../headers/adviser/adviser-header";
 import { useRouter } from "next/navigation";
 import {
 	Dialog,
@@ -24,8 +23,8 @@ import {
 	DialogTrigger,
 } from "../ui/dialog";
 import { Label } from "../ui/label";
-import { advisorAdvisees } from "../advisors-and-advisees/advisees/advisor-advisees";
-import appointments from "@/app/dashboard/advisor/appointments/page";
+import { advisorAdvisees } from "../advisers-and-advisees/advisees/adviser-advisees";
+import appointments from "@/app/dashboard/adviser/appointments/page";
 import { getDateRelativeToThisWeek, getRoleFromToken } from "@/lib/utils";
 import { useEffect } from "react";
 
@@ -38,23 +37,23 @@ const advisorNavItems = [
 	{
 		icon: BarChart3,
 		label: "Dashboard",
-		href: "/dashboard/advisor",
+		href: "/dashboard/adviser",
 		active: true,
 	},
-	{ icon: Users, label: "My Advisees", href: "/dashboard/advisor/advisees" },
+	{ icon: Users, label: "My Advisees", href: "/dashboard/adviser/advisees" },
 	{
 		icon: Calendar,
 		label: "Appointments",
-		href: "/dashboard/advisor/appointments",
+		href: "/dashboard/adviser/appointments",
 	},
 	{
 		icon: Clock,
 		label: "Requests",
-		href: "/dashboard/advisor/requests",
+		href: "/dashboard/adviser/requests",
 	},
 ];
 
-export default function AdvisorDashboard() {
+export default function AdviserDashboard() {
 	const router = useRouter();
 	const advisees = [
 		{
@@ -135,7 +134,7 @@ export default function AdvisorDashboard() {
 
 	return (
 		<div className="flex h-screen bg-gray-50">
-			<Sidebar navItems={advisorNavItems} userRole="advisor" />
+			<Sidebar navItems={advisorNavItems} userRole="adviser" />
 
 			<div className="flex-1 flex flex-col overflow-hidden">
 				{/* Header */}
@@ -244,7 +243,7 @@ export default function AdvisorDashboard() {
 								<Button
 									className="w-full mt-4 bg-transparent"
 									variant="outline"
-									onClick={() => router.push("/dashboard/advisor/advisees")}
+									onClick={() => router.push("/dashboard/adviser/advisees")}
 								>
 									View All Advisees
 								</Button>
@@ -314,7 +313,7 @@ export default function AdvisorDashboard() {
 								<Button
 									className="w-full mt-4 bg-transparent"
 									variant="outline"
-									onClick={() => router.push("/dashboard/advisor/appointments")}
+									onClick={() => router.push("/dashboard/adviser/appointments")}
 								>
 									View All Requests
 								</Button>

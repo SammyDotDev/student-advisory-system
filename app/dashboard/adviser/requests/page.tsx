@@ -1,4 +1,4 @@
-import AdvisorRequests from "@/components/schedule/advisor-requests";
+import AdvisorRequests from "@/components/schedule/adviser-requests";
 import React from "react";
 
 const page = () => {

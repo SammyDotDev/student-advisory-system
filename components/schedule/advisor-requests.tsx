@@ -1,33 +1,33 @@
 "use client";
 
 import React from "react";
-import AdvisorHeader from "../headers/advisor/advisor-header";
+import AdvisorHeader from "../headers/adviser/adviser-header";
 import Sidebar from "../layout/sidebar";
 import { BarChart3, Calendar, Clock, Users } from "lucide-react";
-import { userAdvisor } from "../dashboard/advisor-dashboard";
-import AdvisorRequestItem from "./components/advisor-request-item";
+import { userAdvisor } from "../dashboard/adviser-dashboard";
+import AdvisorRequestItem from "./components/adviser-request-item";
 
 const AdvisorRequests = () => {
 	const advisorNavItems = [
 		{
 			icon: BarChart3,
 			label: "Dashboard",
-			href: "/dashboard/advisor",
+			href: "/dashboard/adviser",
 		},
 		{
 			icon: Users,
 			label: "My Advisees",
-			href: "/dashboard/advisor/advisees",
+			href: "/dashboard/adviser/advisees",
 		},
 		{
 			icon: Calendar,
 			label: "Appointments",
-			href: "/dashboard/advisor/appointments",
+			href: "/dashboard/adviser/appointments",
 		},
 		{
 			icon: Clock,
 			label: "Requests",
-			href: "/dashboard/advisor/requests",
+			href: "/dashboard/adviser/requests",
 			active: true,
 		},
 	];
@@ -40,7 +40,7 @@ const AdvisorRequests = () => {
 				fromTime: "09:00AM",
 				toTime: "11:00AM",
 				course: "Introduction to Special Topics",
-				advisor: "John Doe",
+				adviser: "John Doe",
 				profileImage: "profile-image.png",
 			},
 		},
@@ -51,7 +51,7 @@ const AdvisorRequests = () => {
 				fromTime: "10:00AM",
 				toTime: "11:00AM",
 				course: "Human Computer Interaction",
-				advisor: "JDr. Susan Blake",
+				adviser: "JDr. Susan Blake",
 				profileImage: "profile-image.png",
 			},
 		},
@@ -62,7 +62,7 @@ const AdvisorRequests = () => {
 				fromTime: "10:00AM",
 				toTime: "12:00PM",
 				course: "Software Design Patterns",
-				advisor: "Mr. Kelvin Ross",
+				adviser: "Mr. Kelvin Ross",
 				profileImage: "profile-image.png",
 			},
 		},
@@ -73,7 +73,7 @@ const AdvisorRequests = () => {
 				fromTime: "04:30PM",
 				toTime: "06:00PM",
 				course: "Digital Storytelling",
-				advisor: "Mrs. Carol Finn",
+				adviser: "Mrs. Carol Finn",
 				profileImage: "profile-image.png",
 			},
 		},
@@ -84,7 +84,7 @@ const AdvisorRequests = () => {
 				fromTime: "08:00AM",
 				toTime: "09:30AM",
 				course: "Journalism Ethics",
-				advisor: "Ms. Daniella Okoro",
+				adviser: "Ms. Daniella Okoro",
 				profileImage: "profile-image.png",
 			},
 		},
@@ -92,7 +92,7 @@ const AdvisorRequests = () => {
 
 	return (
 		<div className="flex h-screen bg-gray-50">
-			<Sidebar navItems={advisorNavItems} userRole="advisor" />
+			<Sidebar navItems={advisorNavItems} userRole="adviser" />
 
 			<div className="flex-1 flex flex-col overflow-hidden">
 				{/* Header */}
@@ -100,7 +100,7 @@ const AdvisorRequests = () => {
 
 				{/* Main Content */}
 				<main className="flex-1 overflow-y-auto py-6">
-					{/* advisor page header */}
+					{/* adviser page header */}
 					<div className="flex items-center justify-between mb-6">
 						<div className="flex flex-col gap-4">
 							<h1 className="text-2xl font-bold text-gray-900">All Advisors</h1>
