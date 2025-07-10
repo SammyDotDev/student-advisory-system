@@ -1,4 +1,3 @@
-import CreateAppointmentDialog from "@/components/schedule/components/create-appointment-dialog";
 import { Card, CardAction, CardDescription } from "@/components/ui/card";
 import { User } from "@/lib/types";
 import Image from "next/image";
@@ -10,11 +9,7 @@ const StudentAdviserItem = ({ adviser }: { adviser: User }) => {
 			<div className="flex items-start justify-between space-x-4 px-4">
 				<div className="flex gap-3">
 					<Image
-						src={`${
-							adviser.profileImage?.includes("profile-image")
-								? "/" + adviser.profileImage
-								: adviser.profileImage
-						}`}
+						src={"/profile-image.png"}
 						width={40}
 						height={40}
 						alt="profile-image-placeholder"
@@ -22,12 +17,10 @@ const StudentAdviserItem = ({ adviser }: { adviser: User }) => {
 					/>
 					<div>
 						<CardDescription className="text-gray-500">Adviser</CardDescription>
-						<CardAction>{adviser.fullname}</CardAction>
+						<CardAction>{adviser.fullName}</CardAction>
 					</div>
 				</div>
-				<CreateAppointmentDialog adviserFullname={adviser.fullname} />
 
-				{/* <AccordionChevron /> */}
 			</div>
 		</Card>
 	);

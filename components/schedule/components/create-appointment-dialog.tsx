@@ -21,10 +21,10 @@ import {
 	ChevronsUpDownIcon,
 	Plus,
 } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Calendar as CalendarDialog } from "@/components/ui/calendar";
 import { cn, formatDate, formatTo12Hour, getDateOnly } from "@/lib/utils";
-import { Schedule } from "@/lib/types";
+import { AppointmentResponse, Schedule } from "@/lib/types";
 import {
 	Command,
 	CommandEmpty,
@@ -38,6 +38,7 @@ import { Badge } from "@/components/ui/badge";
 import { useUser } from "@/context/userContext";
 import { toast } from "sonner";
 import { useSchedule } from "@/context/scheduleContext";
+import axios from "axios";
 
 const CreateAppointmentDialog = ({
 	adviserFullname,
@@ -47,7 +48,7 @@ const CreateAppointmentDialog = ({
 }: {
 	adviserFullname?: string;
 	rescheduleAppointment?: boolean;
-	schedule?: Schedule;
+	schedule?: AppointmentResponse;
 	filter?: "APPROVED" | "PENDING" | "DECLINED" | "COMPLETED";
 }) => {
 	const appointmentApi = ApiClient();
@@ -62,9 +63,6 @@ const CreateAppointmentDialog = ({
 		course: "",
 		adviser: adviserFullname ? adviserFullname : "",
 	});
-	useEffect(() => {
-		console.log(schedule && schedule.code, "SCHEDULE");
-	}, [schedule]);
 	const [openPopover, setOpenPopover] = useState(false);
 	const [openSearchSelect, setOpenSearchSelect] = useState(false);
 	const [searchSelectValue, setSearchSelectValue] = useState("");
@@ -81,23 +79,17 @@ const CreateAppointmentDialog = ({
 		}[]
 	>([]);
 	const [courseKey, setCourseKey] = useState<string>("");
-	const [selectedCourse, setSelectedCourse] = useState<{
-		adviser: string;
-		courseTitle: string;
-		courseCodes: string[];
-		coursesCode: string;
-	} | null>(null);
-	console.log(schedule);
 	const fetchCourseFilter = async (val: string) => {
-		const res = await appointmentApi.get("/courses/filter", {
-			params: {
-				key: val,
-			},
-		});
+		const res = await appointmentApi.get<{ result: AppointmentResponse[] }>(
+			"/courses/filter",
+			{
+				params: {
+					key: val,
+				},
+			}
+		);
 
-		console.log(res.data.result, "COURSES RESPONSE");
 		const formattedResponse = res.data.result.map((item) => {
-			console.log(item, "COURSE IREM");
 			return {
 				adviser: item.adviserResponse.fullName,
 				courseTitle: item.courseResponse.courseTitle,
@@ -105,28 +97,20 @@ const CreateAppointmentDialog = ({
 				coursesCode: item.courseResponse.code,
 			};
 		});
-		console.log(formattedResponse, "FORMATTED RESPONSE");
 		setCourses(formattedResponse);
 	};
 
 	const handleCreateAppointment = async (e: React.FormEvent) => {
 		e.preventDefault();
-		// console.log(selectedCourse,"SELECTED COURSE");
 		const coursesCode = courses?.find(
 			(course) => course.courseTitle === searchSelectValue
 		)?.coursesCode;
-		console.log(
-			{
-				...newSchedule,
-				fromTime: formatTo12Hour(newSchedule.fromTime),
-				toTime: formatTo12Hour(newSchedule.toTime),
-				userCode: user?.code,
-				courseCode: coursesCode,
-			},
-			"APPOINTMENT OBJECT"
-		);
+
 		try {
-			const res = await appointmentApi.post("/appointments", {
+			const res = await appointmentApi.post<
+				Schedule,
+				{ result: AppointmentResponse }
+			>("/appointments", {
 				...newSchedule,
 				fromTime: formatTo12Hour(newSchedule.fromTime),
 				toTime: formatTo12Hour(newSchedule.toTime),
@@ -147,11 +131,15 @@ const CreateAppointmentDialog = ({
 				});
 			}
 		} catch (error) {
-			console.log(error);
+			if (axios.isAxiosError(error) && error.response) {
+				toast.error(error.response.data.result.message);
+			} else {
+				toast.error("An unexpected error occurred");
+			}
 		}
 		// console.log(newSchedule, "NEW SCHEDULE");
 	};
-	console.log(filter,"FILTER");
+	console.log(filter, "FILTER");
 	const handleRescheduleAppointment = async (e: React.FormEvent) => {
 		e.preventDefault();
 		try {
@@ -181,7 +169,11 @@ const CreateAppointmentDialog = ({
 				});
 			}
 		} catch (error) {
-			console.log(error);
+			if (axios.isAxiosError(error) && error.response) {
+				toast.error(error.response.data.result.message);
+			} else {
+				toast.error("An unexpected error occurred");
+			}
 		}
 	};
 
@@ -235,20 +227,7 @@ const CreateAppointmentDialog = ({
 							<Label htmlFor="adviser" className="text-white">
 								Key
 							</Label>
-							{/* <Input
-								id="adviser"
-								placeholder="Enter the name of the course, course title or adviser"
-								value={newSchedule.adviser}
-								onChange={(e) =>
-									setNewSchedule((prev) => ({
-										...prev,
-										adviser: e.target.value,
-										adviserFullname,
-									}))
-								}
-								className="placeholder:text-slate-400"
-								required
-							/> */}
+
 							<Popover
 								open={openSearchSelect}
 								onOpenChange={setOpenSearchSelect}
@@ -294,15 +273,7 @@ const CreateAppointmentDialog = ({
 																	? ""
 																	: currentValue
 															);
-															setSelectedCourse(
-																courses?.find(
-																	(course) =>
-																		course.courseTitle === searchSelectValue ||
-																		course.courseCodes.includes(
-																			searchSelectValue
-																		)
-																) || null
-															);
+
 															setOpenSearchSelect(false);
 														}}
 													>

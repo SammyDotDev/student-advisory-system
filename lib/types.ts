@@ -8,10 +8,12 @@ export type Schedule = {
 	advisee?: string;
 	status?: "" | "" | "";
 	venue?: "";
+	userCode?: string;
+	courseCode?: string;
 };
 
 export type User = {
-	fullname: string;
+	fullName: string;
 	email?: string;
 	matricNumber?: string;
 	staffId?: string;
@@ -42,12 +44,15 @@ export type AppointmentResponse = {
 	fromTime: string;
 	toTime: string;
 	status: string;
+	date: string;
 	adviserResponse: {
 		adviserOffice: string;
+		fullName: string;
 	};
 	courseResponse: {
 		code: string;
 		courseTitle: string;
 		courseCodes: string[];
 	};
+	message?: string;
 };

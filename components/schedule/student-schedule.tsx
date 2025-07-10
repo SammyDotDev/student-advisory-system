@@ -3,20 +3,16 @@
 import { BarChart3, Calendar, Users } from "lucide-react";
 import Sidebar from "@/components/layout/sidebar";
 import { Button } from "@/components/ui/button";
-
 import React, { useEffect, useState } from "react";
-
 import StudentHeader from "../headers/student/student-header";
-import { user } from "../dashboard/student-dashboard";
 import ScheduleDateSortedItem from "./components/scheduleDateSortedItem";
-import {
-	groupAndSortSchedules,
-	groupAppointmentsByDateAdvanced,
-} from "@/lib/utils";
+import { groupAppointmentsByDateAdvanced } from "@/lib/utils";
 import CreateAppointmentDialog from "./components/create-appointment-dialog";
 import { useSchedule } from "@/context/scheduleContext";
 import MobiusLoader from "../loader/mobius-loader";
 import { Label } from "../ui/label";
+import { AppointmentResponse } from "@/lib/types";
+import ListEmpty from "../general/list-empty";
 
 const StudentSchedule = () => {
 	const { appointments, isLoading, fetchAppointments, refetchAppointments } =
@@ -28,7 +24,9 @@ const StudentSchedule = () => {
 		"APPROVED" | "PENDING" | "COMPLETED" | "DECLINED"
 	>("APPROVED");
 
-	const [formattedAppointments, setFormattedAppointments] = useState([]);
+	const [formattedAppointments, setFormattedAppointments] = useState<
+		AppointmentResponse[]
+	>([]);
 
 	useEffect(() => {
 		setFormattedAppointments(groupAppointmentsByDateAdvanced(appointments));
@@ -56,91 +54,6 @@ const StudentSchedule = () => {
 		"declined",
 	];
 
-	const schedules = [
-		{
-			date: "2025-03-12",
-			fromTime: "09:00AM",
-			toTime: "11:00AM",
-			course: "Introduction to Special Topics",
-			adviser: "John Doe",
-			profileImage: "profile-image.png",
-		},
-		{
-			date: "2025-03-13",
-			fromTime: "01:00PM",
-			toTime: "03:00PM",
-			course: "Cybersecurity Principles",
-			adviser: "Jane Smith",
-			profileImage: "profile-image.png",
-		},
-		{
-			date: "2025-03-12",
-			fromTime: "02:00PM",
-			toTime: "04:00PM",
-			course: "Mass Media Communication",
-			adviser: "Dr. Susan Blake",
-			profileImage: "profile-image.png",
-		},
-		{
-			date: "2025-03-14",
-			fromTime: "10:00AM",
-			toTime: "12:00PM",
-			course: "Software Design Patterns",
-			adviser: "Mr. Kelvin Ross",
-			profileImage: "profile-image.png",
-		},
-		{
-			date: "2025-03-15",
-			fromTime: "11:30AM",
-			toTime: "01:00PM",
-			course: "Human-Computer Interaction",
-			adviser: "Prof. Linda George",
-			profileImage: "profile-image.png",
-		},
-		{
-			date: "2025-03-12",
-			fromTime: "04:30PM",
-			toTime: "06:00PM",
-			course: "Digital Storytelling",
-			adviser: "Mrs. Carol Finn",
-			profileImage: "profile-image.png",
-		},
-		{
-			date: "2025-03-16",
-			fromTime: "08:00AM",
-			toTime: "10:00AM",
-			course: "IT Project Management",
-			adviser: "Dr. Isaac Newton",
-			profileImage: "profile-image.png",
-		},
-		{
-			date: "2025-03-11",
-			fromTime: "03:00PM",
-			toTime: "05:00PM",
-			course: "Network Security",
-			adviser: "Mr. Alfred Mensah",
-			profileImage: "profile-image.png",
-		},
-		{
-			date: "2025-03-13",
-			fromTime: "08:00AM",
-			toTime: "09:30AM",
-			course: "Journalism Ethics",
-			adviser: "Ms. Daniella Okoro",
-			profileImage: "profile-image.png",
-		},
-		{
-			date: "2025-03-14",
-			fromTime: "02:00PM",
-			toTime: "03:30PM",
-			course: "Artificial Intelligence Fundamentals",
-			adviser: "Dr. Philip Iroegbu",
-			profileImage: "profile-image.png",
-		},
-	];
-
-	const sortedSchedules = groupAndSortSchedules(schedules);
-
 	useEffect(() => {
 		const isApproved = filterSchedule === "upcoming";
 		const isPending = filterSchedule === "pending";
@@ -159,7 +72,6 @@ const StudentSchedule = () => {
 	}, [filterSchedule]);
 
 	useEffect(() => {
-		console.log(filterScheduleEnums, appointments, "APPOINTMENTS");
 		fetchAppointments(filterScheduleEnums);
 	}, [filterScheduleEnums]);
 
@@ -169,7 +81,7 @@ const StudentSchedule = () => {
 
 			<div className="flex-1 flex flex-col overflow-hidden  m-4">
 				{/* Header */}
-				<StudentHeader user={user} />
+				<StudentHeader />
 
 				{/* Main Content */}
 				<main className="flex-1 overflow-y-auto py-6">
@@ -211,20 +123,18 @@ const StudentSchedule = () => {
 						{isLoading ? (
 							<MobiusLoader />
 						) : formattedAppointments.length === 0 ? (
-							<div className="w-full flex items-center justify-center my-10">
-								<Label className="font text-gray-500">No appointments</Label>
-							</div>
+							<ListEmpty label="No appointments" />
 						) : (
 							formattedAppointments.map((dates, index) => {
-								return <ScheduleDateSortedItem key={index} dates={dates} filter={filterScheduleEnums}/>;
+								return (
+									<ScheduleDateSortedItem
+										key={index}
+										dates={dates}
+										filter={filterScheduleEnums}
+									/>
+								);
 							})
 						)}
-
-						{/* Assignments */}
-
-						{/* Course Progress */}
-
-						{/* Announcements */}
 					</div>
 				</main>
 			</div>

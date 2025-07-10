@@ -3,11 +3,21 @@
 import StudentHeader from "@/components/headers/student/student-header";
 import Sidebar from "@/components/layout/sidebar";
 import { BarChart3, Calendar, Users } from "lucide-react";
-import React from "react";
+import React, { useEffect } from "react";
 import StudentAdviserItem from "../components/student-adviser-item";
 import { user } from "@/components/dashboard/student-dashboard";
+import { useSchedule } from "@/context/scheduleContext";
+import MobiusLoader from "@/components/loader/mobius-loader";
+import { Label } from "@/components/ui/label";
+import { useUser } from "@/context/userContext";
+import ListEmpty from "@/components/general/list-empty";
 
 const StudentAdvisers = () => {
+	const { fetchStudentAdivers, studentAdvisers, isLoading } = useSchedule();
+	const { user } = useUser();
+	useEffect(() => {
+		fetchStudentAdivers(user?.code);
+	}, [user]);
 	const studentNavItems = [
 		{
 			icon: BarChart3,
@@ -27,66 +37,13 @@ const StudentAdvisers = () => {
 		},
 	];
 
-	const studentAdvisers = [
-		{
-			fullname: "Dr. Angela Martins",
-			profileImage: "https://randomuser.me/api/portraits/women/21.jpg",
-			email: "amartins@college.edu",
-		},
-		{
-			fullname: "Prof. Samuel Osei",
-			profileImage: "https://randomuser.me/api/portraits/men/45.jpg",
-			email: "sosei@college.edu",
-		},
-		{
-			fullname: "Dr. Clara Nwankwo",
-			profileImage: "https://randomuser.me/api/portraits/women/34.jpg",
-			email: "cnwankwo@college.edu",
-		},
-		{
-			fullname: "Mr. Benjamin Adedeji",
-			profileImage: "https://randomuser.me/api/portraits/men/38.jpg",
-			email: "badedeji@college.edu",
-		},
-		{
-			fullname: "Dr. Halima Yusuf",
-			profileImage: "https://randomuser.me/api/portraits/women/42.jpg",
-			email: "hyusuf@college.edu",
-		},
-		{
-			fullname: "Mrs. Irene Okoro",
-			profileImage: "https://randomuser.me/api/portraits/women/51.jpg",
-			email: "iokoro@college.edu",
-		},
-		{
-			fullname: "Mr. Daniel Ekene",
-			profileImage: "https://randomuser.me/api/portraits/men/29.jpg",
-			email: "dekene@college.edu",
-		},
-		{
-			fullname: "Prof. Fatima Bello",
-			profileImage: "https://randomuser.me/api/portraits/women/55.jpg",
-			email: "fbello@college.edu",
-		},
-		{
-			fullname: "Dr. Peter Mensah",
-			profileImage: "https://randomuser.me/api/portraits/men/60.jpg",
-			email: "pmensah@college.edu",
-		},
-		{
-			fullname: "Mrs. Chidinma Uche",
-			profileImage: "https://randomuser.me/api/portraits/women/25.jpg",
-			email: "cuche@college.edu",
-		},
-	];
-
 	return (
 		<div className="flex h-screen bg-gray-50">
 			<Sidebar navItems={studentNavItems} userRole="student" />
 
 			<div className="flex-1 flex flex-col overflow-hidden  m-4">
 				{/* Header */}
-				<StudentHeader user={user} />
+				<StudentHeader />
 
 				{/* Main Content */}
 				<main className="flex-1 overflow-y-auto py-6">
@@ -99,9 +56,15 @@ const StudentAdvisers = () => {
 					</div>
 					<div className="grid grid-cols-1 lg:grid-cols-1 gap-6">
 						{/* Today's Schedule */}
-						{studentAdvisers.map((adviser, index) => {
-							return <StudentAdviserItem key={index} adviser={adviser} />;
-						})}
+						{isLoading ? (
+							<MobiusLoader />
+						) : studentAdvisers.length === 0 ? (
+							<ListEmpty label="You have not interacted with any advisers" />
+						) : (
+							studentAdvisers.map((adviser, index) => {
+								return <StudentAdviserItem key={index} adviser={adviser} />;
+							})
+						)}
 					</div>
 				</main>
 			</div>

@@ -4,8 +4,12 @@ import { userAdviser } from "@/components/dashboard/adviser-dashboard";
 import AdviserHeader from "@/components/headers/adviser/adviser-header";
 import Sidebar from "@/components/layout/sidebar";
 import { BarChart3, Calendar, Clock, Users } from "lucide-react";
-import React from "react";
+import React, { useEffect } from "react";
 import AdviserAdviseeItem from "../components/adviser-advisee-item";
+import { useUser } from "@/context/userContext";
+import { useSchedule } from "@/context/scheduleContext";
+import ListEmpty from "@/components/general/list-empty";
+import MobiusLoader from "@/components/loader/mobius-loader";
 
 export const adviserAdvisees = [
 	{
@@ -80,6 +84,11 @@ export const adviserAdvisees = [
 	},
 ];
 const AdviserAdvisees = () => {
+	const { fetchAdviserStudents, adviserStudents, isLoading } = useSchedule();
+	const { user } = useUser();
+	useEffect(() => {
+		fetchAdviserStudents(user?.code);
+	}, [user]);
 	const adviserNavItems = [
 		{
 			icon: BarChart3,
@@ -110,22 +119,28 @@ const AdviserAdvisees = () => {
 
 			<div className="flex-1 flex flex-col overflow-hidden">
 				{/* Header */}
-				<AdviserHeader user={userAdviser} />
+				<AdviserHeader />
 
 				{/* Main Content */}
 				<main className="flex-1 overflow-y-auto py-6">
 					{/* adviser page header */}
 					<div className="flex items-center justify-between mb-6">
 						<div className="flex flex-col gap-4">
-							<h1 className="text-2xl font-bold text-gray-900">All Advisers</h1>
+							<h1 className="text-2xl font-medium text-gray-900">All Advisees</h1>
 						</div>
 						<div></div>
 					</div>
 					<div className="grid grid-cols-1 lg:grid-cols-1 gap-6">
 						{/* Today's Schedule */}
-						{adviserAdvisees.map((advisee, index) => {
-							return <AdviserAdviseeItem key={index} advisee={advisee} />;
-						})}
+						{isLoading ? (
+							<MobiusLoader />
+						) : adviserStudents.length === 0 ? (
+							<ListEmpty label="You have not interacted with any students" />
+						) : (
+							adviserStudents.map((advisee, index) => {
+								return <AdviserAdviseeItem key={index} advisee={advisee} />;
+							})
+						)}
 
 						{/* Assignments */}
 

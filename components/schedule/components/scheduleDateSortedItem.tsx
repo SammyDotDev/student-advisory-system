@@ -1,5 +1,5 @@
 import { Label } from "@/components/ui/label";
-import { Schedule } from "@/lib/types";
+import { AppointmentResponse, Schedule } from "@/lib/types";
 import { formatFullDate } from "@/lib/utils";
 import React from "react";
 import ScheduleItem from "./scheduleItem";
@@ -10,7 +10,7 @@ const ScheduleDateSortedItem = ({
 }: {
 	dates: {
 		date: string;
-		appointments: Schedule[];
+		appointments: AppointmentResponse[];
 	};
 	filter: "APPROVED" | "PENDING" | "DECLINED" | "COMPLETED";
 }) => {
@@ -22,7 +22,7 @@ const ScheduleDateSortedItem = ({
 				</span>
 			</Label>
 			{dates.appointments.map(
-				(appointment: Schedule, scheduleIndex: number) => (
+				(appointment: AppointmentResponse, scheduleIndex: number) => (
 					<ScheduleItem
 						key={scheduleIndex}
 						appointment={appointment}

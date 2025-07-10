@@ -3,10 +3,8 @@
 import type React from "react";
 
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { LogOut, GraduationCap } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useUser } from "@/context/userContext";
 
 interface NavItem {
@@ -22,8 +20,7 @@ interface SidebarProps {
 }
 
 export default function Sidebar({ navItems, userRole }: SidebarProps) {
-	const router = useRouter();
-	const { logout } = useUser();
+	const { logout, user } = useUser();;
 
 	const handleLogout = () => {
 		logout();
@@ -83,14 +80,10 @@ export default function Sidebar({ navItems, userRole }: SidebarProps) {
 
 			{/* User Profile */}
 			<div className="p-4 border-t border-white/10">
-				<div className="flex items-center gap-3 mb-4">
-					<Avatar>
-						<AvatarImage src="/placeholder.svg" />
-						<AvatarFallback>JD</AvatarFallback>
-					</Avatar>
+				<div className="flex items-center gap-2 mb-4">
 					<div className="flex-1">
-						<p className="font-medium">Jane Doe</p>
-						<p className="text-sm opacity-80">jane.doe@edu.com</p>
+						<p className="font-medium">{user?.fullName}</p>
+						<p className="text-sm opacity-80">{user?.email}</p>
 					</div>
 				</div>
 				<Button

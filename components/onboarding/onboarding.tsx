@@ -18,6 +18,8 @@ import { CourseCodeChips } from "./components/course-code-chips";
 import { Input } from "../ui/input";
 import { ApiClient } from "@/api/api";
 import { useUser } from "@/context/userContext";
+import { toast } from "sonner";
+import axios from "axios";
 
 type CourseForm = {
 	adviserOffice: string;
@@ -81,7 +83,11 @@ const Onboarding = () => {
 					console.log(res.data.result);
 				}
 			} catch (error) {
-				console.log(error);
+				if (axios.isAxiosError(error) && error.response) {
+					toast.error(error.response.data.result.message);
+				} else {
+					toast.error("An unexpected error occurred");
+				}
 			}
 		}
 		// returning unique course code

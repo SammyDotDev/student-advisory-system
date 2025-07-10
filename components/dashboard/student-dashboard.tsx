@@ -13,10 +13,13 @@ import {
 } from "lucide-react";
 import Sidebar from "@/components/layout/sidebar";
 import StudentHeader from "../headers/student/student-header";
-import { User } from "@/lib/types";
-import { getRoleFromToken } from "@/lib/utils";
-import { useRouter } from "next/navigation";
+import { AppointmentResponse } from "@/lib/types";
 import { useUser } from "@/context/userContext";
+import { useSchedule } from "@/context/scheduleContext";
+import MobiusLoader from "../loader/mobius-loader";
+import { Label } from "../ui/label";
+import ListEmpty from "../general/list-empty";
+import { toast } from "sonner";
 
 const studentNavItems = [
 	{
@@ -29,55 +32,47 @@ const studentNavItems = [
 	{ icon: Users, label: "Advisers", href: "/dashboard/student/advisers" },
 ];
 
-export const user: User = {
-	fullname: "John Doe",
-	email: "johndoe@gmail.com",
-};
 export default function StudentDashboard() {
 	const { user: currentUser } = useUser();
-	console.log(currentUser);
+	const { isLoading, fetchAppointments, fetchStudentAdivers, studentAdvisers } =
+		useSchedule();
+	const [upcomingAppointments, setUpcomingAppointments] = useState<
+		AppointmentResponse[]
+	>([]);
+	const [pendingAppointments, setPendingAppointments] = useState<
+		AppointmentResponse[]
+	>([]);
 
-	const upcomingAppointments = [
-		{
-			time: "8:00 AM - 9:30 AM",
-			courseTitle: "MAT110",
-			venue: "ROOM 102",
-			lecturer: "Dr. Asiedu",
-		},
-		{
-			time: "10:00 AM - 11:30 AM",
-			courseTitle: "CSC101",
-			venue: "ICT LAB",
-			lecturer: "Prof. Mensah",
-		},
-		{
-			time: "2:00 PM - 3:30 PM",
-			courseTitle: "ENG112",
-			venue: "ROOM 205",
-			lecturer: "Dr. Osei",
-		},
-	];
+	const fetchDoubleAppointments = async () => {
+		try {
+			// Fetch both appointment types concurrently
+			const [approvedData, pendingData] = await Promise.all([
+				fetchAppointments("APPROVED", currentUser?.code),
+				fetchAppointments("PENDING", currentUser?.code),
+			]);
 
-	const pendingApproval = [
-		{
-			lecturer: "Dr. Osei",
-			courseTitle: "Calculus Assignment",
-			dueDate: "10/10/2024",
-			status: "pending",
-		},
-		{
-			lecturer: "Dr. John",
-			courseTitle: "Programming Project",
-			dueDate: "12/10/2024",
-			status: "submitted",
-		},
-		{
-			lecturer: "Prof. Sam",
-			courseTitle: "Essay Writing",
-			dueDate: "15/10/2024",
-			status: "pending",
-		},
-	];
+			// Extract the actual appointment arrays from the response
+			if (approvedData) {
+				setUpcomingAppointments(approvedData);
+			}
+
+			if (pendingData) {
+				setPendingAppointments(pendingData);
+			}
+			console.log(pendingData, "PENDING DATA");
+
+			console.log("✅ Both appointment types fetched successfully");
+		} catch (error) {
+			toast.error("❌ Error fetching appointments");
+		}
+	};
+
+	useEffect(() => {
+		if (currentUser?.code) {
+			fetchDoubleAppointments();
+			fetchStudentAdivers(currentUser?.code);
+		}
+	}, [currentUser?.code]);
 
 	return (
 		<div className="flex h-screen bg-gray-50">
@@ -85,7 +80,7 @@ export default function StudentDashboard() {
 
 			<div className="flex-1 flex flex-col overflow-hidden m-4">
 				{/* Header */}
-				<StudentHeader user={user} />
+				<StudentHeader />
 
 				{/* Main Content */}
 				<main className="flex-1 overflow-y-auto py-6">
@@ -107,8 +102,10 @@ export default function StudentDashboard() {
 							<CardContent className="p-6">
 								<div className="flex items-center justify-between">
 									<div>
-										<p className="text-cyan-100">Courses/Units</p>
-										<p className="text-3xl font-bold">10/24</p>
+										<p className="text-cyan-100">No. of Advisers</p>
+										<p className="text-3xl font-bold">
+											{studentAdvisers.length}
+										</p>
 									</div>
 									<BookOpen className="h-12 w-12 text-cyan-200" />
 								</div>
@@ -127,21 +124,32 @@ export default function StudentDashboard() {
 							</CardHeader>
 							<CardContent>
 								<div className="space-y-4">
-									{upcomingAppointments.map((class_, index) => (
-										<div
-											key={index}
-											className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
-										>
-											<div>
-												<p className="font-medium">{class_.courseTitle}</p>
-												<p className="text-sm text-gray-600">{class_.time}</p>
-												<p className="text-sm text-gray-500">
-													{class_.venue} • {class_.lecturer}
-												</p>
+									{isLoading ? (
+										<MobiusLoader />
+									) : upcomingAppointments.length === 0 ? (
+										<ListEmpty label="No upcoming appointments" />
+									) : (
+										upcomingAppointments.map((appointment, index) => (
+											<div
+												key={index}
+												className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+											>
+												<div>
+													<p className="font-medium">
+														{appointment.courseResponse.courseTitle}
+													</p>
+													<p className="text-sm text-gray-600">
+														{appointment.fromTime}
+													</p>
+													<p className="text-sm text-gray-500">
+														{appointment.adviserResponse.adviserOffice} •{" "}
+														{appointment.adviserResponse.fullName}
+													</p>
+												</div>
+												<Badge variant="outline">Upcoming</Badge>
 											</div>
-											<Badge variant="outline">Upcoming</Badge>
-										</div>
-									))}
+										))
+									)}
 								</div>
 							</CardContent>
 						</Card>
@@ -156,31 +164,40 @@ export default function StudentDashboard() {
 							</CardHeader>
 							<CardContent>
 								<div className="space-y-4">
-									{pendingApproval.map((assignment, index) => (
-										<div
-											key={index}
-											className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
-										>
-											<div>
-												<p className="font-medium">{assignment.courseTitle}</p>
-												<p className="text-sm text-gray-600">
-													{assignment.lecturer}
-												</p>
-												<p className="text-sm text-gray-500">
-													{assignment.dueDate}
-												</p>
-											</div>
-											<Badge
-												variant={
-													assignment.status === "submitted"
-														? "default"
-														: "destructive"
-												}
+									{isLoading ? (
+										<MobiusLoader />
+									) : pendingAppointments.length === 0 ? (
+										<ListEmpty label="No pending appointments" />
+									) : (
+										pendingAppointments.map((appointment, index) => (
+											<div
+												key={index}
+												className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
 											>
-												{assignment.status}
-											</Badge>
-										</div>
-									))}
+												<div>
+													<p className="font-medium">
+														{appointment.courseResponse.courseTitle}
+													</p>
+													<p className="text-sm text-gray-600">
+														{appointment.adviserResponse.fullName}
+													</p>
+													<p className="text-sm text-gray-500">
+														{appointment.fromTime}
+													</p>
+												</div>
+												<Badge
+													variant={
+														appointment.status === "submitted"
+															? "default"
+															: "destructive"
+													}
+													className="font-medium"
+												>
+													{appointment.status.toLowerCase()}
+												</Badge>
+											</div>
+										))
+									)}
 								</div>
 							</CardContent>
 						</Card>

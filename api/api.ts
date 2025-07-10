@@ -75,7 +75,7 @@ export const ApiClient = () => {
 						});
 
 						const response = refreshApi.get(url);
-                        console.log(response, "RESPONSE")
+						console.log(response, "RESPONSE");
 						if (response.data && response.data.result) {
 							const newAccessToken = `Bearer ${response.data.result.token}`;
 
@@ -134,7 +134,7 @@ export const ApiClient = () => {
 	const get = async <R = unknown>(
 		path: string,
 		config?: AxiosRequestConfig,
-        params?:AxiosRequestConfig<R>
+		params?: AxiosRequestConfig<R>
 	) => {
 		const res = await api.get<R>(path, config);
 		return res;
@@ -149,9 +149,18 @@ export const ApiClient = () => {
 		return res;
 	};
 
+	const del = async <R = unknown>(
+		path: string,
+		config?: AxiosRequestConfig
+	) => {
+		const res = await api.delete<R>(path, config);
+		return res;
+	};
+
 	return {
 		post,
 		get,
 		put,
+		del,
 	};
 };

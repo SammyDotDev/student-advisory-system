@@ -32,8 +32,8 @@ export default function LoginForm() {
 	const [showAdviseryPassword, setShowAdviseryPassword] = useState(false);
 
 	// user details
-	const [studentDetails, setStudentDetails] = useState({
-		matricNumber: "",
+	const [userDetails, setUserDetails] = useState({
+		userId: "",
 		password: "",
 	});
 	const [adviserDetails, setAdviserDetails] = useState({
@@ -44,7 +44,7 @@ export default function LoginForm() {
 	const handleStudentLogin = async (e: React.FormEvent) => {
 		e.preventDefault();
 		const result = await login({
-			userId: studentDetails.matricNumber,
+			userId: studentDetails.userId,
 			password: studentDetails.password,
 		});
 		console.log(result, "USER RESULT");
@@ -87,6 +87,37 @@ export default function LoginForm() {
 		}
 	};
 
+	const handleLogin = async (e: React.FormEvent) => {
+		e.preventDefault();
+		const result = await login({
+			userId: userDetails.userId,
+			password: userDetails.password,
+		});
+		console.log(result, "USER RESULT");
+		if (result.success) {
+			toast.success("Login successful");
+			if (result.user) {
+				document.cookie = `token=${result.user.token}; path=/; secure; samesite=strict`;
+				if (
+					result.user &&
+					result.user.role === "ADVISER" &&
+					!result.user.onboarded
+				) {
+					router.replace("/onboarding");
+					// Redirect to user dashboard based on role
+				} else {
+					router.push(
+						`/dashboard/${
+							result.user.role === "ADVISER" ? "adviser" : "student"
+						}`
+					);
+				}
+			}
+		} else {
+			toast.error(result.message);
+		}
+	};
+
 	return (
 		<div className="min-h-screen flex">
 			{isLoading && (
@@ -106,197 +137,93 @@ export default function LoginForm() {
 							Enter your account details to continue
 						</p>
 					</div>
-					<Tabs defaultValue="student" className="mb-6 gap-5">
-						<TabsList className="bg-slate-800 border-slate-700">
-							<TabsTrigger
-								value="student"
-								className="text-slate-300 bg-transparent p-4 "
-							>
-								Student
-							</TabsTrigger>
-							<TabsTrigger
-								value="adviser"
-								className="text-slate-300 bg-transparent p-4"
-							>
-								Adviser
-							</TabsTrigger>
-						</TabsList>
-						<TabsContent value="student">
-							<Card className="bg-slate-800 border-slate-700">
-								<CardHeader>
-									<CardTitle className="text-white">Sign In</CardTitle>
-									<CardDescription className="text-slate-400">
-										Access your student portal
-									</CardDescription>
-								</CardHeader>
-								<CardContent>
-									<form onSubmit={handleStudentLogin} className="space-y-4">
-										<div className="space-y-2">
-											<Label htmlFor="matric_number" className="text-white">
-												Matric Number
-											</Label>
-											<Input
-												id="matric_number"
-												placeholder="Enter your matric number"
-												value={studentDetails.matricNumber}
-												onChange={(e) =>
-													setStudentDetails((prev) => ({
-														...prev,
-														matricNumber: e.target.value.trim(),
-													}))
-												}
-												className="bg-slate-700 border-slate-600 text-white placeholder:text-slate-400"
-												required
-											/>
-										</div>
 
-										<div className="space-y-2">
-											<Label htmlFor="password" className="text-white">
-												Password
-											</Label>
-											<div className="relative">
-												<Input
-													id="password"
-													type={showStudentPassword ? "text" : "password"}
-													placeholder="Enter your password"
-													value={studentDetails.password}
-													onChange={(e) =>
-														setStudentDetails((prev) => ({
-															...prev,
-															password: e.target.value.trim(),
-														}))
-													}
-													className="bg-slate-700 border-slate-600 text-white placeholder:text-slate-400 pr-10"
-													required
-												/>
-												<Button
-													type="button"
-													variant="ghost"
-													size="sm"
-													className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-													onClick={() =>
-														setShowStudentPassword(!showStudentPassword)
-													}
-												>
-													{showStudentPassword ? (
-														<EyeOff className="h-4 w-4 text-slate-400" />
-													) : (
-														<Eye className="h-4 w-4 text-slate-400" />
-													)}
-												</Button>
-											</div>
-										</div>
+					<Card className="bg-slate-800 border-slate-700">
+						<CardHeader>
+							<CardTitle className="text-white">Sign In</CardTitle>
+							<CardDescription className="text-slate-400">
+								Access your student portal
+							</CardDescription>
+						</CardHeader>
+						<CardContent>
+							<form onSubmit={handleLogin} className="space-y-4">
+								<div className="space-y-2">
+									<Label htmlFor="user_id" className="text-white">
+										Matric Number / Staff ID
+									</Label>
+									<Input
+										id="user_id"
+										placeholder="Enter your matric number or staff ID"
+										value={userDetails.userId}
+										onChange={(e) =>
+											setUserDetails((prev) => ({
+												...prev,
+												userId: e.target.value.trim(),
+											}))
+										}
+										className="bg-slate-700 border-slate-600 text-white placeholder:text-slate-400"
+										required
+									/>
+								</div>
 
+								<div className="space-y-2">
+									<Label htmlFor="password" className="text-white">
+										Password
+									</Label>
+									<div className="relative">
+										<Input
+											id="password"
+											type={showStudentPassword ? "text" : "password"}
+											placeholder="Enter your password"
+											value={userDetails.password}
+											onChange={(e) =>
+												setUserDetails((prev) => ({
+													...prev,
+													password: e.target.value.trim(),
+												}))
+											}
+											className="bg-slate-700 border-slate-600 text-white placeholder:text-slate-400 pr-10"
+											required
+										/>
 										<Button
-											type="submit"
-											className="w-full bg-slate-400 hover:bg-slate-700"
+											type="button"
+											variant="ghost"
+											size="sm"
+											className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+											onClick={() =>
+												setShowStudentPassword(!showStudentPassword)
+											}
 										>
-											Sign In
+											{showStudentPassword ? (
+												<EyeOff className="h-4 w-4 text-slate-400" />
+											) : (
+												<Eye className="h-4 w-4 text-slate-400" />
+											)}
 										</Button>
-									</form>
-
-									<div className="mt-6 text-center">
-										<p className="text-slate-400 text-sm">
-											Don&apos;t have an account?{" "}
-											<Link
-												href="/auth/register"
-												className="text-slate-200 hover:text-slate-100"
-											>
-												Sign up
-											</Link>
-										</p>
 									</div>
-								</CardContent>
-							</Card>
-						</TabsContent>
-						<TabsContent value="adviser">
-							<Card className="bg-slate-800 border-slate-700">
-								<CardHeader>
-									<CardTitle className="text-white">Sign In</CardTitle>
-									<CardDescription className="text-slate-400">
-										Access your advisery portal
-									</CardDescription>
-								</CardHeader>
-								<CardContent>
-									<form onSubmit={handleAdviserLogin} className="space-y-4">
-										<div className="space-y-2">
-											<Label htmlFor="staff_id" className="text-white">
-												Staff ID
-											</Label>
-											<Input
-												id="staff_id"
-												placeholder="Enter your staff ID"
-												value={adviserDetails.staffId}
-												onChange={(e) =>
-													setAdviserDetails((prev) => ({
-														...prev,
-														staffId: e.target.value.trim(),
-													}))
-												}
-												className="bg-slate-700 border-slate-600 text-white placeholder:text-slate-400"
-												required
-											/>
-										</div>
+								</div>
 
-										<div className="space-y-2">
-											<Label htmlFor="password" className="text-white">
-												Password
-											</Label>
-											<div className="relative">
-												<Input
-													id="password"
-													type={showAdviseryPassword ? "text" : "password"}
-													placeholder="Enter your password"
-													value={adviserDetails.password}
-													onChange={(e) =>
-														setAdviserDetails((prev) => ({
-															...prev,
-															password: e.target.value.trim(),
-														}))
-													}
-													className="bg-slate-700 border-slate-600 text-white placeholder:text-slate-400 pr-10"
-													required
-												/>
-												<Button
-													type="button"
-													variant="ghost"
-													size="sm"
-													className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-													onClick={() =>
-														setShowAdviseryPassword(!showAdviseryPassword)
-													}
-												>
-													{showAdviseryPassword ? (
-														<EyeOff className="h-4 w-4 text-slate-400" />
-													) : (
-														<Eye className="h-4 w-4 text-slate-400" />
-													)}
-												</Button>
-											</div>
-										</div>
-										<Button
-											type="submit"
-											className="w-full bg-slate-400 hover:bg-slate-700"
-										>
-											Sign In
-										</Button>
-									</form>
+								<Button
+									type="submit"
+									className="w-full bg-slate-400 hover:bg-slate-700"
+								>
+									Sign In
+								</Button>
+							</form>
 
-									<div className="mt-6 text-center">
-										<p className="text-slate-400 text-sm">
-											Don&apos;t have an account?{" "}
-											<Link
-												href="/auth/register"
-												className="text-slate-200 hover:text-slate-100"
-											>
-												Sign up
-											</Link>
-										</p>
-									</div>
-								</CardContent>
-							</Card>
-						</TabsContent>
-					</Tabs>
+							<div className="mt-6 text-center">
+								<p className="text-slate-400 text-sm">
+									Don&apos;t have an account?{" "}
+									<Link
+										href="/auth/register"
+										className="text-slate-200 hover:text-slate-100"
+									>
+										Sign up
+									</Link>
+								</p>
+							</div>
+						</CardContent>
+					</Card>
 				</div>
 			</div>
 

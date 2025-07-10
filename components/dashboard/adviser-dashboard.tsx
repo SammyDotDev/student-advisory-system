@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Users, Calendar, Clock, BarChart3 } from "lucide-react";
 import Sidebar from "@/components/layout/sidebar";
-import { User } from "@/lib/types";
+import { AppointmentResponse, User } from "@/lib/types";
 import AdviserHeader from "../headers/adviser/adviser-header";
 import { useRouter } from "next/navigation";
 import {
@@ -26,8 +26,11 @@ import { Label } from "../ui/label";
 import { adviserAdvisees } from "../advisers-and-advisees/advisees/adviser-advisees";
 import appointments from "@/app/dashboard/adviser/appointments/page";
 import { getDateRelativeToThisWeek, getRoleFromToken } from "@/lib/utils";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useUser } from "@/context/userContext";
+import { useSchedule } from "@/context/scheduleContext";
+import MobiusLoader from "../loader/mobius-loader";
+import ListEmpty from "../general/list-empty";
 
 export const userAdviser: User = {
 	fullname: "Dr.John Doe",
@@ -56,44 +59,31 @@ const adviserNavItems = [
 
 export default function AdviserDashboard() {
 	const router = useRouter();
-	const { loading, user: currentUser } = useUser();
-    useEffect(()=>{
-        console.log(currentUser, "CURRENT USER")
-    },[])
-	const advisees = [
-		{
-			name: "John Smith",
-			id: "ST001",
-			level: "200",
-			gpa: 3.8,
-			status: "good",
-			lastMeeting: "2024-09-28",
-		},
-		{
-			name: "Sarah Johnson",
-			id: "ST002",
-			level: "100",
-			gpa: 2.1,
-			status: "at-risk",
-			lastMeeting: "2024-09-25",
-		},
-		{
-			name: "Mike Brown",
-			id: "ST003",
-			level: "300",
-			gpa: 3.5,
-			status: "good",
-			lastMeeting: "2024-09-30",
-		},
-		{
-			name: "Lisa Davis",
-			id: "ST004",
-			level: "200",
-			gpa: 2.8,
-			status: "needs-attention",
-			lastMeeting: "2024-09-20",
-		},
-	];
+	const { user: currentUser } = useUser();
+	const [pendingAdviserRequests, setPendingAdviserRequests] = useState<
+		AppointmentResponse[]
+	>([]);
+	const {
+		fetchAdviserStudents,
+		adviserStudents,
+		fetchPendingAdviserRequests,
+		fetchApprovedAppointments,
+		isLoading,
+		approvedAppointments,
+	} = useSchedule();
+
+	const fetchAppointmentsRequests = async () => {
+		const requests = await fetchPendingAdviserRequests(currentUser?.code);
+		if (requests) {
+			setPendingAdviserRequests(requests);
+		}
+	};
+	useEffect(() => {
+		fetchAppointmentsRequests();
+		fetchAdviserStudents(currentUser?.code);
+        fetchApprovedAppointments(currentUser?.code)
+		console.log(adviserStudents, "ADVISER STUDENTS");
+	}, [currentUser]);
 
 	const upcomingAppointments = [
 		{
@@ -116,34 +106,13 @@ export default function AdviserDashboard() {
 		},
 	];
 
-	const recentActivities = [
-		{
-			type: "meeting",
-			student: "John Smith",
-			action: "Completed academic review meeting",
-			time: "2 hours ago",
-		},
-		{
-			type: "alert",
-			student: "Sarah Johnson",
-			action: "GPA dropped below 2.5 threshold",
-			time: "1 day ago",
-		},
-		{
-			type: "message",
-			student: "Lisa Davis",
-			action: "Sent course recommendation",
-			time: "2 days ago",
-		},
-	];
-
 	return (
 		<div className="flex h-screen bg-gray-50">
 			<Sidebar navItems={adviserNavItems} userRole="adviser" />
 
 			<div className="flex-1 flex flex-col overflow-hidden">
 				{/* Header */}
-				<AdviserHeader user={currentUser} />
+				<AdviserHeader />
 
 				{/* Main Content */}
 				<main className="flex-1 overflow-y-auto p-6">
@@ -155,7 +124,7 @@ export default function AdviserDashboard() {
 									<div>
 										<p className="text-gray-100">Total Advisees</p>
 										<p className="text-3xl font-bold">
-											{adviserAdvisees.length}
+											{adviserStudents.length}
 										</p>
 									</div>
 									<Users className="h-12 w-12 text-gray-200" />
@@ -170,11 +139,7 @@ export default function AdviserDashboard() {
 										<p className="text-cyan-100">This Week&apos;s Meetings</p>
 										<p className="text-3xl font-bold">
 											{
-												upcomingAppointments.filter((item) => {
-													console.log(
-														item.date,
-														getDateRelativeToThisWeek(item.date)
-													);
+												approvedAppointments.filter((item) => {
 													return (
 														getDateRelativeToThisWeek(item.date) === "this week"
 													);
@@ -202,31 +167,39 @@ export default function AdviserDashboard() {
 							</CardHeader>
 							<CardContent>
 								<div className="space-y-4">
-									{adviserAdvisees.slice(6).map((advisee, index) => (
-										<div
-											key={index}
-											className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
-										>
-											<div className="flex items-center gap-3">
-												<Avatar>
-													<AvatarFallback>
-														{advisee.fullname
-															.split(" ")
-															.map((n) => n[0])
-															.join("")}
-													</AvatarFallback>
-												</Avatar>
-												<div>
-													<p className="font-medium">{advisee.fullname}</p>
-													<p className="text-sm text-gray-600">
-														{advisee.department} • Level {advisee.level}
-													</p>
-													{/* <p className="text-sm text-gray-500">
+									{isLoading ? (
+										<MobiusLoader />
+									) : adviserStudents.length === 0 ? (
+										<ListEmpty label="No recent " />
+									) : (
+										(adviserStudents.length > 6
+											? adviserStudents.slice(6)
+											: adviserStudents
+										).map((advisee, index) => (
+											<div
+												key={index}
+												className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+											>
+												<div className="flex items-center gap-3">
+													<Avatar>
+														<AvatarFallback>
+															{advisee.fullName
+																.split(" ")
+																.map((n) => n[0])
+																.join("")}
+														</AvatarFallback>
+													</Avatar>
+													<div>
+														<p className="font-medium">{advisee.fullName}</p>
+														<p className="text-sm text-gray-600">
+															{advisee.department} • Level {advisee.level}
+														</p>
+														{/* <p className="text-sm text-gray-500">
 														GPA: {advisee.gpa}
 													</p> */}
+													</div>
 												</div>
-											</div>
-											{/* <div className="text-right">
+												{/* <div className="text-right">
 												<Badge
 													variant={
 														advisee.status === "good"
@@ -242,8 +215,9 @@ export default function AdviserDashboard() {
 													Last: {advisee.lastMeeting}
 												</p>
 											</div> */}
-										</div>
-									))}
+											</div>
+										))
+									)}
 								</div>
 								<Button
 									className="w-full mt-4 bg-transparent"
@@ -265,55 +239,61 @@ export default function AdviserDashboard() {
 							</CardHeader>
 							<CardContent>
 								<div className="space-y-4">
-									{upcomingAppointments.map((appointment, index) => (
-										<div
-											key={index}
-											className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
-										>
-											<div>
-												<p className="font-medium">{appointment.student}</p>
-												<p className="text-sm text-gray-600">
-													{appointment.type}
-												</p>
-												<p className="text-sm text-gray-500">
-													{appointment.date} at {appointment.time}
-												</p>
-											</div>
-											<div className="flex items-end justify-end gap-5">
-												<Dialog>
-													<DialogTrigger asChild>
-														<Button className=" bg-red-500 text-white hover:bg-red-400">
-															<Label>Decline </Label>
-														</Button>
-													</DialogTrigger>
-													<DialogContent>
-														<DialogHeader>
-															<DialogTitle>
-																Are you absolutely sure?
-															</DialogTitle>
-															<DialogDescription>
-																Are you sure you want to decline this request?
-																This action cannot be undone
-															</DialogDescription>
-														</DialogHeader>
-														<div className="ml-auto flex gap-3">
-															<Button className="border border-transparent bg-red-500 text-white hover:bg-red-400">
-																<Label>Decline</Label>
+									{isLoading ? (
+										<MobiusLoader />
+									) : pendingAdviserRequests.length === 0 ? (
+										<ListEmpty label="No pending requests" />
+									) : (
+										pendingAdviserRequests.map((appointment, index) => (
+											<div
+												key={index}
+												className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+											>
+												<div>
+													<p className="font-medium">{appointment.student}</p>
+													<p className="text-sm text-gray-600">
+														{appointment.courseResponse.courseTitle}
+													</p>
+													<p className="text-sm text-gray-500">
+														{appointment.date} at {appointment.fromTime}
+													</p>
+												</div>
+												<div className="flex items-end justify-end gap-5">
+													<Dialog>
+														<DialogTrigger asChild>
+															<Button className=" bg-red-500 text-white hover:bg-red-400">
+																<Label>Decline </Label>
 															</Button>
-														</div>
-													</DialogContent>
-												</Dialog>
+														</DialogTrigger>
+														<DialogContent>
+															<DialogHeader>
+																<DialogTitle>
+																	Are you absolutely sure?
+																</DialogTitle>
+																<DialogDescription>
+																	Are you sure you want to decline this request?
+																	This action cannot be undone
+																</DialogDescription>
+															</DialogHeader>
+															<div className="ml-auto flex gap-3">
+																<Button className="border border-transparent bg-red-500 text-white hover:bg-red-400">
+																	<Label>Decline</Label>
+																</Button>
+															</div>
+														</DialogContent>
+													</Dialog>
 
-												<Button
-													className={
-														"bg-slate-800 text-white hover:bg-slate-600"
-													}
-												>
-													<Label>Approve</Label>
-												</Button>
+													<Button
+														className={
+															"bg-slate-800 text-white hover:bg-slate-600"
+														}
+													>
+														<Label>Approve</Label>
+													</Button>
+												</div>
 											</div>
-										</div>
-									))}
+										))
+									)}
 								</div>
 								<Button
 									className="w-full mt-4 bg-transparent"

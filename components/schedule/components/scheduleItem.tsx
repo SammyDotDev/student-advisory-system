@@ -15,25 +15,25 @@ import {
 	DialogTrigger,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { Schedule } from "@/lib/types";
+import { AppointmentResponse } from "@/lib/types";
 import Image from "next/image";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import CreateAppointmentDialog from "./create-appointment-dialog";
+import { useSchedule } from "@/context/scheduleContext";
 
 const ScheduleItem = ({
 	appointment,
 	isAdviser,
 	filter,
 }: {
-	appointment: Schedule;
+	appointment: AppointmentResponse;
 	isAdviser?: boolean;
 	filter?: "APPROVED" | "PENDING" | "DECLINED" | "COMPLETED";
 }) => {
 	const [openAccordionTrigger, setOpenAccordionTrigger] =
 		useState<boolean>(false);
-	useEffect(() => {
-		console.log(filter, "FILTER IN ITEM");
-	}, [filter]);
+
+	const { deleteAppointment, refetchAppointments } = useSchedule();
 	return (
 		<Accordion
 			collapsible={true}
@@ -92,54 +92,65 @@ const ScheduleItem = ({
 								<CardAction>{appointment.adviserResponse.fullName}</CardAction>
 							</div>
 						</div>
-						<AccordionTrigger className="flex items-start justify-start p-0 text-slate-900 ml-auto">
-							<Label>
-								Show
-								{openAccordionTrigger ? "  Less" : " More"}
-							</Label>
-						</AccordionTrigger>
+						{!isAdviser && (
+							<AccordionTrigger className="flex items-start justify-start p-0 text-slate-900 ml-auto">
+								<Label>
+									Show
+									{openAccordionTrigger ? "  Less" : " More"}
+								</Label>
+							</AccordionTrigger>
+						)}
 						{/* <AccordionChevron /> */}
 					</div>
 				</div>
-				<AccordionContent className="mt-7">
-					<div className="flex items-end justify-end gap-5">
-						<Dialog>
-							<DialogTrigger asChild>
-								<Button className="bg-white border border-red-500 text-red-500">
-									<Label>{isAdviser ? "Decline" : "Delete"}</Label>
-								</Button>
-							</DialogTrigger>
-							<DialogContent>
-								<DialogHeader>
-									<DialogTitle>Are you absolutely sure?</DialogTitle>
-									<DialogDescription>
-										{isAdviser
-											? "Are you sure you want to decline this request? This action cannot be undone"
-											: "This action cannot be undone. This will permanently delete your schedule."}
-									</DialogDescription>
-								</DialogHeader>
-								<div className="ml-auto flex gap-3">
-									<Button className="border border-transparent bg-red-500 text-white hover:bg-red-300">
+				{!isAdviser && (
+					<AccordionContent className="mt-7">
+						<div className="flex items-end justify-end gap-5">
+							<Dialog>
+								<DialogTrigger asChild>
+									<Button className="bg-white border border-red-500 text-red-500">
 										<Label>{isAdviser ? "Decline" : "Delete"}</Label>
 									</Button>
-								</div>
-							</DialogContent>
-						</Dialog>
-						{isAdviser ? (
-							<Button
-								className={"bg-white border border-blue-500 text-blue-500"}
-							>
-								<Label>{"Approve"}</Label>
-							</Button>
-						) : (
-							<CreateAppointmentDialog
-								schedule={appointment}
-								rescheduleAppointment
-                                filter={filter}
-							/>
-						)}
-					</div>
-				</AccordionContent>
+								</DialogTrigger>
+								<DialogContent>
+									<DialogHeader>
+										<DialogTitle>Are you absolutely sure?</DialogTitle>
+										<DialogDescription>
+											{isAdviser
+												? "Are you sure you want to decline this request? This action cannot be undone"
+												: "This action cannot be undone. This will permanently delete your schedule."}
+										</DialogDescription>
+									</DialogHeader>
+									<div className="ml-auto flex gap-3">
+										<Button
+											className="border border-transparent bg-red-500 text-white hover:bg-red-300"
+											onClick={() => {
+												console.log(filter, "DELETE FILTER");
+												deleteAppointment(appointment.code);
+												refetchAppointments(filter);
+											}}
+										>
+											<Label>{isAdviser ? "Decline" : "Delete"}</Label>
+										</Button>
+									</div>
+								</DialogContent>
+							</Dialog>
+							{isAdviser ? (
+								<Button
+									className={"bg-white border border-blue-500 text-blue-500"}
+								>
+									<Label>{"Approve"}</Label>
+								</Button>
+							) : (
+								<CreateAppointmentDialog
+									schedule={appointment}
+									rescheduleAppointment
+									filter={filter}
+								/>
+							)}
+						</div>
+					</AccordionContent>
+				)}
 			</AccordionItem>
 		</Accordion>
 	);

@@ -9,11 +9,7 @@ const AdviserAdviseeItem = ({ advisee }: { advisee: User }) => {
 			<div className="flex items-center justify-between space-x-4 px-4">
 				<div className="flex gap-3">
 					<Image
-						src={`${
-							advisee.profileImage?.includes("profile-image")
-								? "/" + advisee.profileImage
-								: advisee.profileImage
-						}`}
+						src={"/profile-image.png"}
 						width={40}
 						height={40}
 						alt="profile-image-placeholder"
@@ -21,7 +17,7 @@ const AdviserAdviseeItem = ({ advisee }: { advisee: User }) => {
 					/>
 					<div>
 						<CardDescription className="text-gray-500">Advisee</CardDescription>
-						<CardAction>{advisee.fullname}</CardAction>
+						<CardAction>{advisee.fullName}</CardAction>
 						<div className="flex gap-2 items-center">
 							<CardDescription>{advisee.department}</CardDescription>
 							<CardDescription>•</CardDescription>
@@ -31,7 +27,7 @@ const AdviserAdviseeItem = ({ advisee }: { advisee: User }) => {
 				</div>
 				{/* matric number */}
 				<CardAction className="text-gray-800 font-bold">
-					{advisee.matricNumber}
+					{advisee.userId}
 				</CardAction>
 			</div>
 		</Card>
