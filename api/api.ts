@@ -131,7 +131,8 @@ export const ApiClient = () => {
 
 	const get = async <R = unknown>(
 		path: string,
-		config?: AxiosRequestConfig
+		config?: AxiosRequestConfig,
+        params?:AxiosRequestConfig<R>
 	) => {
 		const res = await api.get<R>(path, config);
 		return res;

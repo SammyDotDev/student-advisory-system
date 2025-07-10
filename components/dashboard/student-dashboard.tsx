@@ -96,7 +96,7 @@ export default function StudentDashboard() {
 								<div className="flex items-center justify-between">
 									<div>
 										<p className="text-gray-100">Level</p>
-										<p className="text-3xl font-bold">100</p>
+										<p className="text-3xl font-bold">{currentUser?.level}</p>
 									</div>
 									<GraduationCap className="h-12 w-12 text-gray-200" />
 								</div>

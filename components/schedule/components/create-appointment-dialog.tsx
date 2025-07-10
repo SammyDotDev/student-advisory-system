@@ -15,11 +15,35 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover";
-import { ChevronDownIcon, Plus } from "lucide-react";
+import {
+	CheckIcon,
+	ChevronDownIcon,
+	ChevronsUpDownIcon,
+	Plus,
+} from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { Calendar as CalendarDialog } from "@/components/ui/calendar";
-import { formatDate } from "@/lib/utils";
+import { cn, formatDate, formatTo12Hour } from "@/lib/utils";
 import { Schedule } from "@/lib/types";
+import {
+	Command,
+	CommandEmpty,
+	CommandGroup,
+	CommandInput,
+	CommandItem,
+	CommandList,
+} from "@/components/ui/command";
+import { ApiClient } from "@/api/api";
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { useUser } from "@/context/userContext";
+import { toast } from "sonner";
 
 const CreateAppointmentDialog = ({
 	adviserFullname,
@@ -30,21 +54,98 @@ const CreateAppointmentDialog = ({
 	rescheduleAppointment?: boolean;
 	schedule?: Schedule;
 }) => {
+	const appointmentApi = ApiClient();
+	const { user } = useUser();
 	// schedule
 	const [newSchedule, setNewSchedule] = useState<Schedule>({
 		date: formatDate(new Date()),
-		fromTime: rescheduleAppointment && schedule ? schedule.fromTime : "02:00PM",
-		toTime: rescheduleAppointment && schedule ? schedule.toTime : "04:00PM",
+		fromTime: rescheduleAppointment && schedule ? schedule.fromTime : "",
+		toTime: rescheduleAppointment && schedule ? schedule.toTime : "",
 		course: "",
 		adviser: adviserFullname ? adviserFullname : "",
 	});
 	useEffect(() => {}, []);
-	const [openPopover, setOpenPopover] = React.useState(false);
+	const [openPopover, setOpenPopover] = useState(false);
+	const [openSearchSelect, setOpenSearchSelect] = useState(false);
+	const [searchSelectValue, setSearchSelectValue] = useState("");
 	const [date, setDate] = useState<Date | undefined>(
 		rescheduleAppointment && schedule ? new Date(schedule.date) : undefined
 	);
 
-	const handleCreateAppointment = async () => {};
+	const [courses, setCourses] = useState<
+		{
+			adviser: string;
+			courseTitle: string;
+			courseCodes: string[];
+			coursesCode: string;
+		}[]
+	>([]);
+	const [courseKey, setCourseKey] = useState<string>("");
+	const [selectedCourse, setSelectedCourse] = useState<{
+		adviser: string;
+		courseTitle: string;
+		courseCodes: string[];
+		coursesCode: string;
+	} | null>(null);
+
+	const fetchCourseFilter = async (val: string) => {
+		const res = await appointmentApi.get("/courses/filter", {
+			params: {
+				key: val,
+			},
+		});
+
+		console.log(res.data.result, "COURSES RESPONSE");
+		const formattedResponse = res.data.result.map((item) => {
+			console.log(item, "COURSE IREM");
+			return {
+				adviser: item.adviserResponse.fullName,
+				courseTitle: item.courseResponse.courseTitle,
+				courseCodes: item.courseResponse.courseCodes,
+				coursesCode: item.courseResponse.code,
+			};
+		});
+		console.log(formattedResponse, "FORMATTED RESPONSE");
+		setCourses(formattedResponse);
+	};
+
+	const handleCreateAppointment = async (e: React.FormEvent) => {
+		e.preventDefault();
+		// console.log(selectedCourse,"SELECTED COURSE");
+		const coursesCode = courses?.find(
+			(course) => course.courseTitle === searchSelectValue
+		)?.coursesCode;
+		console.log(
+			{
+				...newSchedule,
+				fromTime: formatTo12Hour(newSchedule.fromTime),
+				toTime: formatTo12Hour(newSchedule.toTime),
+				userCode: user?.code,
+				courseCode: coursesCode,
+			},
+			"APPOINTMENT OBJECT"
+		);
+		const res = await appointmentApi.post("/appointments", {
+			...newSchedule,
+			fromTime: formatTo12Hour(newSchedule.fromTime),
+			toTime: formatTo12Hour(newSchedule.toTime),
+			userCode: user?.code,
+			courseCode: coursesCode,
+		});
+
+		if (res.status === 201) {
+			toast.success(res.data.result.message);
+			setSearchSelectValue("");
+			setNewSchedule({
+				date: formatDate(new Date()),
+				fromTime: "",
+				toTime: "",
+				course: "",
+				adviser: "",
+			});
+		}
+		// console.log(newSchedule, "NEW SCHEDULE");
+	};
 
 	return (
 		<Dialog>
@@ -83,45 +184,125 @@ const CreateAppointmentDialog = ({
 				</DialogHeader>
 				<form onSubmit={handleCreateAppointment} className="space-y-4">
 					{!rescheduleAppointment && (
-						<>
-							<div className="space-y-2">
-								<Label htmlFor="course" className="text-white">
-									Course
-								</Label>
-								<Input
-									id="course"
-									placeholder="Enter the course you have an issue with"
-									value={newSchedule.course}
-									onChange={(e) =>
-										setNewSchedule((prev) => ({
-											...prev,
-											course: e.target.value,
-										}))
-									}
-									className="placeholder:text-slate-400"
-									required
-								/>
-							</div>
-							<div className="space-y-2">
-								<Label htmlFor="adviser" className="text-white">
-									Adviser
-								</Label>
-								<Input
-									id="adviser"
-									placeholder="Enter the name of the adviser"
-									value={newSchedule.adviser}
-									onChange={(e) =>
-										setNewSchedule((prev) => ({
-											...prev,
-											adviser: e.target.value,
-											adviserFullname,
-										}))
-									}
-									className="placeholder:text-slate-400"
-									required
-								/>
-							</div>
-						</>
+						<div className="space-y-2">
+							<Label htmlFor="adviser" className="text-white">
+								Key
+							</Label>
+							{/* <Input
+								id="adviser"
+								placeholder="Enter the name of the course, course title or adviser"
+								value={newSchedule.adviser}
+								onChange={(e) =>
+									setNewSchedule((prev) => ({
+										...prev,
+										adviser: e.target.value,
+										adviserFullname,
+									}))
+								}
+								className="placeholder:text-slate-400"
+								required
+							/> */}
+							<Popover
+								open={openSearchSelect}
+								onOpenChange={setOpenSearchSelect}
+							>
+								<PopoverTrigger asChild>
+									<Button
+										variant="outline"
+										role="combobox"
+										aria-expanded={openSearchSelect}
+										className="w-full justify-between"
+									>
+										{searchSelectValue
+											? courses.find(
+													(course) =>
+														course.courseTitle === searchSelectValue ||
+														course.courseCodes.includes(searchSelectValue)
+											  )?.courseTitle
+											: "Search courses, course titles or lecturers..."}
+										<ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+									</Button>
+								</PopoverTrigger>
+								<PopoverContent className="w-[500px] p-0">
+									<Command className="w-full">
+										<CommandInput
+											placeholder="Search by courses, course titles or lecturers..."
+											value={courseKey}
+											onValueChange={(val) => {
+												setCourseKey(val);
+												fetchCourseFilter(val);
+											}}
+										/>
+										<CommandList>
+											<CommandEmpty>No courses found.</CommandEmpty>
+											<CommandGroup>
+												{courses.map((course) => (
+													<CommandItem
+														key={course.courseTitle}
+														value={course.courseTitle}
+														onSelect={(currentValue) => {
+															console.log(currentValue, "CURRENT SELECT VALUE");
+															setSearchSelectValue(
+																currentValue === searchSelectValue
+																	? ""
+																	: currentValue
+															);
+															setSelectedCourse(
+																courses?.find(
+																	(course) =>
+																		course.courseTitle === searchSelectValue ||
+																		course.courseCodes.includes(
+																			searchSelectValue
+																		)
+																) || null
+															);
+															setOpenSearchSelect(false);
+														}}
+													>
+														<CheckIcon
+															className={cn(
+																"mr-2 h-4 w-4",
+																searchSelectValue === course.adviser ||
+																	searchSelectValue === course.courseTitle
+																	? "opacity-100"
+																	: "opacity-0"
+															)}
+														/>
+														<div className="w-full flex flex-col gap-4">
+															<div className="flex justify-between items-center">
+																<Label className=" flex flex-col items-start">
+																	Adviser
+																	<Label className="text-gray-500">
+																		{course.adviser}
+																	</Label>
+																</Label>
+																<Label className="font-sans flex flex-col items-end">
+																	Course
+																	<Label className="text-gray-500 justify-start items-start">
+																		{course.courseTitle}
+																	</Label>
+																</Label>
+															</div>
+
+															<div className="flex flex-wrap gap-2">
+																{course.courseCodes.map((codes, index) => (
+																	<Badge
+																		key={index}
+																		className="px-1 rounded-full font-medium"
+																	>
+																		{codes}
+																	</Badge>
+																))}
+															</div>
+														</div>
+													</CommandItem>
+												))}
+											</CommandGroup>
+										</CommandList>
+									</Command>
+								</PopoverContent>
+							</Popover>
+						</div>
 					)}
 					<div className="flex flex-col gap-3">
 						<Label htmlFor="date-picker" className="px-1">

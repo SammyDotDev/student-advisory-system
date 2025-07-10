@@ -124,3 +124,6 @@ body .x-accordion-heading a,
 body .x-accordion-heading a:hover {
 	text-decoration: none !important;
 }
+* {
+	font-family: "poppins";
+}

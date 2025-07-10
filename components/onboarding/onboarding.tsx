@@ -67,7 +67,12 @@ const Onboarding = () => {
 					}
 				>(`/user/onboard/${user.code}`, {
 					adviserOffice,
-					adviserCourses: data.courses,
+					adviserCourses: data.courses.map((item) => {
+						return {
+							courseTitle: item.courseTitle,
+							courseCodes: item.courseCodes.filter((code) => code !== ""),
+						};
+					}),
 				});
 				if (res.data.success && res.data.result.onboarded) {
 					// document.cookie = `token=${user.token}; path=/; secure; samesite=strict`;
