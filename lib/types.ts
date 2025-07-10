@@ -36,3 +36,18 @@ export type LoginResponse = {
 	token: string;
 	role: "STUDENT" | "ADVISER";
 };
+
+export type AppointmentResponse = {
+	code: string;
+	fromTime: string;
+	toTime: string;
+	status: string;
+	adviserResponse: {
+		adviserOffice: string;
+	};
+	courseResponse: {
+		code: string;
+		courseTitle: string;
+		courseCodes: string[];
+	};
+};

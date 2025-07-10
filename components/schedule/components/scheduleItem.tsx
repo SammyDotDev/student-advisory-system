@@ -17,19 +17,23 @@ import {
 import { Label } from "@/components/ui/label";
 import { Schedule } from "@/lib/types";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CreateAppointmentDialog from "./create-appointment-dialog";
 
 const ScheduleItem = ({
-	schedule,
+	appointment,
 	isAdviser,
+	filter,
 }: {
-	schedule: Schedule;
+	appointment: Schedule;
 	isAdviser?: boolean;
+	filter?: "APPROVED" | "PENDING" | "DECLINED" | "COMPLETED";
 }) => {
 	const [openAccordionTrigger, setOpenAccordionTrigger] =
 		useState<boolean>(false);
-
+	useEffect(() => {
+		console.log(filter, "FILTER IN ITEM");
+	}, [filter]);
 	return (
 		<Accordion
 			collapsible={true}
@@ -54,11 +58,11 @@ const ScheduleItem = ({
 								<CardDescription className="text-gray-500">
 									From
 								</CardDescription>
-								<CardAction>{schedule.fromTime}</CardAction>
+								<CardAction>{appointment.fromTime}</CardAction>
 							</div>
 							<div>
 								<CardDescription className="text-gray-500">To</CardDescription>
-								<CardAction>{schedule.toTime}</CardAction>
+								<CardAction>{appointment.toTime}</CardAction>
 							</div>
 						</div>
 					</div>
@@ -68,18 +72,14 @@ const ScheduleItem = ({
 							<CardDescription className="text-gray-500">
 								Course
 							</CardDescription>
-							<CardAction>{schedule.course}</CardAction>
+							<CardAction>{appointment.courseResponse.courseTitle}</CardAction>
 						</div>
 					</div>
 					{/* adviser */}
 					<div className="flex items-start justify-between space-x-4">
 						<div className="flex gap-3">
 							<Image
-								src={`${
-									schedule.profileImage?.includes("profile-image")
-										? "/" + schedule.profileImage
-										: schedule.profileImage
-								}`}
+								src={"/profile-image.png"}
 								width={40}
 								height={40}
 								alt="profile-image-placeholder"
@@ -89,7 +89,7 @@ const ScheduleItem = ({
 								<CardDescription className="text-gray-500">
 									{isAdviser ? "Advisee" : "Adviser"}
 								</CardDescription>
-								<CardAction>{schedule.adviser}</CardAction>
+								<CardAction>{appointment.adviserResponse.fullName}</CardAction>
 							</div>
 						</div>
 						<AccordionTrigger className="flex items-start justify-start p-0 text-slate-900 ml-auto">
@@ -133,8 +133,9 @@ const ScheduleItem = ({
 							</Button>
 						) : (
 							<CreateAppointmentDialog
-								schedule={schedule}
+								schedule={appointment}
 								rescheduleAppointment
+                                filter={filter}
 							/>
 						)}
 					</div>

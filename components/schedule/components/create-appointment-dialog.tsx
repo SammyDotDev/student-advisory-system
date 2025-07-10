@@ -23,7 +23,7 @@ import {
 } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { Calendar as CalendarDialog } from "@/components/ui/calendar";
-import { cn, formatDate, formatTo12Hour } from "@/lib/utils";
+import { cn, formatDate, formatTo12Hour, getDateOnly } from "@/lib/utils";
 import { Schedule } from "@/lib/types";
 import {
 	Command,
@@ -34,28 +34,26 @@ import {
 	CommandList,
 } from "@/components/ui/command";
 import { ApiClient } from "@/api/api";
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
-} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useUser } from "@/context/userContext";
 import { toast } from "sonner";
+import { useSchedule } from "@/context/scheduleContext";
 
 const CreateAppointmentDialog = ({
 	adviserFullname,
 	rescheduleAppointment,
 	schedule,
+	filter,
 }: {
 	adviserFullname?: string;
 	rescheduleAppointment?: boolean;
 	schedule?: Schedule;
+	filter?: "APPROVED" | "PENDING" | "DECLINED" | "COMPLETED";
 }) => {
 	const appointmentApi = ApiClient();
 	const { user } = useUser();
+	const { refetchAppointments } = useSchedule();
+
 	// schedule
 	const [newSchedule, setNewSchedule] = useState<Schedule>({
 		date: formatDate(new Date()),
@@ -64,7 +62,9 @@ const CreateAppointmentDialog = ({
 		course: "",
 		adviser: adviserFullname ? adviserFullname : "",
 	});
-	useEffect(() => {}, []);
+	useEffect(() => {
+		console.log(schedule && schedule.code, "SCHEDULE");
+	}, [schedule]);
 	const [openPopover, setOpenPopover] = useState(false);
 	const [openSearchSelect, setOpenSearchSelect] = useState(false);
 	const [searchSelectValue, setSearchSelectValue] = useState("");
@@ -87,7 +87,7 @@ const CreateAppointmentDialog = ({
 		courseCodes: string[];
 		coursesCode: string;
 	} | null>(null);
-
+	console.log(schedule);
 	const fetchCourseFilter = async (val: string) => {
 		const res = await appointmentApi.get("/courses/filter", {
 			params: {
@@ -125,26 +125,64 @@ const CreateAppointmentDialog = ({
 			},
 			"APPOINTMENT OBJECT"
 		);
-		const res = await appointmentApi.post("/appointments", {
-			...newSchedule,
-			fromTime: formatTo12Hour(newSchedule.fromTime),
-			toTime: formatTo12Hour(newSchedule.toTime),
-			userCode: user?.code,
-			courseCode: coursesCode,
-		});
-
-		if (res.status === 201) {
-			toast.success(res.data.result.message);
-			setSearchSelectValue("");
-			setNewSchedule({
-				date: formatDate(new Date()),
-				fromTime: "",
-				toTime: "",
-				course: "",
-				adviser: "",
+		try {
+			const res = await appointmentApi.post("/appointments", {
+				...newSchedule,
+				fromTime: formatTo12Hour(newSchedule.fromTime),
+				toTime: formatTo12Hour(newSchedule.toTime),
+				userCode: user?.code,
+				courseCode: coursesCode,
 			});
+
+			if (res.status === 201) {
+				toast.success(res.data.result.message);
+				refetchAppointments(filter);
+				setSearchSelectValue("");
+				setNewSchedule({
+					date: getDateOnly(new Date()),
+					fromTime: "",
+					toTime: "",
+					course: "",
+					adviser: "",
+				});
+			}
+		} catch (error) {
+			console.log(error);
 		}
 		// console.log(newSchedule, "NEW SCHEDULE");
+	};
+	console.log(filter,"FILTER");
+	const handleRescheduleAppointment = async (e: React.FormEvent) => {
+		e.preventDefault();
+		try {
+			const res = await appointmentApi.put(
+				`/appointments/students/reschedule/${schedule?.code}`,
+				{
+					// ...newSchedule,
+
+					date: newSchedule?.date,
+					fromTime: formatTo12Hour(newSchedule.fromTime),
+					toTime: formatTo12Hour(newSchedule.toTime),
+					userCode: user?.code,
+					courseCode: schedule?.courseResponse.code,
+				}
+			);
+
+			if (res.status === 200) {
+				toast.success("Appointment updated successfully");
+				refetchAppointments(filter);
+				setSearchSelectValue("");
+				setNewSchedule({
+					date: getDateOnly(new Date()),
+					fromTime: "",
+					toTime: "",
+					course: "",
+					adviser: "",
+				});
+			}
+		} catch (error) {
+			console.log(error);
+		}
 	};
 
 	return (
@@ -177,12 +215,21 @@ const CreateAppointmentDialog = ({
 				<DialogHeader>
 					<DialogTitle>
 						{rescheduleAppointment
-							? `Reschedule Appointment with ${schedule && schedule.adviser}`
+							? `Reschedule Appointment with ${
+									schedule && schedule.adviserResponse.fullName
+							  }`
 							: "Create a new appointment"}
 					</DialogTitle>
 					<DialogDescription>Fill in all details</DialogDescription>
 				</DialogHeader>
-				<form onSubmit={handleCreateAppointment} className="space-y-4">
+				<form
+					onSubmit={
+						rescheduleAppointment
+							? handleRescheduleAppointment
+							: handleCreateAppointment
+					}
+					className="space-y-4"
+				>
 					{!rescheduleAppointment && (
 						<div className="space-y-2">
 							<Label htmlFor="adviser" className="text-white">
@@ -325,13 +372,14 @@ const CreateAppointmentDialog = ({
 							>
 								<CalendarDialog
 									mode="single"
-									selected={date}
+									selected={new Date(newSchedule.date)}
 									captionLayout="dropdown"
-									onSelect={(date) => {
-										setDate(date);
+									onSelect={(dateValue) => {
+										setDate(dateValue);
+
 										setNewSchedule((prev) => ({
 											...prev,
-											date: formatDate(date),
+											date: getDateOnly(dateValue),
 										}));
 										setOpenPopover(false);
 									}}
@@ -384,7 +432,7 @@ const CreateAppointmentDialog = ({
 						type="submit"
 						className="w-full bg-slate-700 hover:bg-slate-800"
 					>
-						Create
+						{rescheduleAppointment ? "Reschedule" : "Create"}
 					</Button>
 				</form>
 			</DialogContent>

@@ -4,18 +4,35 @@ import { BarChart3, Calendar, Users } from "lucide-react";
 import Sidebar from "@/components/layout/sidebar";
 import { Button } from "@/components/ui/button";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import StudentHeader from "../headers/student/student-header";
 import { user } from "../dashboard/student-dashboard";
 import ScheduleDateSortedItem from "./components/scheduleDateSortedItem";
-import { groupAndSortSchedules } from "@/lib/utils";
+import {
+	groupAndSortSchedules,
+	groupAppointmentsByDateAdvanced,
+} from "@/lib/utils";
 import CreateAppointmentDialog from "./components/create-appointment-dialog";
+import { useSchedule } from "@/context/scheduleContext";
+import MobiusLoader from "../loader/mobius-loader";
+import { Label } from "../ui/label";
 
 const StudentSchedule = () => {
+	const { appointments, isLoading, fetchAppointments, refetchAppointments } =
+		useSchedule();
 	const [filterSchedule, setFilterSchedule] = useState<
 		"upcoming" | "pending" | "past" | "declined"
 	>("upcoming");
+	const [filterScheduleEnums, setFilterScheduleEnums] = useState<
+		"APPROVED" | "PENDING" | "COMPLETED" | "DECLINED"
+	>("APPROVED");
+
+	const [formattedAppointments, setFormattedAppointments] = useState([]);
+
+	useEffect(() => {
+		setFormattedAppointments(groupAppointmentsByDateAdvanced(appointments));
+	}, [appointments, fetchAppointments, refetchAppointments]);
 
 	const studentNavItems = [
 		{
@@ -124,6 +141,28 @@ const StudentSchedule = () => {
 
 	const sortedSchedules = groupAndSortSchedules(schedules);
 
+	useEffect(() => {
+		const isApproved = filterSchedule === "upcoming";
+		const isPending = filterSchedule === "pending";
+		const isDeclined = filterSchedule === "declined";
+		const isCompleted = filterSchedule === "past";
+
+		if (isApproved) {
+			setFilterScheduleEnums("APPROVED");
+		} else if (isPending) {
+			setFilterScheduleEnums("PENDING");
+		} else if (isDeclined) {
+			setFilterScheduleEnums("DECLINED");
+		} else if (isCompleted) {
+			setFilterScheduleEnums("COMPLETED");
+		}
+	}, [filterSchedule]);
+
+	useEffect(() => {
+		console.log(filterScheduleEnums, appointments, "APPOINTMENTS");
+		fetchAppointments(filterScheduleEnums);
+	}, [filterScheduleEnums]);
+
 	return (
 		<div className="flex h-screen bg-gray-50">
 			<Sidebar navItems={studentNavItems} userRole="student" />
@@ -153,7 +192,9 @@ const StudentSchedule = () => {
 													? "border-red-500 text-red-500 bg-white hover:bg-red-300 hover:text-red-500"
 													: "bg-gray-200 text-gray-800 hover:bg-gray-300 border-gray-300"
 											} cursor-pointer flex justify-center items-center px-4 py-2`}
-											onClick={() => setFilterSchedule(timeline)}
+											onClick={() => {
+												setFilterSchedule(timeline);
+											}}
 										>
 											{timeline}
 										</Button>
@@ -167,9 +208,17 @@ const StudentSchedule = () => {
 					</div>
 					<div className="grid grid-cols-1 lg:grid-cols-1 gap-6">
 						{/* Today's Schedule */}
-						{sortedSchedules.map((dates, index) => {
-							return <ScheduleDateSortedItem key={index} dates={dates} />;
-						})}
+						{isLoading ? (
+							<MobiusLoader />
+						) : formattedAppointments.length === 0 ? (
+							<div className="w-full flex items-center justify-center my-10">
+								<Label className="font text-gray-500">No appointments</Label>
+							</div>
+						) : (
+							formattedAppointments.map((dates, index) => {
+								return <ScheduleDateSortedItem key={index} dates={dates} filter={filterScheduleEnums}/>;
+							})
+						)}
 
 						{/* Assignments */}
 

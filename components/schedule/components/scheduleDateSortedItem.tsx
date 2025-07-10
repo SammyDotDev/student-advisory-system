@@ -6,23 +6,30 @@ import ScheduleItem from "./scheduleItem";
 
 const ScheduleDateSortedItem = ({
 	dates,
+	filter,
 }: {
 	dates: {
 		date: string;
-		schedules: Schedule[];
+		appointments: Schedule[];
 	};
+	filter: "APPROVED" | "PENDING" | "DECLINED" | "COMPLETED";
 }) => {
 	return (
 		<div className="grid grid-cols-1 lg:grid-cols-1 gap-6">
 			<Label>
-				
 				<span className="text-gray-500">
 					{formatFullDate(new Date(dates.date))}
 				</span>
 			</Label>
-			{dates.schedules.map((schedule: Schedule, scheduleIndex: number) => (
-				<ScheduleItem key={scheduleIndex} schedule={schedule} />
-			))}
+			{dates.appointments.map(
+				(appointment: Schedule, scheduleIndex: number) => (
+					<ScheduleItem
+						key={scheduleIndex}
+						appointment={appointment}
+						filter={filter}
+					/>
+				)
+			)}
 		</div>
 	);
 };
